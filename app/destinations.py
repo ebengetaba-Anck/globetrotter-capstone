@@ -8,10 +8,11 @@ Routes
 GET /destinations?q=akwa&tag=food&quartier=Bonanjo&max_cost=5000
     Returns destinations that match any of the provided query parameters.
     All parameters are optional; omitting them returns the full catalogue.
+    Text matching (q, tag, quartier) is accent-insensitive.
 """
 from flask import Blueprint, request, jsonify
 
-from app.models import get_all_destinations
+from app.models import get_all_destinations, normalize_text
 
 destinations_bp = Blueprint("destinations", __name__)
 
@@ -28,9 +29,9 @@ def search_destinations():
 
     Returns a JSON list of matching destination objects.
     """
-    q = request.args.get("q", "").strip().lower()
-    tag = request.args.get("tag", "").strip().lower()
-    quartier = request.args.get("quartier", "").strip().lower()
+    q = normalize_text(request.args.get("q", "").strip())
+    tag = normalize_text(request.args.get("tag", "").strip())
+    quartier = normalize_text(request.args.get("quartier", "").strip())
     max_cost_str = request.args.get("max_cost", "").strip()
 
     max_cost = None
@@ -44,25 +45,21 @@ def search_destinations():
     results = []
 
     for dest in destinations:
-        # Free-text filter
         if q:
-            searchable = " ".join([
+            searchable = normalize_text(" ".join([
                 dest.get("name", ""),
                 dest.get("quartier", ""),
                 dest.get("description", ""),
-            ]).lower()
+            ]))
             if q not in searchable:
                 continue
 
-        # Tag filter
-        if tag and tag not in [t.lower() for t in dest.get("tags", [])]:
+        if tag and tag not in [normalize_text(t) for t in dest.get("tags", [])]:
             continue
 
-        # Quartier filter
-        if quartier and quartier != dest.get("quartier", "").lower():
+        if quartier and quartier != normalize_text(dest.get("quartier", "")):
             continue
 
-        # Cost filter – skip destinations that have no cost information or exceed the limit
         if max_cost is not None:
             cost = dest.get("avg_cost")
             if cost is None or cost > max_cost:

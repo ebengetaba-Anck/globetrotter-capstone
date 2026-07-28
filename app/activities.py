@@ -8,10 +8,11 @@ Routes
 GET /activities?q=marche&tag=food&quartier=Akwa
     Returns activities that match any of the provided query parameters.
     All parameters are optional; omitting them returns the full catalogue.
+    Text matching (q, tag, quartier) is accent-insensitive.
 """
 from flask import Blueprint, request, jsonify
 
-from app.models import get_all_activities
+from app.models import get_all_activities, normalize_text
 
 activities_bp = Blueprint("activities", __name__)
 
@@ -28,9 +29,9 @@ def search_activities():
 
     Returns a JSON list of matching activity objects.
     """
-    q = request.args.get("q", "").strip().lower()
-    tag = request.args.get("tag", "").strip().lower()
-    quartier = request.args.get("quartier", "").strip().lower()
+    q = normalize_text(request.args.get("q", "").strip())
+    tag = normalize_text(request.args.get("tag", "").strip())
+    quartier = normalize_text(request.args.get("quartier", "").strip())
     max_cost_str = request.args.get("max_cost", "").strip()
 
     max_cost = None
@@ -45,18 +46,18 @@ def search_activities():
 
     for act in activities:
         if q:
-            searchable = " ".join([
+            searchable = normalize_text(" ".join([
                 act.get("name", ""),
                 act.get("quartier", ""),
                 act.get("description", ""),
-            ]).lower()
+            ]))
             if q not in searchable:
                 continue
 
-        if tag and tag not in [t.lower() for t in act.get("tags", [])]:
+        if tag and tag not in [normalize_text(t) for t in act.get("tags", [])]:
             continue
 
-        if quartier and quartier != act.get("quartier", "").lower():
+        if quartier and quartier != normalize_text(act.get("quartier", "")):
             continue
 
         if max_cost is not None:

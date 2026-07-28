@@ -10,6 +10,7 @@ All persistent data is stored in JSON files under the /data directory.
 """
 import json
 import os
+import unicodedata
 
 # Resolve the /data directory relative to this file's location so the app
 # works regardless of the current working directory.
@@ -27,6 +28,16 @@ RESERVATIONS_FILE = os.path.join(DATA_DIR, "reservations.json")
 # ---------------------------------------------------------------------------
 # Generic file I/O helpers
 # ---------------------------------------------------------------------------
+def normalize_text(text: str) -> str:
+    """Lowercase *text* and strip accents, for accent-insensitive search.
+
+    E.g. "Marché" and "marche" both normalize to "marche".
+    """
+    if not text:
+        return ""
+    decomposed = unicodedata.normalize("NFKD", text)
+    without_accents = "".join(c for c in decomposed if not unicodedata.combining(c))
+    return without_accents.lower()
 
 def _read_json(filepath: str) -> list:
     """Read a JSON file and return its contents as a Python list.
