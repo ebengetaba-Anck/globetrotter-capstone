@@ -19,6 +19,9 @@ DATA_DIR = os.path.join(_BASE_DIR, "data")
 USERS_FILE = os.path.join(DATA_DIR, "users.json")
 ITINERARIES_FILE = os.path.join(DATA_DIR, "itineraries.json")
 DESTINATIONS_FILE = os.path.join(DATA_DIR, "destinations.json")
+ACTIVITIES_FILE = os.path.join(DATA_DIR, "activities.json")
+TRANSPORT_FILE = os.path.join(DATA_DIR, "transport.json")
+RESERVATIONS_FILE = os.path.join(DATA_DIR, "reservations.json")
 
 
 # ---------------------------------------------------------------------------
@@ -99,3 +102,48 @@ def save_itinerary(itinerary: dict) -> None:
     itineraries = get_all_itineraries()
     itineraries.append(itinerary)
     _write_json(ITINERARIES_FILE, itineraries)
+# ---------------------------------------------------------------------------
+# Activity helpers
+# ---------------------------------------------------------------------------
+
+def get_all_activities() -> list:
+    """Return all activities from the static catalogue."""
+    return _read_json(ACTIVITIES_FILE)
+
+
+# ---------------------------------------------------------------------------
+# Transport helpers
+# ---------------------------------------------------------------------------
+
+def get_all_transport() -> list:
+    """Return all transport options from the static catalogue."""
+    return _read_json(TRANSPORT_FILE)
+
+
+def get_transport_by_id(transport_id: str) -> dict | None:
+    """Return the transport dict matching *transport_id*, or None."""
+    for t in get_all_transport():
+        if t.get("id") == transport_id:
+            return t
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Reservation helpers
+# ---------------------------------------------------------------------------
+
+def get_all_reservations() -> list:
+    """Return all transport reservations across all users."""
+    return _read_json(RESERVATIONS_FILE)
+
+
+def get_reservations_for_user(username: str) -> list:
+    """Return reservations that belong to *username*."""
+    return [r for r in get_all_reservations() if r.get("username") == username]
+
+
+def save_reservation(reservation: dict) -> None:
+    """Append *reservation* to the reservations store."""
+    reservations = get_all_reservations()
+    reservations.append(reservation)
+    _write_json(RESERVATIONS_FILE, reservations)

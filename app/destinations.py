@@ -5,7 +5,7 @@ Destination search endpoint.
 
 Routes
 ------
-GET /destinations?q=paris&tag=food&continent=Europe
+GET /destinations?q=akwa&tag=food&quartier=Bonanjo&max_cost=5000
     Returns destinations that match any of the provided query parameters.
     All parameters are optional; omitting them returns the full catalogue.
 """
@@ -18,19 +18,19 @@ destinations_bp = Blueprint("destinations", __name__)
 
 @destinations_bp.route("/destinations", methods=["GET"])
 def search_destinations():
-    """Search destinations by name keyword, tag, and/or continent.
+    """Search destinations by name keyword, tag, and/or quartier.
 
     Query parameters (all optional):
-        q          – free-text search against name, country, and description
-        tag        – filter by a single interest tag (e.g. "beach")
-        continent  – filter by continent name (e.g. "Europe")
-        max_cost   – filter by maximum average daily cost (integer)
+        q         – free-text search against name, quartier, and description
+        tag       – filter by a single interest tag (e.g. "beach")
+        quartier  – filter by neighbourhood name (e.g. "Bonanjo")
+        max_cost  – filter by maximum average cost (integer)
 
     Returns a JSON list of matching destination objects.
     """
     q = request.args.get("q", "").strip().lower()
     tag = request.args.get("tag", "").strip().lower()
-    continent = request.args.get("continent", "").strip().lower()
+    quartier = request.args.get("quartier", "").strip().lower()
     max_cost_str = request.args.get("max_cost", "").strip()
 
     max_cost = None
@@ -48,7 +48,7 @@ def search_destinations():
         if q:
             searchable = " ".join([
                 dest.get("name", ""),
-                dest.get("country", ""),
+                dest.get("quartier", ""),
                 dest.get("description", ""),
             ]).lower()
             if q not in searchable:
@@ -58,13 +58,13 @@ def search_destinations():
         if tag and tag not in [t.lower() for t in dest.get("tags", [])]:
             continue
 
-        # Continent filter
-        if continent and continent != dest.get("continent", "").lower():
+        # Quartier filter
+        if quartier and quartier != dest.get("quartier", "").lower():
             continue
 
         # Cost filter – skip destinations that have no cost information or exceed the limit
         if max_cost is not None:
-            cost = dest.get("avg_cost_per_day")
+            cost = dest.get("avg_cost")
             if cost is None or cost > max_cost:
                 continue
 

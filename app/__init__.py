@@ -4,6 +4,7 @@ app/__init__.py
 Flask application factory.
 """
 import os
+
 from flask import Flask
 
 
@@ -23,10 +24,14 @@ def create_app():
     from app.destinations import destinations_bp
     from app.recommendations import recommendations_bp
     from app.itineraries import itineraries_bp
+    from app.activities import activities_bp
+    from app.transport import transport_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(destinations_bp)
     app.register_blueprint(recommendations_bp)
     app.register_blueprint(itineraries_bp)
+    app.register_blueprint(activities_bp)
+    app.register_blueprint(transport_bp)
 
     return app
