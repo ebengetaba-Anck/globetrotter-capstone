@@ -1,0 +1,155 @@
+[
+  {
+    "id": "act-001",
+    "name": "Visite guidee du vieux Bonanjo",
+    "quartier": "Bonanjo",
+    "tags": ["culture", "histoire", "guide"],
+    "description": "Visite a pied du quartier historique de Bonanjo avec un guide local : architecture coloniale, place du Gouvernement et batiments administratifs.",
+    "duration_hours": 3,
+    "avg_cost": 15000
+  },
+  {
+    "id": "act-002",
+    "name": "Balade et degustation au Marche Central",
+    "quartier": "Akwa",
+    "tags": ["food", "marche", "culture"],
+    "description": "Parcours guide dans le Marche Central avec degustation de street food locale (beignets, poisson braise, jus de fruits frais).",
+    "duration_hours": 2,
+    "avg_cost": 8000
+  },
+  {
+    "id": "act-003",
+    "name": "Balade en pirogue sur le Wouri",
+    "quartier": "Bonaberi / rives du Wouri",
+    "tags": ["nature", "pirogue", "detente"],
+    "description": "Excursion en pirogue traditionnelle le long du fleuve Wouri, avec observation de la vie des pecheurs locaux et vue sur le pont.",
+    "duration_hours": 2,
+    "avg_cost": 12000
+  },
+  {
+    "id": "act-004",
+    "name": "Atelier artisanat au Village Artisanal de Bonanjo",
+    "quartier": "Bonanjo",
+    "tags": ["artisanat", "atelier", "culture"],
+    "description": "Atelier pratique avec des artisans locaux pour decouvrir la sculpture sur bois et la fabrication de bijoux traditionnels.",
+    "duration_hours": 2,
+    "avg_cost": 15000
+  },
+  {
+    "id": "act-005",
+    "name": "Observation du Port Autonome de Douala",
+    "quartier": "Bonanjo / Bonaberi",
+    "tags": ["histoire", "economie", "photo"],
+    "description": "Visite du front de mer portuaire pour observer l'activite du plus grand port du Cameroun, avec explications sur son role economique.",
+    "duration_hours": 1,
+    "avg_cost": 5000
+  },
+  {
+    "id": "act-006",
+    "name": "Visite guidee de La Pagode (Palais des Rois Bell)",
+    "quartier": "Akwa",
+    "tags": ["culture", "histoire", "architecture"],
+    "description": "Visite commentee de l'ancien palais des Rois Bell, l'un des monuments historiques les plus embematiques de Douala.",
+    "duration_hours": 1,
+    "avg_cost": 3000
+  },
+  {
+    "id": "act-007",
+    "name": "Decouverte de la Place du Ngondo",
+    "quartier": "Akwa (parc des princes)",
+    "tags": ["culture", "tradition", "histoire"],
+    "description": "Visite du site emblematique du peuple Sawa, avec explications sur le festival traditionnel du Ngondo et ses rites sur les rives du Wouri.",
+    "duration_hours": 1,
+    "avg_cost": 2000
+  },
+  {
+    "id": "act-008",
+    "name": "Excursion decouverte au Parc National de Douala-Edea",
+    "quartier": "Peripherie (route d'Edea)",
+    "tags": ["nature", "faune", "ecotourisme"],
+    "description": "Excursion guidee dans la reserve de faune de Douala-Edea pour observer forets denses, mangroves et especes protegees.",
+    "duration_hours": 6,
+    "avg_cost": 40000
+  },
+  {
+    "id": "act-009",
+    "name": "Visite du centre d'art contemporain Doual'art",
+    "quartier": "Akwa",
+    "tags": ["art", "culture", "exposition"],
+    "description": "Visite guidee des expositions et sculptures monumentales du centre d'art contemporain Doual'art, acteur majeur de la scene artistique de Douala.",
+    "duration_hours": 1,
+    "avg_cost": 3000
+  },
+  {
+    "id": "act-010",
+    "name": "Soiree concert a l'Institut Francais de Douala",
+    "quartier": "Akwa",
+    "tags": ["musique", "culture", "vie-nocturne"],
+    "description": "Concert ou evenement culturel programme a l'Institut Francais, une reference pour la scene artistique locale.",
+    "duration_hours": 3,
+    "avg_cost": 5000
+  },
+  {
+    "id": "act-011",
+    "name": "Cours de cuisine camerounaise a Bonapriso",
+    "quartier": "Bonapriso",
+    "tags": ["food", "atelier", "culture"],
+    "description": "Atelier culinaire pratique pour apprendre a preparer des plats traditionnels camerounais (ndole, poisson braise, accompagnements locaux).",
+    "duration_hours": 3,
+    "avg_cost": 18000
+  },
+  {
+    "id": "act-012",
+    "name": "Visite guidee du Musee Maritime de Douala",
+    "quartier": "Bonanjo",
+    "tags": ["culture", "musee", "histoire"],
+    "description": "Visite commentee du Musee Maritime retracant l'histoire du port et la tradition maritime des peuples Sawa.",
+    "duration_hours": 1,
+    "avg_cost": 2000
+  },
+  {
+    "id": "act-013",
+    "name": "Journee detente a Eden Aqua Park",
+    "quartier": "Kotto",
+    "tags": ["famille", "loisirs", "detente"],
+    "description": "Journee en famille au parc aquatique avec piscines et jeux d'eau, ideal pour se rafraichir apres une journee de visites.",
+    "duration_hours": 4,
+    "avg_cost": 3500
+  },
+  {
+    "id": "act-014",
+    "name": "Journee loisirs a O'LOKO",
+    "quartier": "Stade de Japoma",
+    "tags": ["famille", "loisirs", "enfants"],
+    "description": "Journee dans un parc de loisirs avec manages et attractions, populaire aupres des familles le week-end.",
+    "duration_hours": 3,
+    "avg_cost": 4000
+  },
+  {
+    "id": "act-015",
+    "name": "Shopping et cinema au Douala Grand Mall",
+    "quartier": "Texaco Aeroport",
+    "tags": ["shopping", "loisirs", "famille"],
+    "description": "Sortie shopping et cinema dans le centre commercial moderne de Douala, avec restaurants et espaces de loisirs.",
+    "duration_hours": 3,
+    "avg_cost": 8000
+  },
+  {
+    "id": "act-016",
+    "name": "Balade photo au coucher du soleil sur le Pont du Wouri",
+    "quartier": "Bonaberi / Bonanjo",
+    "tags": ["photo", "detente", "gratuit"],
+    "description": "Balade libre sur le pont du Wouri pour profiter de la vue panoramique et photographier le coucher de soleil sur le fleuve.",
+    "duration_hours": 1,
+    "avg_cost": 0
+  },
+  {
+    "id": "act-017",
+    "name": "Balade et pecheurs au Fleuve Dibamba",
+    "quartier": "Yassa",
+    "tags": ["nature", "peche", "detente"],
+    "description": "Balade au bord du fleuve Dibamba pour observer la peche traditionnelle et profiter des paysages de mangrove.",
+    "duration_hours": 2,
+    "avg_cost": 5000
+  }
+]
