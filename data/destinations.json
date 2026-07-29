@@ -3,209 +3,369 @@
     "id": "dla-001",
     "name": "Place du Gouvernement (Place Ahmadou Ahidjo)",
     "quartier": "Bonanjo",
-    "tags": ["histoire", "monument", "gratuit"],
+    "tags": [
+      "histoire",
+      "monument",
+      "gratuit"
+    ],
     "description": "Place centrale historique de Douala, entourée de bâtiments coloniaux et administratifs. Point de départ classique pour découvrir le vieux Bonanjo.",
-    "avg_cost": 1000 
+    "avg_cost": 1000,
+    "lat": 4.047,
+    "lng": 9.6935
   },
   {
     "id": "dla-002",
     "name": "Musée Maritime de Douala",
     "quartier": "Bonanjo",
-    "tags": ["culture", "musee", "histoire"],
+    "tags": [
+      "culture",
+      "musee",
+      "histoire"
+    ],
     "description": "Musée retraçant l'histoire du port de Douala et la tradition maritime des peuples Sawa, avec pirogues traditionnelles et objets d'époque.",
-    "avg_cost": 2000
+    "avg_cost": 2000,
+    "lat": 4.047,
+    "lng": 9.6935
   },
   {
     "id": "dla-003",
     "name": "Marché Central de Douala",
     "quartier": "Akwa",
-    "tags": ["marche", "shopping", "artisanat", "food"],
+    "tags": [
+      "marche",
+      "shopping",
+      "artisanat",
+      "food"
+    ],
     "description": "Le plus grand marché de la ville, où trouver tissus, épices, artisanat local et produits alimentaires frais dans une ambiance très vivante.",
-    "avg_cost": 0
+    "avg_cost": 0,
+    "lat": 4.048,
+    "lng": 9.701
   },
   {
     "id": "dla-004",
     "name": "Marché des Fleurs",
     "quartier": "Bonanjo",
-    "tags": ["marche", "nature", "shopping"],
+    "tags": [
+      "marche",
+      "nature",
+      "shopping"
+    ],
     "description": "Marché coloré spécialisé dans les plantes, fleurs et arbustes, apprécié pour une promenade tranquille en plein centre-ville.",
-    "avg_cost": 2000 
+    "avg_cost": 2000,
+    "lat": 4.047,
+    "lng": 9.6935
   },
   {
     "id": "dla-005",
     "name": "Cathédrale Saint-Pierre-et-Saint-Paul",
     "quartier": "Akwa",
-    "tags": ["religieux", "architecture", "gratuit"],
+    "tags": [
+      "religieux",
+      "architecture",
+      "gratuit"
+    ],
     "description": "Grande cathédrale catholique connue pour son architecture imposante et ses vitraux, un repère visuel du centre de Douala.",
-    "avg_cost": 0
+    "avg_cost": 0,
+    "lat": 4.048,
+    "lng": 9.701
   },
   {
     "id": "dla-006",
     "name": "Parc National de Douala-Édéa",
     "quartier": "Périphérie (route d'Édéa)",
-    "tags": ["nature", "faune", "randonnee", "ecotourisme"],
+    "tags": [
+      "nature",
+      "faune",
+      "randonnee",
+      "ecotourisme"
+    ],
     "description": "Réserve naturelle protégée abritant forêts denses, mangroves et une faune variée (gorilles, éléphants de forêt, oiseaux). Idéal pour l'écotourisme.",
-    "avg_cost": 15000
+    "avg_cost": 15000,
+    "lat": 4.05,
+    "lng": 9.7
   },
-{
+  {
     "id": "dla-007",
     "name": "Village Artisanal de Bonanjo",
     "quartier": "Bonanjo",
-    "tags": ["artisanat", "shopping", "culture"],
+    "tags": [
+      "artisanat",
+      "shopping",
+      "culture"
+    ],
     "description": "Espace regroupant des artisans locaux vendant sculptures sur bois, bijoux et objets d'art traditionnels camerounais.",
-    "avg_cost": 5000 
+    "avg_cost": 5000,
+    "lat": 4.047,
+    "lng": 9.6935
   },
   {
     "id": "dla-008",
     "name": "Akwa Palace & front de mer d'Akwa",
     "quartier": "Akwa",
-    "tags": ["vie-nocturne", "restaurant", "shopping"],
+    "tags": [
+      "vie-nocturne",
+      "restaurant",
+      "shopping"
+    ],
     "description": "Quartier animé au cœur de Douala, connu pour ses hôtels, restaurants, bars et son ambiance urbaine dynamique en soirée.",
-    "avg_cost": 10000 
+    "avg_cost": 10000,
+    "lat": 4.048,
+    "lng": 9.701
   },
   {
     "id": "dla-009",
     "name": "Pont sur le Wouri",
     "quartier": "Bonabéri / Bonanjo",
-    "tags": ["photo", "monument", "gratuit"],
+    "tags": [
+      "photo",
+      "monument",
+      "gratuit"
+    ],
     "description": "Pont emblématique reliant Douala à Bonabéri au-dessus du fleuve Wouri, offrant une vue panoramique appréciée au coucher du soleil.",
-    "avg_cost": 1500
+    "avg_cost": 1500,
+    "lat": 4.047,
+    "lng": 9.6935
   },
   {
     "id": "dla-010",
     "name": "Marché aux Poissons de Youpwe",
     "quartier": "Youpwe",
-    "tags": ["food", "marche", "culture"],
+    "tags": [
+      "food",
+      "marche",
+      "culture"
+    ],
     "description": "Marché de pêcheurs animé en bord de fleuve, où déguster poisson braisé frais dans une ambiance locale authentique.",
-    "avg_cost": 3000
+    "avg_cost": 3000,
+    "lat": 4.03,
+    "lng": 9.72
   },
   {
     "id": "dla-011",
     "name": "Institut Français de Douala",
     "quartier": "Akwa",
-    "tags": ["culture", "art", "musique"],
+    "tags": [
+      "culture",
+      "art",
+      "musique"
+    ],
     "description": "Centre culturel accueillant expositions, concerts et projections, une référence pour la scène artistique de Douala.",
-    "avg_cost": 2000 
+    "avg_cost": 2000,
+    "lat": 4.048,
+    "lng": 9.701
   },
-{
+  {
     "id": "dla-012",
     "name": "Doual'art",
     "quartier": "Akwa",
-    "tags": ["histoire", "architecture et patrimoine Sawa", "photo"],
+    "tags": [
+      "histoire",
+      "architecture et patrimoine Sawa",
+      "photo"
+    ],
     "description": "Centre d'art contemporain proposant des expositions, sculptures et événements culturels.",
-    "avg_cost": 12000 
+    "avg_cost": 12000,
+    "lat": 4.048,
+    "lng": 9.701
   },
   {
     "id": "dla-013",
     "name": "La Nouvelle Liberté",
     "quartier": "rond-point Deïdo",
-    "tags": ["shopping", "restaurant", "detente"],
+    "tags": [
+      "shopping",
+      "restaurant",
+      "detente"
+    ],
     "description": "Monument emblématique, sculpture monumentale réalisée à partir de matériaux recyclés.",
-    "avg_cost": 8000 
+    "avg_cost": 8000,
+    "lat": 4.05,
+    "lng": 9.7
   },
   {
     "id": "dla-014",
     "name": "Complexe Sportif Omnisport de Bépanda",
     "quartier": "Bépanda",
-    "tags": ["sport", "loisirs", "famille"],
+    "tags": [
+      "sport",
+      "loisirs",
+      "famille"
+    ],
     "description": "Complexe sportif populaire pour assister à des matchs de football locaux ou pratiquer une activité sportive en journée.",
-    "avg_cost": 2000 
+    "avg_cost": 2000,
+    "lat": 4.05,
+    "lng": 9.7
   },
   {
     "id": "dla-015",
     "name": "Marché Congo",
     "quartier": "New Bell",
-    "tags": ["marche", "food", "shopping"],
+    "tags": [
+      "marche",
+      "food",
+      "shopping"
+    ],
     "description": "Marché populaire connu pour son ambiance authentique, ses étals de nourriture de rue et ses prix attractifs.",
-    "avg_cost": 0 
+    "avg_cost": 0,
+    "lat": 4.043,
+    "lng": 9.71
   },
-{
+  {
     "id": "dla-016",
     "name": "Complexe Sprtif Japoma",
     "quartier": "Japoma",
-    "tags": ["sport", "loisirs", "famille"],
+    "tags": [
+      "sport",
+      "loisirs",
+      "famille"
+    ],
     "description": "Complexe sportif populaire pour assister à des matchs de football locaux ou pratiquer une activité sportive en journée et la nuit.",
-    "avg_cost": 20000 
+    "avg_cost": 20000,
+    "lat": 4.095,
+    "lng": 9.775
   },
-{
+  {
     "id": "dla-017",
     "name": "Port Autonome de Douala",
     "quartier": "Bonanjo / Bonabéri",
-    "tags": ["histoire", "economie", "photo"],
+    "tags": [
+      "histoire",
+      "economie",
+      "photo"
+    ],
     "description": "Plus grand port du Cameroun et l'un des plus importants d'Afrique centrale, poumon économique de la ville. Vue impressionnante sur les activités portuaires et les cargos.",
-    "avg_cost": 25000 
+    "avg_cost": 25000,
+    "lat": 4.047,
+    "lng": 9.6935
   },
-{
+  {
     "id": "dla-018",
     "name": "Douala Grand Mall",
     "quartier": "Texaco Aeroport",
-    "tags": ["shopping", "restaurant", "loisirs", "famille"],
+    "tags": [
+      "shopping",
+      "restaurant",
+      "loisirs",
+      "famille"
+    ],
     "description": "Centre commercial moderne avec boutiques, restaurants, cinéma et espaces de loisirs, une référence pour le shopping climatisé à Douala.",
-    "avg_cost": 5000
+    "avg_cost": 5000,
+    "lat": 4.007,
+    "lng": 9.719
   },
-{
+  {
     "id": "dla-019",
     "name": "Fleuve Dibamba",
     "quartier": "YASSA",
-    "tags": ["nature", "detente", "peche", "photo"],
+    "tags": [
+      "nature",
+      "detente",
+      "peche",
+      "photo"
+    ],
     "description": "Cours d'eau paisible aux abords de Douala, apprécié pour les balades en pirogue, la pêche traditionnelle et les paysages de mangrove.",
-    "avg_cost": 3000
+    "avg_cost": 3000,
+    "lat": 4.07,
+    "lng": 9.79
   },
-{
+  {
     "id": "dla-020",
     "name": "Aéroport International de Douala",
     "quartier": "TEXACO Aeroport",
-    "tags": ["transport", "point-de-depart"],
+    "tags": [
+      "transport",
+      "point-de-depart"
+    ],
     "description": "Principal aéroport international du Cameroun, porte d'entrée pour les voyageurs arrivant à Douala.",
-    "avg_cost": 15000 
+    "avg_cost": 15000,
+    "lat": 4.007,
+    "lng": 9.719
   },
-{
+  {
     "id": "dla-021",
     "name": "Ô'LOKO",
     "quartier": "stade de Japoma",
-    "tags": ["famille", "loisirs", "enfants"],
+    "tags": [
+      "famille",
+      "loisirs",
+      "enfants"
+    ],
     "description": "Parc de loisirs avec manèges et attractions, très populaire auprès des familles et des enfants le week-end.",
-    "avg_cost": 4000 
+    "avg_cost": 4000,
+    "lat": 4.095,
+    "lng": 9.775
   },
-{
+  {
     "id": "dla-022",
     "name": "La Pagode",
     "quartier": "AKWA",
-    "tags": ["culture", "festival", "histoire", "architecture et patrimoine Sawa"],
+    "tags": [
+      "culture",
+      "festival",
+      "histoire",
+      "architecture et patrimoine Sawa"
+    ],
     "description": "Ancien palais des Rois Bell, l'un des monuments historiques les plus célèbres de Douala.",
-    "avg_cost": 2500 
+    "avg_cost": 2500,
+    "lat": 4.048,
+    "lng": 9.701
   },
-{
+  {
     "id": "dla-023",
     "name": "Place du Ngondo",
     "quartier": "AKWA parc des princes",
-    "tags": ["culture", "festival", "histoire", "tradition"],
+    "tags": [
+      "culture",
+      "festival",
+      "histoire",
+      "tradition"
+    ],
     "description": "Site emblématique du peuple Sawa, accueillant chaque année le festival traditionnel du Ngondo avec rites, pirogues et cérémonies culturelles sur les rives du Wouri.",
-    "avg_cost": 2500 
+    "avg_cost": 2500,
+    "lat": 4.048,
+    "lng": 9.701
   },
-{
+  {
     "id": "dla-024",
     "name": "Sawa Attraction Park",
     "quartier": "carrefour Marché Sandaga",
-    "tags": ["famille", "loisirs", "enfants"],
+    "tags": [
+      "famille",
+      "loisirs",
+      "enfants"
+    ],
     "description": "Parc d'attractions proposant plusieurs jeux et espaces de détente.",
-    "avg_cost": 4000 
+    "avg_cost": 4000,
+    "lat": 4.05,
+    "lng": 9.7
   },
-{
+  {
     "id": "dla-025",
     "name": "Eden Aqua Park Douala",
     "quartier": "Kotto",
-    "tags": ["famille", "loisirs", "enfants"],
+    "tags": [
+      "famille",
+      "loisirs",
+      "enfants"
+    ],
     "description": "Parc aquatique avec piscines et jeux d'eau adapté aux familles et aux groupes d'amis.",
-    "avg_cost": 3500
+    "avg_cost": 3500,
+    "lat": 4.033,
+    "lng": 9.745
   },
-{
+  {
     "id": "dla-026",
     "name": "Base Navale de Douala",
     "quartier": "Bonanjo / Bonabéri",
-    "tags": ["histoire", "militaire", "photo"],
+    "tags": [
+      "histoire",
+      "militaire",
+      "photo"
+    ],
     "description": "Base des Forces Navales camerounaises située le long du Wouri, symbole de la présence militaire maritime du pays et repère du paysage portuaire de Douala.",
-    "avg_cost":6000 
+    "avg_cost": 6000,
+    "lat": 4.047,
+    "lng": 9.6935
   }
 ]
-

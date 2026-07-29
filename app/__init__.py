@@ -33,5 +33,10 @@ def create_app():
     app.register_blueprint(itineraries_bp)
     app.register_blueprint(activities_bp)
     app.register_blueprint(transport_bp)
+   
+    @app.route("/")
+    def index():
+        from flask import send_from_directory
+        return send_from_directory(app.static_folder, "index.html")
 
     return app

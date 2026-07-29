@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DoualaTrotter — Assistant de voyage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  :root {
+    --bg: #F5F4EF;
+    --surface: #FFFFFF;
+    --border: #E1DED3;
+    --text: #2C2C2A;
+    --text-muted: #6B6A63;
+    --teal: #0F6E56;
+    --teal-dark: #085041;
+    --amber: #BA7517;
+    --amber-light: #FAEEDA;
+    --danger: #A32D2D;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+  }
+  h1, h2, h3, .brand { font-family: 'Fraunces', serif; font-weight: 600; }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .brand { font-size: 22px; color: var(--teal-dark); }
+  .brand span { color: var(--amber); }
+
+  nav {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  nav button {
+    background: none;
+    border: none;
+    padding: 8px 14px;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  nav button:hover { background: var(--amber-light); }
+  nav button.active { background: var(--teal); color: white; }
+
+  .account-badge {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .account-badge b { color: var(--teal-dark); }
+
+  main {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+  section { display: none; }
+  section.active { display: block; }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .filters input, .filters select {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+  }
+  .filters button, .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: var(--teal);
+    color: white;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .filters button:hover, .btn:hover { background: var(--teal-dark); }
+  .btn.secondary { background: var(--amber); }
+  .btn.secondary:hover { background: #8F5A0F; }
+  .btn.danger { background: var(--danger); }
+  .btn:disabled { background: #C9C6BA; cursor: not-allowed; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .card h3 { font-size: 16px; margin: 0 0 4px; color: var(--teal-dark); }
+  .card .quartier { font-size: 12px; color: var(--amber); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
+  .card p { font-size: 13px; color: var(--text-muted); margin: 8px 0; }
+  .card .meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-top: 10px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .tag {
+    font-size: 11px;
+    background: var(--amber-light);
+    color: #8F5A0F;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  .price { font-weight: 600; color: var(--teal-dark); }
+  .empty { color: var(--text-muted); font-size: 14px; padding: 24px; text-align: center; }
+
+  .auth-box {
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .auth-box h2 { font-size: 18px; margin-top: 0; }
+  .auth-box label { display: block; font-size: 13px; font-weight: 500; margin: 12px 0 4px; }
+  .auth-box input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+  }
+  .auth-box .btn { margin-top: 16px; width: 100%; }
+
+  .msg { font-size: 13px; margin-top: 10px; padding: 8px 10px; border-radius: 6px; }
+  .msg.ok { background: #EAF3DE; color: #27500A; }
+  .msg.err { background: #FCEBEB; color: #791F1F; }
+
+  .req-auth { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+
+  .rec-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 20px; margin-top: 16px; }
+  .rec-cols h3 { font-size: 15px; text-transform: uppercase; letter-spacing: 0.03em; color: var(--amber); }
+
+  .flag { width: 28px; height: 20px; border-radius: 2px; overflow: hidden; flex-shrink: 0; box-shadow: 0 0 0 1px var(--border); }
+  .brand-row { display: flex; align-items: center; gap: 10px; }
+
+  .hero {
+    position: relative;
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 24px;
+    height: 220px;
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal));
+  }
+  .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hero .fallback {
+    width: 100%; height: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: white; text-align: center; padding: 16px;
+  }
+  .hero .fallback svg { width: 64px; height: 64px; margin-bottom: 8px; opacity: 0.9; }
+  .hero-caption {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: rgba(20,20,18,0.55);
+    color: white;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  #map { height: 320px; border-radius: var(--radius); margin-bottom: 24px; border: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand-row">
+    <svg class="flag" viewBox="0 0 30 20" xmlns="http://www.w3.org/2000/svg">
+      <rect width="10" height="20" fill="#007A5E"/>
+      <rect x="10" width="10" height="20" fill="#CE1126"/>
+      <rect x="20" width="10" height="20" fill="#FCD116"/>
+      <polygon points="15,7.5 15.9,10.2 18.8,10.2 16.4,11.9 17.3,14.6 15,12.9 12.7,14.6 13.6,11.9 11.2,10.2 14.1,10.2"
+        fill="#FCD116"/>
+    </svg>
+    <div class="brand">Douala<span>Trotter</span></div>
+  </div>
+  <nav id="nav">
+    <button data-tab="destinations" class="active">Destinations</button>
+    <button data-tab="activities">Activités</button>
+    <button data-tab="transport">Transport</button>
+    <button data-tab="recommendations">Recommandations</button>
+    <button data-tab="itineraries">Itinéraires</button>
+    <button data-tab="account">Compte</button>
+  </nav>
+  <div class="account-badge" id="accountBadge">Non connecté</div>
+</header>
+
+<main>
+
+  <!-- DESTINATIONS -->
+  <section id="destinations" class="active">
+    <div class="hero">
+      <img src="/static/images/nouvelle-liberte.jpg" alt="La Nouvelle Liberté, Deïdo"
+           onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='flex';">
+      <div id="hero-fallback" class="fallback" style="display:none;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
+          <path d="M12 2 L12 18 M6 8 L18 8 M4 18 L20 18 M8 18 L8 12 M16 18 L16 12" stroke-linecap="round"/>
+          <circle cx="12" cy="5" r="2.5"/>
+        </svg>
+        <div>La Nouvelle Liberté — Rond-point Deïdo</div>
+      </div>
+      <div class="hero-caption">La Nouvelle Liberté, rond-point Deïdo — ajoute ta photo dans <code>app/static/images/nouvelle-liberte.jpg</code></div>
+    </div>
+
+    <h2>Destinations à Douala</h2>
+    <div class="filters">
+      <input id="dest-q" placeholder="Rechercher (ex: marché)">
+      <input id="dest-tag" placeholder="Tag (ex: culture)">
+      <input id="dest-quartier" placeholder="Quartier (ex: Akwa)">
+      <input id="dest-maxcost" type="number" placeholder="Coût max">
+      <button onclick="searchDestinations()">Rechercher</button>
+    </div>
+    <div id="map"></div>
+    <div id="dest-results" class="grid"></div>
+  </section>
+
+  <!-- ACTIVITIES -->
+  <section id="activities">
+    <h2>Activités à Douala</h2>
+    <div class="filters">
+      <input id="act-q" placeholder="Rechercher">
+      <input id="act-tag" placeholder="Tag (ex: famille)">
+      <input id="act-quartier" placeholder="Quartier">
+      <button onclick="searchActivities()">Rechercher</button>
+    </div>
+    <div id="act-results" class="grid"></div>
+  </section>
+
+  <!-- TRANSPORT -->
+  <section id="transport">
+    <h2>Transport (taxi, moto, van)</h2>
+    <div class="filters">
+      <select id="trans-type">
+        <option value="">Tous les types</option>
+        <option value="taxi_classique">Taxi classique</option>
+        <option value="moto_taxi">Moto-taxi</option>
+        <option value="vtc_confort">VTC confort</option>
+        <option value="vtc_aeroport">VTC aéroport</option>
+        <option value="van_familial">Van familial</option>
+      </select>
+      <input id="trans-quartier" placeholder="Quartier de base">
+      <label style="display:flex;align-items:center;gap:6px;font-size:14px;">
+        <input type="checkbox" id="trans-dispo" style="width:auto;"> Disponible uniquement
+      </label>
+      <button onclick="searchTransport()">Rechercher</button>
+    </div>
+    <div id="trans-results" class="grid"></div>
+
+    <h2 style="margin-top:40px;">Mes réservations</h2>
+    <div id="my-reservations" class="grid"></div>
+  </section>
+
+  <!-- RECOMMENDATIONS -->
+  <section id="recommendations">
+    <h2>Recommandations personnalisées</h2>
+    <div id="rec-content"></div>
+  </section>
+
+  <!-- ITINERARIES -->
+  <section id="itineraries">
+    <h2>Mes itinéraires</h2>
+    <div id="itin-content"></div>
+  </section>
+
+  <!-- ACCOUNT -->
+  <section id="account">
+    <div id="account-content"></div>
+  </section>
+
+</main>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const API = ""; // same origin
+
+// ---------- Map ----------
+const map = L.map('map').setView([4.05, 9.70], 12);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; OpenStreetMap contributors',
+  maxZoom: 18
+}).addTo(map);
+let markers = [];
+
+function updateMapMarkers(destinations) {
+  markers.forEach(m => map.removeLayer(m));
+  markers = [];
+  const withCoords = destinations.filter(d => d.lat && d.lng);
+  withCoords.forEach(d => {
+    const marker = L.marker([d.lat, d.lng]).addTo(map)
+      .bindPopup(`<b>${d.name}</b><br>${d.quartier || ""}`);
+    markers.push(marker);
+  });
+  if (withCoords.length) {
+    const bounds = L.latLngBounds(withCoords.map(d => [d.lat, d.lng]));
+    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+  }
+}
+let token = localStorage.getItem("dt_token") || null;
+let username = localStorage.getItem("dt_username") || null;
+
+// ---------- Navigation ----------
+document.querySelectorAll("#nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("main section").forEach(s => s.classList.remove("active"));
+    btn.classList.add("active");
+    const tab = btn.dataset.tab;
+    document.getElementById(tab).classList.add("active");
+    if (tab === "recommendations") loadRecommendations();
+    if (tab === "itineraries") loadItineraries();
+    if (tab === "account") renderAccount();
+    if (tab === "transport") loadMyReservations();
+    if (tab === "destinations") setTimeout(() => map.invalidateSize(), 50);
+  });
+});
+
+function updateAccountBadge() {
+  const badge = document.getElementById("accountBadge");
+  badge.innerHTML = username ? `Connecté : <b>${username}</b>` : "Non connecté";
+}
+updateAccountBadge();
+
+function authHeaders() {
+  return token ? { "Authorization": "Bearer " + token } : {};
+}
+
+// ---------- Card renderers ----------
+function destinationCard(d) {
+  return `<div class="card">
+    <div class="quartier">${d.quartier || ""}</div>
+    <h3>${d.name}</h3>
+    <p>${d.description || ""}</p>
+    <div class="tags">${(d.tags||[]).map(t => `<span class="tag">${t}</span>`).join("")}</div>
+    <div class="meta"><span class="price">${d.avg_cost > 0 ? d.avg_cost + " FCFA" : "Gratuit"}</span></div>
+  </div>`;
+}
+
+function activityCard(a) {
+  return `<div class="card">
+    <div class="quartier">${a.quartier || ""}</div>
+    <h3>${a.name}</h3>
+    <p>${a.description || ""}</p>
+    <div class="tags">${(a.tags||[]).map(t => `<span class="tag">${t}</span>`).join("")}</div>
+    <div class="meta">
+      <span class="price">${a.avg_cost > 0 ? a.avg_cost + " FCFA" : "Gratuit"}</span>
+      <span>${a.duration_hours ? a.duration_hours + " h" : ""}</span>
+    </div>
+  </div>`;
+}
+
+function transportCard(t) {
+  const priceLabel = t.prix_min === t.prix_max ? `${t.prix_min} FCFA` : `${t.prix_min}–${t.prix_max} FCFA`;
+  const dispoLabel = t.disponible ? "Disponible" : "Indisponible";
+  return `<div class="card">
+    <div class="quartier">${t.quartier_base || ""}</div>
+    <h3>${t.vehicule}</h3>
+    <p>${t.chauffeur} · ${t.capacite} place(s) · ${dispoLabel}</p>
+    <div class="tags">${(t.tags||[]).map(tg => `<span class="tag">${tg}</span>`).join("")}</div>
+    <div class="meta">
+      <span class="price">${priceLabel}</span>
+      <button class="btn" ${!t.disponible || !token ? "disabled" : ""} onclick="reserveTransport('${t.id}')">Réserver</button>
+    </div>
+  </div>`;
+}
+
+// ---------- Destinations ----------
+async function searchDestinations() {
+  const params = new URLSearchParams();
+  const q = document.getElementById("dest-q").value.trim();
+  const tag = document.getElementById("dest-tag").value.trim();
+  const quartier = document.getElementById("dest-quartier").value.trim();
+  const maxcost = document.getElementById("dest-maxcost").value.trim();
+  if (q) params.set("q", q);
+  if (tag) params.set("tag", tag);
+  if (quartier) params.set("quartier", quartier);
+  if (maxcost) params.set("max_cost", maxcost);
+
+  const res = await fetch(`${API}/destinations?${params}`);
+  const data = await res.json();
+  const container = document.getElementById("dest-results");
+  container.innerHTML = data.length
+    ? data.map(destinationCard).join("")
+    : `<div class="empty">Aucune destination trouvée.</div>`;
+  updateMapMarkers(data);
+}
+
+// ---------- Activities ----------
+async function searchActivities() {
+  const params = new URLSearchParams();
+  const q = document.getElementById("act-q").value.trim();
+  const tag = document.getElementById("act-tag").value.trim();
+  const quartier = document.getElementById("act-quartier").value.trim();
+  if (q) params.set("q", q);
+  if (tag) params.set("tag", tag);
+  if (quartier) params.set("quartier", quartier);
+
+  const res = await fetch(`${API}/activities?${params}`);
+  const data = await res.json();
+  const container = document.getElementById("act-results");
+  container.innerHTML = data.length
+    ? data.map(activityCard).join("")
+    : `<div class="empty">Aucune activité trouvée.</div>`;
+}
+
+// ---------- Transport ----------
+async function searchTransport() {
+  const params = new URLSearchParams();
+  const type = document.getElementById("trans-type").value;
+  const quartier = document.getElementById("trans-quartier").value.trim();
+  const dispo = document.getElementById("trans-dispo").checked;
+  if (type) params.set("type", type);
+  if (quartier) params.set("quartier", quartier);
+  if (dispo) params.set("disponible", "true");
+
+  const res = await fetch(`${API}/transport?${params}`);
+  const data = await res.json();
+  const container = document.getElementById("trans-results");
+  container.innerHTML = data.length
+    ? data.map(transportCard).join("")
+    : `<div class="empty">Aucun véhicule trouvé.</div>`;
+}
+
+async function reserveTransport(transportId) {
+  if (!token) { alert("Connecte-toi d'abord dans l'onglet Compte."); return; }
+  const depart = prompt("Lieu de départ ?", "Bonanjo");
+  if (depart === null) return;
+  const destination = prompt("Destination ?", "Aeroport de Douala");
+  if (destination === null) return;
+
+  const res = await fetch(`${API}/transport/reserve`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ transport_id: transportId, depart, destination })
+  });
+  if (res.status === 201) {
+    alert("Réservation confirmée !");
+    searchTransport();
+    loadMyReservations();
+  } else {
+    const err = await res.json();
+    alert("Erreur : " + (err.error || "réservation impossible"));
+  }
+}
+
+async function loadMyReservations() {
+  const container = document.getElementById("my-reservations");
+  if (!token) {
+    container.innerHTML = `<div class="req-auth">Connecte-toi pour voir tes réservations.</div>`;
+    return;
+  }
+  const res = await fetch(`${API}/transport/reservations`, { headers: authHeaders() });
+  const data = await res.json();
+  container.innerHTML = data.length
+    ? data.map(r => `<div class="card">
+        <h3>${r.depart} → ${r.destination}</h3>
+        <p>Véhicule : ${r.transport_id}</p>
+        <p style="font-size:12px;color:var(--text-muted);">${new Date(r.created_at).toLocaleString("fr-FR")}</p>
+      </div>`).join("")
+    : `<div class="empty">Aucune réservation pour l'instant.</div>`;
+}
+
+// ---------- Recommendations ----------
+async function loadRecommendations() {
+  const el = document.getElementById("rec-content");
+  if (!token) {
+    el.innerHTML = `<div class="req-auth">Connecte-toi pour voir tes recommandations personnalisées.</div>`;
+    return;
+  }
+  const res = await fetch(`${API}/recommendations`, { headers: authHeaders() });
+  const data = await res.json();
+  el.innerHTML = `<div class="rec-cols">
+    <div><h3>Destinations</h3>${(data.destinations||[]).map(destinationCard).join("") || '<div class="empty">Rien trouvé.</div>'}</div>
+    <div><h3>Activités</h3>${(data.activities||[]).map(activityCard).join("") || '<div class="empty">Rien trouvé.</div>'}</div>
+    <div><h3>Transport</h3>${(data.transport||[]).map(transportCard).join("") || '<div class="empty">Rien trouvé.</div>'}</div>
+  </div>`;
+}
+
+// ---------- Itineraries ----------
+async function loadItineraries() {
+  const el = document.getElementById("itin-content");
+  if (!token) {
+    el.innerHTML = `<div class="req-auth">Connecte-toi pour créer et voir tes itinéraires.</div>`;
+    return;
+  }
+  const res = await fetch(`${API}/itineraries`, { headers: authHeaders() });
+  const list = await res.json();
+
+  el.innerHTML = `
+    <div class="auth-box">
+      <h2>Créer un itinéraire</h2>
+      <label>Titre</label>
+      <input id="itin-title" placeholder="Week-end à Douala">
+      <label>Destinations (séparées par des virgules)</label>
+      <input id="itin-dest" placeholder="Marché Central, Doual'art">
+      <label>Date de début</label>
+      <input id="itin-start" type="date">
+      <label>Date de fin</label>
+      <input id="itin-end" type="date">
+      <button class="btn" onclick="createItinerary()">Créer</button>
+      <div id="itin-msg"></div>
+    </div>
+    <div class="grid">
+      ${list.length ? list.map(it => `<div class="card">
+        <h3>${it.title}</h3>
+        <p>${(it.destinations||[]).join(", ")}</p>
+        <p style="font-size:12px;color:var(--text-muted);">${it.start_date || "?"} → ${it.end_date || "?"}</p>
+      </div>`).join("") : '<div class="empty">Aucun itinéraire pour l\'instant.</div>'}
+    </div>
+  `;
+}
+
+async function createItinerary() {
+  const title = document.getElementById("itin-title").value.trim();
+  const destinations = document.getElementById("itin-dest").value.split(",").map(s => s.trim()).filter(Boolean);
+  const start_date = document.getElementById("itin-start").value;
+  const end_date = document.getElementById("itin-end").value;
+  const msg = document.getElementById("itin-msg");
+
+  if (!title) { msg.innerHTML = `<div class="msg err">Le titre est obligatoire.</div>`; return; }
+
+  const res = await fetch(`${API}/itineraries`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({ title, destinations, start_date, end_date })
+  });
+  if (res.status === 201) {
+    msg.innerHTML = `<div class="msg ok">Itinéraire créé !</div>`;
+    loadItineraries();
+  } else {
+    const err = await res.json();
+    msg.innerHTML = `<div class="msg err">${err.error || "Erreur"}</div>`;
+  }
+}
+
+// ---------- Account ----------
+function renderAccount() {
+  const el = document.getElementById("account-content");
+  if (token) {
+    el.innerHTML = `
+      <div class="auth-box">
+        <h2>Compte</h2>
+        <p>Connecté en tant que <b>${username}</b>.</p>
+        <button class="btn danger" onclick="logout()">Se déconnecter</button>
+      </div>`;
+    return;
+  }
+  el.innerHTML = `
+    <div class="auth-box">
+      <h2>Se connecter</h2>
+      <label>Nom d'utilisateur</label>
+      <input id="login-username">
+      <label>Mot de passe</label>
+      <input id="login-password" type="password">
+      <button class="btn" onclick="login()">Se connecter</button>
+      <div id="login-msg"></div>
+    </div>
+    <div class="auth-box">
+      <h2>Créer un compte</h2>
+      <label>Nom d'utilisateur</label>
+      <input id="reg-username">
+      <label>Mot de passe</label>
+      <input id="reg-password" type="password">
+      <label>Préférences (séparées par des virgules)</label>
+      <input id="reg-prefs" placeholder="culture, famille, nature">
+      <button class="btn secondary" onclick="register()">Créer le compte</button>
+      <div id="reg-msg"></div>
+    </div>`;
+}
+
+async function register() {
+  const usernameVal = document.getElementById("reg-username").value.trim();
+  const password = document.getElementById("reg-password").value;
+  const preferences = document.getElementById("reg-prefs").value.split(",").map(s => s.trim()).filter(Boolean);
+  const msg = document.getElementById("reg-msg");
+
+  const res = await fetch(`${API}/register`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: usernameVal, password, preferences })
+  });
+  const data = await res.json();
+  if (res.status === 201) {
+    msg.innerHTML = `<div class="msg ok">Compte créé ! Tu peux te connecter.</div>`;
+  } else {
+    msg.innerHTML = `<div class="msg err">${data.error}</div>`;
+  }
+}
+
+async function login() {
+  const usernameVal = document.getElementById("login-username").value.trim();
+  const password = document.getElementById("login-password").value;
+  const msg = document.getElementById("login-msg");
+
+  const res = await fetch(`${API}/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: usernameVal, password })
+  });
+  const data = await res.json();
+  if (res.status === 200) {
+    token = data.token;
+    username = usernameVal;
+    localStorage.setItem("dt_token", token);
+    localStorage.setItem("dt_username", username);
+    updateAccountBadge();
+    renderAccount();
+  } else {
+    msg.innerHTML = `<div class="msg err">${data.error}</div>`;
+  }
+}
+
+function logout() {
+  token = null;
+  username = null;
+  localStorage.removeItem("dt_token");
+  localStorage.removeItem("dt_username");
+  updateAccountBadge();
+  renderAccount();
+}
+
+// ---------- Init ----------
+searchDestinations();
+</script>
+</body>
+</html>
