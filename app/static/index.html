@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DoualaTrotter — Assistant de voyage</title>
+<title>MboaTrip — Assistant de voyage</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -117,20 +117,63 @@
 
   .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
   }
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.15s, transform 0.15s;
+    cursor: pointer;
   }
-  .card h3 { font-size: 16px; margin: 0 0 4px; color: var(--teal-dark); }
-  .card .quartier { font-size: 12px; color: var(--amber); font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; }
-  .card p { font-size: 13px; color: var(--text-muted); margin: 8px 0; }
-  .card .meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-top: 10px; }
-  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .card:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.14); transform: translateY(-2px); }
+  .card .photo {
+    height: 140px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600;
+    position: relative;
+    background-size: cover; background-position: center;
+    transition: background-image 0.3s ease;
+  }
+  .card .photo-initials { transition: opacity 0.2s; }
+  .card .photo.photo-live .photo-initials { opacity: 0; }
+  .card .photo .badge-quartier {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(255,255,255,0.92);
+    color: var(--teal-dark);
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em;
+    padding: 3px 9px; border-radius: 20px;
+    z-index: 2;
+  }
+  .fav-btn {
+    position: absolute; top: 8px; right: 8px;
+    width: 32px; height: 32px;
+    background: rgba(255,255,255,0.9);
+    border: none; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: transform 0.15s;
+    z-index: 2;
+  }
+  .fav-btn:hover { transform: scale(1.1); }
+  .fav-btn svg { width: 17px; height: 17px; stroke: #A32D2D; stroke-width: 2; fill: none; transition: fill 0.15s; }
+  .fav-btn.active svg { fill: #A32D2D; }
+  .card .body { padding: 14px 16px 16px; }
+  .card h3 { font-size: 16px; margin: 0 0 6px; color: var(--text); }
+  .rating-badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 5px; margin-bottom: 8px;
+  }
+  .rating-badge.best { background: var(--teal-dark); color: white; }
+  .rating-badge.good { background: var(--amber-light); color: #8F5A0F; }
+  .card .rating-row { display: flex; align-items: center; gap: 6px; font-size: 13px; margin-bottom: 8px; }
+  .card .stars { color: var(--amber); letter-spacing: -1px; }
+  .card .reviews-count { color: var(--text-muted); text-decoration: underline; }
+  .card p.desc { font-size: 13px; color: var(--text-muted); margin: 0 0 10px; line-height: 1.45; }
+  .card .meta { display: flex; justify-content: space-between; align-items: center; font-size: 13px; margin-top: 4px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
   .tag {
     font-size: 11px;
     background: var(--amber-light);
@@ -140,6 +183,63 @@
   }
   .price { font-weight: 600; color: var(--teal-dark); }
   .empty { color: var(--text-muted); font-size: 14px; padding: 24px; text-align: center; }
+
+  .pill-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .pill {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .pill:hover { border-color: var(--teal); color: var(--teal-dark); }
+  .pill.active { background: var(--teal); border-color: var(--teal); color: white; }
+
+  .search-hero {
+    background: linear-gradient(135deg, var(--teal-dark), var(--teal) 60%, #128a6c);
+    background-image:
+      radial-gradient(circle at 88% 15%, rgba(250,206,102,0.18) 0%, transparent 45%),
+      radial-gradient(circle at 8% 90%, rgba(255,255,255,0.10) 0%, transparent 40%),
+      linear-gradient(135deg, var(--teal-dark), var(--teal) 60%, #128a6c);
+    border-radius: 18px;
+    padding: 36px 32px;
+    margin-bottom: 20px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+  .search-hero::before {
+    content: "";
+    position: absolute; top: -30px; right: -30px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(250,206,102,0.12);
+  }
+  .search-hero h2 { color: white; margin: 0 0 6px; font-size: 26px; letter-spacing: -0.01em; position: relative; }
+  .search-hero p { margin: 0 0 20px; opacity: 0.9; font-size: 15px; position: relative; }
+  .search-bar {
+    background: white;
+    border-radius: 30px;
+    padding: 6px 6px 6px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    position: relative;
+    max-width: 560px;
+  }
+  .search-bar input {
+    border: none; outline: none; flex: 1; font-family: 'Inter', sans-serif; font-size: 14px; padding: 8px 0;
+  }
+  .search-bar button {
+    background: var(--amber); color: white; border: none; border-radius: 24px;
+    padding: 10px 22px; font-weight: 600; font-size: 14px; cursor: pointer;
+  }
 
   .auth-box {
     max-width: 380px;
@@ -178,7 +278,7 @@
     border-radius: var(--radius);
     overflow: hidden;
     margin-bottom: 24px;
-    height: 220px;
+    height: 380px;
     background: linear-gradient(135deg, var(--teal-dark), var(--teal));
   }
   .hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -190,13 +290,246 @@
   .hero .fallback svg { width: 64px; height: 64px; margin-bottom: 8px; opacity: 0.9; }
   .hero-caption {
     position: absolute; bottom: 0; left: 0; right: 0;
-    background: rgba(20,20,18,0.55);
+    background: linear-gradient(transparent, rgba(20,20,18,0.65));
     color: white;
-    padding: 10px 16px;
-    font-size: 13px;
+    padding: 24px 16px 12px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .hero-slide {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  .hero-slide.visible { opacity: 1; }
+  .hero-dots {
+    position: absolute; top: 12px; right: 14px;
+    display: flex; gap: 6px;
+  }
+  .hero-dots .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(255,255,255,0.5);
+    transition: background 0.2s;
+  }
+  .hero-dots .dot.active { background: white; }
+
+  .map-wrap { position: relative; margin-bottom: 24px; }
+  #map { height: 460px; border-radius: var(--radius); border: 1px solid var(--border); }
+  .rating-pin {
+    background: white;
+    border-radius: 20px;
+    padding: 4px 10px 4px 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    border: 1px solid var(--border);
+  }
+  .rating-pin .star { color: var(--amber); font-size: 12px; }
+  .rating-pin::after {
+    content: "";
+    position: absolute;
+    bottom: -6px; left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 5px 0 5px;
+    border-style: solid;
+    border-color: white transparent transparent transparent;
+  }
+  .card-strip {
+    position: absolute;
+    left: 0; right: 0; bottom: 12px;
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 0 12px;
+    scroll-snap-type: x mandatory;
+  }
+  .place-card {
+    scroll-snap-align: start;
+    flex: 0 0 260px;
+    background: var(--surface);
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.18);
+    display: flex;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid var(--border);
+  }
+  .place-card .thumb {
+    width: 76px; height: 76px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 22px; font-weight: 600;
+    font-family: 'Fraunces', serif;
+  }
+  .place-card .info { padding: 8px 10px; min-width: 0; }
+  .place-card h4 { margin: 0 0 3px; font-size: 13px; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .place-card .sub { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+  .place-card .sub .star { color: var(--amber); }
+  .place-card .cat { font-size: 11px; color: var(--teal-dark); text-transform: capitalize; }
+
+  /* ---------- Detail modal ---------- */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(20,20,18,0.55);
+    z-index: 2000;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 16px;
+    overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--surface);
+    border-radius: 16px;
+    max-width: 880px;
+    width: 100%;
+    padding: 24px;
+    position: relative;
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    width: 32px; height: 32px;
+    border: none; border-radius: 50%;
+    background: var(--bg);
+    cursor: pointer;
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+  .modal-gallery {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 8px;
+    height: 320px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .modal-gallery .main-photo {
+    background-size: cover; background-position: center;
+    background-color: var(--teal);
+  }
+  .modal-gallery .side-photos { display: flex; flex-direction: column; gap: 8px; }
+  .modal-gallery .side-photos div {
+    flex: 1;
+    background-size: cover; background-position: center;
+    background-color: var(--teal-dark);
+  }
+  .modal-note {
+    font-size: 12px; color: var(--text-muted); margin: -12px 0 16px;
+  }
+  .modal-layout { display: grid; grid-template-columns: 1fr 300px; gap: 28px; }
+  .modal-main h2 { margin: 0 0 8px; font-size: 22px; }
+  .modal-badges { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .modal-main .rating-row { font-size: 14px; margin-bottom: 16px; }
+  .modal-main p.desc { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 16px; }
+  .modal-sidebar {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    align-self: start;
+    position: sticky; top: 0;
+  }
+  .modal-sidebar .from { font-size: 13px; color: var(--text-muted); }
+  .modal-sidebar .price-big { font-size: 24px; font-weight: 700; color: var(--teal-dark); margin-bottom: 14px; }
+  .modal-sidebar label { display: block; font-size: 12px; font-weight: 500; margin: 10px 0 4px; }
+  .modal-sidebar input {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: 'Inter', sans-serif; font-size: 13px;
+  }
+  .modal-sidebar .btn { width: 100%; margin-top: 14px; }
+  .modal-sidebar .cancel-note {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 12px; color: var(--text-muted); margin-top: 14px;
+    padding-top: 14px; border-top: 1px solid var(--border);
+  }
+  .modal-sidebar .cancel-note svg { width: 16px; height: 16px; stroke: var(--teal); flex-shrink: 0; margin-top: 1px; }
+
+  .simple-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+  .simple-card h3 { font-size: 16px; margin: 0 0 6px; color: var(--text); }
+  .simple-card .dest-line { font-size: 13px; color: var(--text-muted); margin-bottom: 6px; }
+  .simple-card .date-line { font-size: 12px; color: var(--text-muted); margin-bottom: 12px; }
+  .simple-card .card-actions { display: flex; gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .simple-card .card-actions button {
+    flex: 1; font-size: 12px; font-weight: 500; padding: 6px 10px;
+    border: 1px solid var(--border); border-radius: 6px; background: var(--bg);
+    cursor: pointer; color: var(--text);
+  }
+  .simple-card .card-actions button.danger { color: var(--danger); border-color: #EBC5C5; }
+  .simple-card .card-actions button:hover { background: var(--amber-light); }
+
+  .modal-note { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .see-all-btn {
+    background: none; border: 1px solid var(--border); border-radius: 20px;
+    padding: 4px 12px; font-size: 12px; font-family: 'Inter', sans-serif;
+    color: var(--teal-dark); cursor: pointer;
+  }
+  .see-all-btn:hover { background: var(--amber-light); }
+  .duration-line { font-size: 13px; color: var(--text-muted); margin-bottom: 10px; }
+  .participant-row {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; padding: 6px 0;
+  }
+  .stepper { display: flex; align-items: center; gap: 10px; }
+  .stepper button {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--bg);
+    font-size: 14px; cursor: pointer; color: var(--text);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .stepper button:hover { background: var(--amber-light); }
+  .stepper span { min-width: 14px; text-align: center; font-weight: 500; }
+  .modal-sidebar select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: 'Inter', sans-serif; font-size: 13px; background: white;
+  }
+  .total-line {
+    display: flex; justify-content: space-between; font-size: 14px; font-weight: 600;
+    padding: 12px 0; margin-top: 8px; border-top: 1px dashed var(--border); color: var(--teal-dark);
   }
 
-  #map { height: 320px; border-radius: var(--radius); margin-bottom: 24px; border: 1px solid var(--border); }
+  .pay-tabs { display: flex; gap: 6px; margin: 12px 0 10px; }
+  .pay-tab {
+    flex: 1; padding: 7px; font-size: 12px; font-weight: 500;
+    border: 1px solid var(--border); background: var(--bg); border-radius: 6px;
+    cursor: pointer; color: var(--text-muted);
+  }
+  .pay-tab.active { background: var(--teal); border-color: var(--teal); color: white; }
+  .pay-panel label { display: block; font-size: 12px; font-weight: 500; margin: 8px 0 4px; }
+  .pay-panel input {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px;
+    font-family: 'Inter', sans-serif; font-size: 13px;
+  }
+  .operator-badge {
+    font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 6px;
+    margin: 8px 0; display: none;
+  }
+  .operator-badge.orange { display: block; background: #FFF1E6; color: #E8600A; }
+  .operator-badge.mtn { display: block; background: #FFF7D6; color: #9A7B00; }
+  .operator-badge.unknown { display: block; background: #F1EEE6; color: var(--text-muted); }
+  .pay-panel .btn { width: 100%; margin-top: 10px; }
+  .btn.secondary { background: var(--amber); }
+  .btn.secondary:hover { background: #8F5A0F; }
+  .sim-note { font-size: 11px; color: var(--text-muted); margin-top: 8px; font-style: italic; }
+  .pay-success { background: #EAF3DE; color: #27500A; padding: 10px; border-radius: 6px; font-size: 13px; }
+
+  @media (max-width: 640px) {
+    .modal-layout { grid-template-columns: 1fr; }
+    .modal-gallery { grid-template-columns: 1fr; height: 220px; }
+    .modal-gallery .side-photos { display: none; }
+  }
 </style>
 </head>
 <body>
@@ -210,7 +543,7 @@
       <polygon points="15,7.5 15.9,10.2 18.8,10.2 16.4,11.9 17.3,14.6 15,12.9 12.7,14.6 13.6,11.9 11.2,10.2 14.1,10.2"
         fill="#FCD116"/>
     </svg>
-    <div class="brand">Douala<span>Trotter</span></div>
+    <div class="brand">Mboa<span>Trip</span></div>
   </div>
   <nav id="nav">
     <button data-tab="destinations" class="active">Destinations</button>
@@ -227,28 +560,41 @@
 
   <!-- DESTINATIONS -->
   <section id="destinations" class="active">
-    <div class="hero">
-      <img src="/static/images/nouvelle-liberte.jpg" alt="La Nouvelle Liberté, Deïdo"
-           onerror="this.style.display='none'; document.getElementById('hero-fallback').style.display='flex';">
-      <div id="hero-fallback" class="fallback" style="display:none;">
+    <div class="search-hero">
+      <h2>Découvrez Douala, la capitale économique du Cameroun</h2>
+      <p>Votre aventure camerounaise commence ici.</p>
+      <div class="search-bar">
+        <input id="dest-q" placeholder="Rechercher un lieu (ex: marché, pont, musée)">
+        <button onclick="searchDestinations()">Rechercher</button>
+      </div>
+    </div>
+
+    <div class="pill-filters" id="tag-pills">
+      <button class="pill active" data-tag="">Tous</button>
+      <button class="pill" data-tag="culture">Culture</button>
+      <button class="pill" data-tag="histoire">Histoire</button>
+      <button class="pill" data-tag="famille">Famille</button>
+      <button class="pill" data-tag="nature">Nature</button>
+      <button class="pill" data-tag="shopping">Shopping</button>
+      <button class="pill" data-tag="gratuit">Gratuit</button>
+    </div>
+
+    <div class="hero" id="hero-carousel">
+      <div id="hero-fallback" class="fallback">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
           <path d="M12 2 L12 18 M6 8 L18 8 M4 18 L20 18 M8 18 L8 12 M16 18 L16 12" stroke-linecap="round"/>
           <circle cx="12" cy="5" r="2.5"/>
         </svg>
-        <div>La Nouvelle Liberté — Rond-point Deïdo</div>
+        <div>Douala, Cameroun</div>
       </div>
-      <div class="hero-caption">La Nouvelle Liberté, rond-point Deïdo — ajoute ta photo dans <code>app/static/images/nouvelle-liberte.jpg</code></div>
+      <div class="hero-caption" id="hero-caption-text">Douala, Cameroun</div>
+      <div class="hero-dots" id="hero-dots"></div>
     </div>
 
-    <h2>Destinations à Douala</h2>
-    <div class="filters">
-      <input id="dest-q" placeholder="Rechercher (ex: marché)">
-      <input id="dest-tag" placeholder="Tag (ex: culture)">
-      <input id="dest-quartier" placeholder="Quartier (ex: Akwa)">
-      <input id="dest-maxcost" type="number" placeholder="Coût max">
-      <button onclick="searchDestinations()">Rechercher</button>
+    <div class="map-wrap">
+      <div id="map"></div>
+      <div id="card-strip" class="card-strip"></div>
     </div>
-    <div id="map"></div>
     <div id="dest-results" class="grid"></div>
   </section>
 
@@ -307,31 +653,198 @@
 
 </main>
 
+<div class="modal-overlay" id="detail-modal" onclick="if(event.target===this) closeDetail()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeDetail()">✕</button>
+    <div class="modal-gallery" id="modal-gallery"></div>
+    <div class="modal-note"><span id="modal-note-text">Photos illustratives de Douala — pas nécessairement le lieu exact.</span> <span id="modal-see-all-wrap"><button class="see-all-btn" onclick="cycleGallery()">Voir plus de photos</button></span></div>
+    <div class="modal-layout">
+      <div class="modal-main">
+        <div class="modal-badges" id="modal-badges"></div>
+        <h2 id="modal-title"></h2>
+        <div class="rating-row" id="modal-rating"></div>
+        <div class="duration-line" id="modal-duration"></div>
+        <p class="desc" id="modal-desc"></p>
+        <div class="tags" id="modal-tags"></div>
+      </div>
+      <div class="modal-sidebar">
+        <div class="from">À partir de</div>
+        <div class="price-big" id="modal-price"></div>
+
+        <label>Participants</label>
+        <div class="participant-row" data-key="adulte">
+          <span>Adulte</span>
+          <div class="stepper">
+            <button onclick="changeParticipant('adulte',-1)">−</button>
+            <span id="count-adulte">1</span>
+            <button onclick="changeParticipant('adulte',1)">+</button>
+          </div>
+        </div>
+        <div class="participant-row" data-key="jeune">
+          <span>Jeune (12-17)</span>
+          <div class="stepper">
+            <button onclick="changeParticipant('jeune',-1)">−</button>
+            <span id="count-jeune">0</span>
+            <button onclick="changeParticipant('jeune',1)">+</button>
+          </div>
+        </div>
+        <div class="participant-row" data-key="enfant">
+          <span>Enfant (0-11)</span>
+          <div class="stepper">
+            <button onclick="changeParticipant('enfant',-1)">−</button>
+            <span id="count-enfant">0</span>
+            <button onclick="changeParticipant('enfant',1)">+</button>
+          </div>
+        </div>
+        <div class="participant-row" data-key="senior">
+          <span>Senior (60+)</span>
+          <div class="stepper">
+            <button onclick="changeParticipant('senior',-1)">−</button>
+            <span id="count-senior">0</span>
+            <button onclick="changeParticipant('senior',1)">+</button>
+          </div>
+        </div>
+
+        <label>Date</label>
+        <input type="date" id="modal-start">
+        <label>Langue</label>
+        <select id="modal-lang">
+          <option value="Français">Français</option>
+          <option value="Anglais">Anglais</option>
+          <option value="Douala/Français">Douala / Français</option>
+        </select>
+
+        <div class="total-line" id="modal-total"></div>
+
+        <div class="pay-tabs">
+          <button class="pay-tab active" data-tab="mobile" onclick="switchPayTab('mobile')">Mobile Money</button>
+          <button class="pay-tab" data-tab="card" onclick="switchPayTab('card')">Carte bancaire</button>
+        </div>
+
+        <div id="pay-mobile" class="pay-panel">
+          <label>Numéro de téléphone</label>
+          <input id="pay-phone" placeholder="6XX XXX XXX" maxlength="9" oninput="detectOperator()">
+          <div id="operator-badge" class="operator-badge"></div>
+          <button class="btn" id="pay-mobile-btn" onclick="simulatePayment('mobile')" disabled>Payer via Mobile Money</button>
+        </div>
+
+        <div id="pay-card" class="pay-panel" style="display:none;">
+          <label>Numéro de carte</label>
+          <input id="pay-card-number" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCardNumber(this)">
+          <div style="display:flex; gap:8px;">
+            <div style="flex:1;">
+              <label>Expiration</label>
+              <input id="pay-card-exp" placeholder="MM/AA" maxlength="5" oninput="formatCardExpiry(this)">
+            </div>
+            <div style="flex:1;">
+              <label>CVC</label>
+              <input id="pay-card-cvc" placeholder="123" maxlength="3">
+            </div>
+          </div>
+          <button class="btn" onclick="simulatePayment('card')">Payer par carte</button>
+        </div>
+
+        <div id="pay-result" style="margin-top:10px;"></div>
+        <div class="sim-note">⚠️ Simulation à but pédagogique — aucune vraie transaction n'est effectuée.</div>
+
+        <button class="btn secondary" id="modal-add-btn" onclick="addToItinerary()" style="margin-top:10px;">Ajouter à mon itinéraire sans payer</button>
+        <div id="modal-msg" style="margin-top:10px;"></div>
+        <div class="cancel-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+          <span>Modifiable ou supprimable à tout moment depuis l'onglet Itinéraires.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const API = ""; // same origin
 
 // ---------- Map ----------
 const map = L.map('map').setView([4.05, 9.70], 12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors',
-  maxZoom: 18
+setTimeout(() => map.invalidateSize(), 200);
+window.addEventListener('resize', () => map.invalidateSize());
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+  attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+  subdomains: 'abcd',
+  maxZoom: 19
 }).addTo(map);
 let markers = [];
+const thumbColors = ['#0F6E56','#BA7517','#D85A30','#534AB7','#993556','#3B8ADD'];
+function colorFor(name) {
+  let sum = 0;
+  for (const ch of name) sum += ch.charCodeAt(0);
+  return thumbColors[sum % thumbColors.length];
+}
 
 function updateMapMarkers(destinations) {
+  map.invalidateSize();
   markers.forEach(m => map.removeLayer(m));
   markers = [];
   const withCoords = destinations.filter(d => d.lat && d.lng);
+
+  // Spread out markers that share the exact same quartier centroid,
+  // so overlapping badges stay readable.
+  const seen = {};
   withCoords.forEach(d => {
-    const marker = L.marker([d.lat, d.lng]).addTo(map)
+    const key = `${d.lat},${d.lng}`;
+    seen[key] = (seen[key] || 0) + 1;
+    const i = seen[key] - 1;
+    if (i > 0) {
+      const angle = (i * 2.4);
+      const radius = 0.0035 * Math.ceil(i / 6);
+      d._lat = d.lat + radius * Math.cos(angle);
+      d._lng = d.lng + radius * Math.sin(angle);
+    } else {
+      d._lat = d.lat;
+      d._lng = d.lng;
+    }
+  });
+
+  withCoords.forEach(d => {
+    const icon = L.divIcon({
+      className: '',
+      html: `<div class="rating-pin"><span class="star">★</span>${d.rating ?? "–"}</div>`,
+      iconSize: [null, null],
+      iconAnchor: [20, 30]
+    });
+    const marker = L.marker([d._lat, d._lng], { icon }).addTo(map)
       .bindPopup(`<b>${d.name}</b><br>${d.quartier || ""}`);
+    marker.on('click', () => map.panTo([d._lat, d._lng]));
+    marker._destId = d.id;
     markers.push(marker);
   });
+
   if (withCoords.length) {
     const bounds = L.latLngBounds(withCoords.map(d => [d.lat, d.lng]));
-    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 14 });
+    map.fitBounds(bounds, { padding: [30, 100], maxZoom: 14 });
   }
+
+  renderCardStrip(withCoords);
+}
+
+function renderCardStrip(destinations) {
+  const strip = document.getElementById('card-strip');
+  strip.innerHTML = destinations.map(d => {
+    const initials = d.name.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+    const category = (d.tags && d.tags[0]) || "lieu";
+    return `<div class="place-card" onclick='focusDestination(${d._lat}, ${d._lng})'>
+      <div class="thumb" style="background:${colorFor(d.name)}">${initials}</div>
+      <div class="info">
+        <h4>${d.name}</h4>
+        <div class="sub"><span class="star">★</span> ${d.rating ?? "–"} · ${category}</div>
+        <div class="cat">${d.quartier || ""}</div>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function focusDestination(lat, lng) {
+  map.setView([lat, lng], 15);
+  const marker = markers.find(m => Math.abs(m.getLatLng().lat - lat) < 0.0001 && Math.abs(m.getLatLng().lng - lng) < 0.0001);
+  if (marker) marker.openPopup();
 }
 let token = localStorage.getItem("dt_token") || null;
 let username = localStorage.getItem("dt_username") || null;
@@ -363,25 +876,135 @@ function authHeaders() {
 }
 
 // ---------- Card renderers ----------
+function starsHtml(rating) {
+  const full = Math.round(rating || 0);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
+
+// ---------- Favorites ----------
+function getFavorites() {
+  try { return JSON.parse(localStorage.getItem("dt_favorites") || "[]"); }
+  catch { return []; }
+}
+function isFavorite(id) { return getFavorites().includes(id); }
+function toggleFavorite(id, btn) {
+  event.stopPropagation();
+  let favs = getFavorites();
+  if (favs.includes(id)) {
+    favs = favs.filter(f => f !== id);
+    btn.classList.remove("active");
+  } else {
+    favs.push(id);
+    btn.classList.add("active");
+  }
+  localStorage.setItem("dt_favorites", JSON.stringify(favs));
+}
+function heartIcon() {
+  return `<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.3C0.3 8.4 2 4.5 5.7 4c2-.3 3.9.7 5 2.3 1.1-1.6 3-2.6 5-2.3 3.7.5 5.4 4.4 3.7 7.7C19.5 16.4 12 21 12 21z"/></svg>`;
+}
+
+// ---------- Dynamic hover images ----------
+let allHeroImages = [];
+async function loadHeroImagePool() {
+  try {
+    const res = await fetch("/api/hero-images");
+    allHeroImages = await res.json();
+  } catch { allHeroImages = []; }
+}
+loadHeroImagePool();
+
+function hashStr(s) {
+  let h = 0;
+  for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return h;
+}
+function galleryFor(id, count = 3) {
+  if (!allHeroImages.length) return [];
+  const start = hashStr(id) % allHeroImages.length;
+  const out = [];
+  for (let i = 0; i < Math.min(count, allHeroImages.length); i++) {
+    out.push(allHeroImages[(start + i) % allHeroImages.length]);
+  }
+  return out;
+}
+
+const hoverTimers = {};
+function startPhotoHover(el, id) {
+  const imgs = galleryFor(id);
+  if (!imgs.length) return;
+  let i = 0;
+  el.style.backgroundImage = `url('/static/images/${imgs[0]}')`;
+  el.classList.add("photo-live");
+  hoverTimers[id] = setInterval(() => {
+    i = (i + 1) % imgs.length;
+    el.style.backgroundImage = `url('/static/images/${imgs[i]}')`;
+  }, 900);
+}
+function stopPhotoHover(el, id) {
+  if (hoverTimers[id]) { clearInterval(hoverTimers[id]); delete hoverTimers[id]; }
+  el.style.backgroundImage = "";
+  el.classList.remove("photo-live");
+}
+
+function ratingBadge(rating) {
+  if (rating >= 4.5) return `<span class="rating-badge best">Très bien noté</span>`;
+  if (rating >= 4.0) return `<span class="rating-badge good">Bien noté</span>`;
+  return "";
+}
+
 function destinationCard(d) {
-  return `<div class="card">
-    <div class="quartier">${d.quartier || ""}</div>
-    <h3>${d.name}</h3>
-    <p>${d.description || ""}</p>
-    <div class="tags">${(d.tags||[]).map(t => `<span class="tag">${t}</span>`).join("")}</div>
-    <div class="meta"><span class="price">${d.avg_cost > 0 ? d.avg_cost + " FCFA" : "Gratuit"}</span></div>
+  const initials = d.name.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+  const favActive = isFavorite(d.id) ? "active" : "";
+  const safeId = d.id.replace(/'/g, "");
+  const photoStyle = d.image
+    ? `background-image:url('/static/images/${d.image}')`
+    : `background:${colorFor(d.name)}`;
+  const hoverAttrs = d.image ? "" :
+    `onmouseenter="startPhotoHover(this,'${safeId}')" onmouseleave="stopPhotoHover(this,'${safeId}')"`;
+  return `<div class="card" onclick="openDetail('destination','${safeId}')">
+    <div class="photo" style="${photoStyle}" ${hoverAttrs}>
+      <span class="badge-quartier">${d.quartier || ""}</span>
+      <button class="fav-btn ${favActive}" onclick="toggleFavorite('${safeId}', this); event.stopPropagation();">${heartIcon()}</button>
+      ${d.image ? "" : `<span class="photo-initials">${initials}</span>`}
+    </div>
+    <div class="body">
+      ${ratingBadge(d.rating)}
+      <h3>${d.name}</h3>
+      <div class="rating-row">
+        <span class="stars">${starsHtml(d.rating)}</span>
+        <span>${d.rating ?? "–"}</span>
+        <span class="reviews-count">(${d.reviews ?? 0} avis)</span>
+      </div>
+      <p class="desc">${d.description || ""}</p>
+      <div class="tags">${(d.tags||[]).slice(0,3).map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      <div class="meta">
+        <span class="price">À partir de ${d.avg_cost > 0 ? d.avg_cost + " FCFA" : "Gratuit"}</span>
+      </div>
+    </div>
   </div>`;
 }
 
 function activityCard(a) {
-  return `<div class="card">
-    <div class="quartier">${a.quartier || ""}</div>
-    <h3>${a.name}</h3>
-    <p>${a.description || ""}</p>
-    <div class="tags">${(a.tags||[]).map(t => `<span class="tag">${t}</span>`).join("")}</div>
-    <div class="meta">
-      <span class="price">${a.avg_cost > 0 ? a.avg_cost + " FCFA" : "Gratuit"}</span>
-      <span>${a.duration_hours ? a.duration_hours + " h" : ""}</span>
+  const initials = a.name.split(' ').slice(0,2).map(w => w[0]).join('').toUpperCase();
+  const safeId = a.id.replace(/'/g, "");
+  const photoStyle = a.image
+    ? `background-image:url('/static/images/${a.image}')`
+    : `background:${colorFor(a.name)}`;
+  const hoverAttrs = a.image ? "" :
+    `onmouseenter="startPhotoHover(this,'${safeId}')" onmouseleave="stopPhotoHover(this,'${safeId}')"`;
+  return `<div class="card" onclick="openDetail('activity','${safeId}')">
+    <div class="photo" style="${photoStyle}" ${hoverAttrs}>
+      <span class="badge-quartier">${a.quartier || ""}</span>
+      ${a.image ? "" : `<span class="photo-initials">${initials}</span>`}
+    </div>
+    <div class="body">
+      <h3>${a.name}</h3>
+      <p class="desc">${a.description || ""}</p>
+      <div class="tags">${(a.tags||[]).slice(0,3).map(t => `<span class="tag">${t}</span>`).join("")}</div>
+      <div class="meta">
+        <span class="price">À partir de ${a.avg_cost > 0 ? a.avg_cost + " FCFA" : "Gratuit"}</span>
+        <span>${a.duration_hours ? a.duration_hours + " h" : ""}</span>
+      </div>
     </div>
   </div>`;
 }
@@ -402,16 +1025,22 @@ function transportCard(t) {
 }
 
 // ---------- Destinations ----------
+let activeTag = "";
+
+document.querySelectorAll("#tag-pills .pill").forEach(pill => {
+  pill.addEventListener("click", () => {
+    document.querySelectorAll("#tag-pills .pill").forEach(p => p.classList.remove("active"));
+    pill.classList.add("active");
+    activeTag = pill.dataset.tag;
+    searchDestinations();
+  });
+});
+
 async function searchDestinations() {
   const params = new URLSearchParams();
   const q = document.getElementById("dest-q").value.trim();
-  const tag = document.getElementById("dest-tag").value.trim();
-  const quartier = document.getElementById("dest-quartier").value.trim();
-  const maxcost = document.getElementById("dest-maxcost").value.trim();
   if (q) params.set("q", q);
-  if (tag) params.set("tag", tag);
-  if (quartier) params.set("quartier", quartier);
-  if (maxcost) params.set("max_cost", maxcost);
+  if (activeTag) params.set("tag", activeTag);
 
   const res = await fetch(`${API}/destinations?${params}`);
   const data = await res.json();
@@ -489,12 +1118,29 @@ async function loadMyReservations() {
   const res = await fetch(`${API}/transport/reservations`, { headers: authHeaders() });
   const data = await res.json();
   container.innerHTML = data.length
-    ? data.map(r => `<div class="card">
+    ? data.map(r => `<div class="simple-card">
         <h3>${r.depart} → ${r.destination}</h3>
-        <p>Véhicule : ${r.transport_id}</p>
-        <p style="font-size:12px;color:var(--text-muted);">${new Date(r.created_at).toLocaleString("fr-FR")}</p>
+        <div class="dest-line">Véhicule : ${r.transport_id}</div>
+        <div class="date-line">${new Date(r.created_at).toLocaleString("fr-FR")}</div>
+        <div class="card-actions">
+          <button class="danger" onclick="cancelReservation('${r.id}')">Annuler</button>
+        </div>
       </div>`).join("")
     : `<div class="empty">Aucune réservation pour l'instant.</div>`;
+}
+
+async function cancelReservation(id) {
+  if (!confirm("Annuler cette réservation ?")) return;
+  const res = await fetch(`${API}/transport/reservations/${id}`, {
+    method: "DELETE",
+    headers: authHeaders()
+  });
+  if (res.status === 200) {
+    loadMyReservations();
+  } else {
+    const err = await res.json();
+    alert(err.error || "Erreur lors de l'annulation");
+  }
 }
 
 // ---------- Recommendations ----------
@@ -538,13 +1184,24 @@ async function loadItineraries() {
       <div id="itin-msg"></div>
     </div>
     <div class="grid">
-      ${list.length ? list.map(it => `<div class="card">
+      ${list.length ? list.map(it => `<div class="simple-card">
         <h3>${it.title}</h3>
-        <p>${(it.destinations||[]).join(", ")}</p>
-        <p style="font-size:12px;color:var(--text-muted);">${it.start_date || "?"} → ${it.end_date || "?"}</p>
+        <div class="dest-line">${(it.destinations||[]).join(", ") || "Aucune destination"}</div>
+        <div class="date-line">${it.start_date || "?"} → ${it.end_date || "?"}</div>
+        <div class="card-actions">
+          <button onclick="editItinerary('${it.id}')">Modifier</button>
+          <button class="danger" onclick="deleteItineraryConfirm('${it.id}')">Supprimer</button>
+        </div>
       </div>`).join("") : '<div class="empty">Aucun itinéraire pour l\'instant.</div>'}
     </div>
   `;
+}
+
+function validateDateRange(start, end) {
+  if (start && end && end < start) {
+    return "La date de fin ne peut pas être avant la date de début.";
+  }
+  return null;
 }
 
 async function createItinerary() {
@@ -555,6 +1212,8 @@ async function createItinerary() {
   const msg = document.getElementById("itin-msg");
 
   if (!title) { msg.innerHTML = `<div class="msg err">Le titre est obligatoire.</div>`; return; }
+  const dateError = validateDateRange(start_date, end_date);
+  if (dateError) { msg.innerHTML = `<div class="msg err">${dateError}</div>`; return; }
 
   const res = await fetch(`${API}/itineraries`, {
     method: "POST",
@@ -567,6 +1226,56 @@ async function createItinerary() {
   } else {
     const err = await res.json();
     msg.innerHTML = `<div class="msg err">${err.error || "Erreur"}</div>`;
+  }
+}
+
+async function editItinerary(id) {
+  const res = await fetch(`${API}/itineraries`, { headers: authHeaders() });
+  const list = await res.json();
+  const it = list.find(x => x.id === id);
+  if (!it) return;
+
+  const newTitle = prompt("Titre :", it.title);
+  if (newTitle === null) return;
+  const newDest = prompt("Destinations (séparées par des virgules) :", (it.destinations||[]).join(", "));
+  if (newDest === null) return;
+  const newStart = prompt("Date de début (AAAA-MM-JJ) :", it.start_date || "");
+  if (newStart === null) return;
+  const newEnd = prompt("Date de fin (AAAA-MM-JJ) :", it.end_date || "");
+  if (newEnd === null) return;
+
+  const dateError = validateDateRange(newStart, newEnd);
+  if (dateError) { alert(dateError); return; }
+
+  const res2 = await fetch(`${API}/itineraries/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({
+      title: newTitle.trim(),
+      destinations: newDest.split(",").map(s => s.trim()).filter(Boolean),
+      start_date: newStart,
+      end_date: newEnd
+    })
+  });
+  if (res2.status === 200) {
+    loadItineraries();
+  } else {
+    const err = await res2.json();
+    alert(err.error || "Erreur lors de la modification");
+  }
+}
+
+async function deleteItineraryConfirm(id) {
+  if (!confirm("Supprimer cet itinéraire ?")) return;
+  const res = await fetch(`${API}/itineraries/${id}`, {
+    method: "DELETE",
+    headers: authHeaders()
+  });
+  if (res.status === 200) {
+    loadItineraries();
+  } else {
+    const err = await res.json();
+    alert(err.error || "Erreur lors de la suppression");
   }
 }
 
@@ -656,8 +1365,335 @@ function logout() {
   renderAccount();
 }
 
+document.getElementById("dest-q").addEventListener("keydown", e => {
+  if (e.key === "Enter") searchDestinations();
+});
+
+// ---------- Detail modal ----------
+let currentDetail = null;
+let currentDetailKind = null;
+let allDestinationsCache = [];
+let allActivitiesCache = [];
+let participants = { adulte: 1, jeune: 0, enfant: 0, senior: 0 };
+let galleryImgs = [];
+let galleryOffset = 0;
+
+async function ensureDestinationsCache() {
+  if (allDestinationsCache.length) return;
+  const res = await fetch(`${API}/destinations`);
+  allDestinationsCache = await res.json();
+}
+async function ensureActivitiesCache() {
+  if (allActivitiesCache.length) return;
+  const res = await fetch(`${API}/activities`);
+  allActivitiesCache = await res.json();
+}
+
+function renderGallery() {
+  const gallery = document.getElementById("modal-gallery");
+  const wrap = document.getElementById("modal-see-all-wrap");
+
+  // If we have a precise photo for this exact place, always show it as the main image.
+  const mainImg = currentDetail.image || null;
+
+  if (mainImg && galleryImgs.length >= 2) {
+    const [b, c] = [0,1].map(i => galleryImgs[(galleryOffset + i) % galleryImgs.length]);
+    gallery.innerHTML = `
+      <div class="main-photo" style="background-image:url('/static/images/${mainImg}')"></div>
+      <div class="side-photos">
+        <div style="background-image:url('/static/images/${b}')"></div>
+        <div style="background-image:url('/static/images/${c}')"></div>
+      </div>`;
+    wrap.style.display = galleryImgs.length > 2 ? "inline-block" : "none";
+    return;
+  }
+  if (mainImg) {
+    gallery.innerHTML = `<div class="main-photo" style="background-image:url('/static/images/${mainImg}')"></div>`;
+    wrap.style.display = "none";
+    return;
+  }
+  if (galleryImgs.length < 3) {
+    gallery.innerHTML = `<div class="main-photo" style="background:${colorFor(currentDetail.name)}"></div>`;
+    wrap.style.display = "none";
+    return;
+  }
+  const [a, b, c] = [0,1,2].map(i => galleryImgs[(galleryOffset + i) % galleryImgs.length]);
+  gallery.innerHTML = `
+    <div class="main-photo" style="background-image:url('/static/images/${a}')"></div>
+    <div class="side-photos">
+      <div style="background-image:url('/static/images/${b}')"></div>
+      <div style="background-image:url('/static/images/${c}')"></div>
+    </div>`;
+  wrap.style.display = galleryImgs.length > 3 ? "inline-block" : "none";
+}
+function cycleGallery() {
+  galleryOffset = (galleryOffset + 3) % galleryImgs.length;
+  renderGallery();
+}
+
+function updateTotal() {
+  const total = Object.values(participants).reduce((a,b) => a+b, 0);
+  const cost = currentDetail.avg_cost || 0;
+  const totalCost = cost * Math.max(total, 1);
+  document.getElementById("modal-total").innerHTML =
+    `<span>${total} participant${total>1?"s":""}</span><span>${totalCost > 0 ? totalCost + " FCFA" : "Gratuit"}</span>`;
+}
+
+// ---------- Payment simulation ----------
+function switchPayTab(tab) {
+  document.querySelectorAll(".pay-tab").forEach(t => t.classList.toggle("active", t.dataset.tab === tab));
+  document.getElementById("pay-mobile").style.display = tab === "mobile" ? "block" : "none";
+  document.getElementById("pay-card").style.display = tab === "card" ? "block" : "none";
+  document.getElementById("pay-result").innerHTML = "";
+}
+
+function detectOperator() {
+  const input = document.getElementById("pay-phone");
+  const badge = document.getElementById("operator-badge");
+  const btn = document.getElementById("pay-mobile-btn");
+  const digits = input.value.replace(/\D/g, "");
+  input.value = digits;
+
+  if (digits.length < 2) {
+    badge.className = "operator-badge";
+    badge.textContent = "";
+    btn.disabled = true;
+    return;
+  }
+
+  const two = digits.slice(0, 2);
+  const three = digits.slice(0, 3);
+  let operator = null;
+
+  if (two === "67" || ["650","651","652","653","654"].includes(three)) {
+    operator = "mtn";
+  } else if (two === "69" || ["655","656","657","658","659"].includes(three)) {
+    operator = "orange";
+  } else if (two === "66") {
+    operator = "other";
+  }
+
+  if (digits.length < 9) {
+    badge.className = "operator-badge";
+    badge.textContent = "";
+    btn.disabled = true;
+    return;
+  }
+
+  if (operator === "mtn") {
+    badge.className = "operator-badge mtn";
+    badge.textContent = "📱 MTN Mobile Money détecté";
+    btn.disabled = false;
+  } else if (operator === "orange") {
+    badge.className = "operator-badge orange";
+    badge.textContent = "📱 Orange Money détecté";
+    btn.disabled = false;
+  } else if (operator === "other") {
+    badge.className = "operator-badge unknown";
+    badge.textContent = "Numéro Nexttel — Mobile Money non disponible pour cet opérateur";
+    btn.disabled = true;
+  } else {
+    badge.className = "operator-badge unknown";
+    badge.textContent = "Opérateur non reconnu";
+    btn.disabled = true;
+  }
+}
+
+function formatCardNumber(el) {
+  const digits = el.value.replace(/\D/g, "").slice(0, 16);
+  el.value = digits.replace(/(.{4})/g, "$1 ").trim();
+}
+function formatCardExpiry(el) {
+  let digits = el.value.replace(/\D/g, "").slice(0, 4);
+  if (digits.length > 2) digits = digits.slice(0,2) + "/" + digits.slice(2);
+  el.value = digits;
+}
+
+function simulatePayment(method) {
+  const result = document.getElementById("pay-result");
+
+  if (!token) {
+    result.innerHTML = `<div class="msg err">Connecte-toi d'abord (onglet Compte) pour payer et ajouter à un itinéraire.</div>`;
+    return;
+  }
+
+  if (method === "card") {
+    const num = document.getElementById("pay-card-number").value.replace(/\s/g, "");
+    const exp = document.getElementById("pay-card-exp").value;
+    const cvc = document.getElementById("pay-card-cvc").value;
+    if (num.length !== 16 || !/^\d{2}\/\d{2}$/.test(exp) || cvc.length !== 3) {
+      result.innerHTML = `<div class="msg err">Vérifie les informations de la carte (numéro à 16 chiffres, MM/AA, CVC à 3 chiffres).</div>`;
+      return;
+    }
+  }
+
+  result.innerHTML = `<div class="msg">⏳ Traitement du paiement (simulation)…</div>`;
+  setTimeout(() => {
+    const total = Object.values(participants).reduce((a,b) => a+b, 0);
+    const amount = (currentDetail.avg_cost || 0) * Math.max(total, 1);
+    result.innerHTML = `<div class="pay-success">✅ Paiement simulé de ${amount} FCFA accepté. Ajout à ton itinéraire…</div>`;
+    setTimeout(() => addToItinerary(true), 600);
+  }, 1400);
+}
+
+function changeParticipant(key, delta) {
+  const totalOthers = Object.entries(participants).filter(([k]) => k !== key).reduce((a,[,v]) => a+v, 0);
+  let val = participants[key] + delta;
+  if (val < 0) val = 0;
+  if (key === "adulte" && val < 1 && totalOthers === 0) val = 1; // always at least 1 adult if nobody else
+  participants[key] = val;
+  document.getElementById(`count-${key}`).textContent = val;
+  updateTotal();
+}
+
+async function openDetail(kind, id) {
+  currentDetailKind = kind;
+  let d;
+  if (kind === "activity") {
+    await ensureActivitiesCache();
+    d = allActivitiesCache.find(x => x.id === id);
+  } else {
+    await ensureDestinationsCache();
+    d = allDestinationsCache.find(x => x.id === id);
+  }
+  if (!d) return;
+  currentDetail = d;
+
+  participants = { adulte: 1, jeune: 0, enfant: 0, senior: 0 };
+  ["adulte","jeune","enfant","senior"].forEach(k => document.getElementById(`count-${k}`).textContent = participants[k]);
+
+  galleryImgs = galleryFor(id, 6);
+  galleryOffset = 0;
+  document.getElementById("modal-note-text").textContent = d.image
+    ? "Photo principale précise du lieu. Photos secondaires illustratives de Douala."
+    : "Photos illustratives de Douala — pas nécessairement le lieu exact.";
+  renderGallery();
+
+  document.getElementById("modal-badges").innerHTML = d.rating ? ratingBadge(d.rating) : "";
+  document.getElementById("modal-title").textContent = d.name;
+  document.getElementById("modal-rating").innerHTML = d.rating
+    ? `<span class="stars">${starsHtml(d.rating)}</span> ${d.rating} <span class="reviews-count">(${d.reviews ?? 0} avis)</span> · ${d.quartier || ""}`
+    : `${d.quartier || ""}`;
+  document.getElementById("modal-duration").textContent = d.duration_hours ? `Durée : ${d.duration_hours} h` : "";
+  document.getElementById("modal-desc").textContent = d.description || "";
+  document.getElementById("modal-tags").innerHTML = (d.tags||[]).map(t => `<span class="tag">${t}</span>`).join("");
+  document.getElementById("modal-price").textContent = d.avg_cost > 0 ? `${d.avg_cost} FCFA` : "Gratuit";
+  document.getElementById("modal-msg").innerHTML = "";
+  document.getElementById("modal-start").value = "";
+  document.getElementById("modal-lang").value = "Français";
+  document.getElementById("pay-phone").value = "";
+  document.getElementById("pay-card-number").value = "";
+  document.getElementById("pay-card-exp").value = "";
+  document.getElementById("pay-card-cvc").value = "";
+  document.getElementById("pay-result").innerHTML = "";
+  document.getElementById("operator-badge").className = "operator-badge";
+  document.getElementById("operator-badge").textContent = "";
+  document.getElementById("pay-mobile-btn").disabled = true;
+  switchPayTab("mobile");
+  updateTotal();
+
+  document.getElementById("detail-modal").classList.add("open");
+}
+
+function closeDetail() {
+  document.getElementById("detail-modal").classList.remove("open");
+}
+
+async function addToItinerary(viaPayment) {
+  const msg = document.getElementById("modal-msg");
+  if (!token) {
+    msg.innerHTML = `<div class="msg err">Connecte-toi d'abord (onglet Compte) pour ajouter ceci à un itinéraire.</div>`;
+    return;
+  }
+  const date = document.getElementById("modal-start").value;
+  const lang = document.getElementById("modal-lang").value;
+  const total = Object.values(participants).reduce((a,b) => a+b, 0);
+  const paidNote = viaPayment ? " · Payé (simulation)" : "";
+  const summary = `Adulte:${participants.adulte} Jeune:${participants.jeune} Enfant:${participants.enfant} Senior:${participants.senior} · Langue:${lang}${paidNote}`;
+
+  const res = await fetch(`${API}/itineraries`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...authHeaders() },
+    body: JSON.stringify({
+      title: `${currentDetailKind === "activity" ? "Activité" : "Visite"} : ${currentDetail.name}`,
+      destinations: [currentDetail.name],
+      start_date: date,
+      end_date: date,
+      notes: `${summary} · ${total} participant(s)`
+    })
+  });
+  if (res.status === 201) {
+    msg.innerHTML = `<div class="msg ok">Ajouté à tes itinéraires !</div>`;
+  } else {
+    const err = await res.json();
+    msg.innerHTML = `<div class="msg err">${err.error || "Erreur"}</div>`;
+  }
+}
+
 // ---------- Init ----------
 searchDestinations();
+
+// ---------- Hero carousel ----------
+function prettifyFilename(filename) {
+  const base = filename.replace(/\.[^.]+$/, "");
+  return base.replace(/[-_]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+}
+
+let heroInitialized = false;
+let heroIntervalId = null;
+
+async function initHeroCarousel() {
+  if (heroInitialized) return; // guard against accidental double init
+  heroInitialized = true;
+
+  const container = document.getElementById("hero-carousel");
+  const fallback = document.getElementById("hero-fallback");
+  const captionEl = document.getElementById("hero-caption-text");
+  const dotsEl = document.getElementById("hero-dots");
+
+  let images = [];
+  try {
+    const res = await fetch("/api/hero-images");
+    images = await res.json();
+  } catch {
+    images = [];
+  }
+
+  if (!images.length) return; // keep fallback illustration visible
+
+  // Remove any pre-existing slides (safety net in case of re-init)
+  container.querySelectorAll(".hero-slide").forEach(el => el.remove());
+  if (heroIntervalId) clearInterval(heroIntervalId);
+
+  fallback.style.display = "none";
+
+  images.forEach((file, i) => {
+    const slide = document.createElement("div");
+    slide.className = "hero-slide" + (i === 0 ? " visible" : "");
+    slide.style.backgroundImage = `url('/static/images/${file}')`;
+    container.insertBefore(slide, captionEl);
+  });
+
+  dotsEl.innerHTML = images.map((_, i) =>
+    `<div class="dot${i === 0 ? " active" : ""}"></div>`
+  ).join("");
+
+  captionEl.textContent = prettifyFilename(images[0]);
+
+  const slides = container.querySelectorAll(".hero-slide");
+  const dots = dotsEl.querySelectorAll(".dot");
+  let current = 0;
+
+  heroIntervalId = setInterval(() => {
+    slides[current].classList.remove("visible");
+    dots[current].classList.remove("active");
+    current = (current + 1) % images.length;
+    slides[current].classList.add("visible");
+    dots[current].classList.add("active");
+    captionEl.textContent = prettifyFilename(images[current]);
+  }, 4000);
+}
+initHeroCarousel();
 </script>
 </body>
 </html>

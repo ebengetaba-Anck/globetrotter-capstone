@@ -113,6 +113,36 @@ def save_itinerary(itinerary: dict) -> None:
     itineraries = get_all_itineraries()
     itineraries.append(itinerary)
     _write_json(ITINERARIES_FILE, itineraries)
+def get_itinerary_by_id(itinerary_id: str) -> dict | None:
+    """Return the itinerary matching *itinerary_id*, or None."""
+    for it in get_all_itineraries():
+        if it.get("id") == itinerary_id:
+            return it
+    return None
+
+
+def update_itinerary(itinerary_id: str, updates: dict) -> dict | None:
+    """Update the itinerary matching *itinerary_id* with *updates*.
+
+    Returns the updated itinerary, or None if not found.
+    """
+    itineraries = get_all_itineraries()
+    for it in itineraries:
+        if it.get("id") == itinerary_id:
+            it.update(updates)
+            _write_json(ITINERARIES_FILE, itineraries)
+            return it
+    return None
+
+
+def delete_itinerary(itinerary_id: str) -> bool:
+    """Delete the itinerary matching *itinerary_id*. Returns True if deleted."""
+    itineraries = get_all_itineraries()
+    filtered = [it for it in itineraries if it.get("id") != itinerary_id]
+    if len(filtered) == len(itineraries):
+        return False
+    _write_json(ITINERARIES_FILE, filtered)
+    return True
 # ---------------------------------------------------------------------------
 # Activity helpers
 # ---------------------------------------------------------------------------
@@ -148,6 +178,7 @@ def get_all_reservations() -> list:
     return _read_json(RESERVATIONS_FILE)
 
 
+
 def get_reservations_for_user(username: str) -> list:
     """Return reservations that belong to *username*."""
     return [r for r in get_all_reservations() if r.get("username") == username]
@@ -158,3 +189,19 @@ def save_reservation(reservation: dict) -> None:
     reservations = get_all_reservations()
     reservations.append(reservation)
     _write_json(RESERVATIONS_FILE, reservations)
+def get_reservation_by_id(reservation_id: str) -> dict | None:
+    """Return the reservation matching *reservation_id*, or None."""
+    for r in get_all_reservations():
+        if r.get("id") == reservation_id:
+            return r
+    return None
+
+
+def delete_reservation(reservation_id: str) -> bool:
+    """Delete the reservation matching *reservation_id*. Returns True if deleted."""
+    reservations = get_all_reservations()
+    filtered = [r for r in reservations if r.get("id") != reservation_id]
+    if len(filtered) == len(reservations):
+        return False
+    _write_json(RESERVATIONS_FILE, filtered)
+    return True

@@ -5,7 +5,7 @@ Flask application factory.
 """
 import os
 
-from flask import Flask
+from flask import Flask, jsonify
 
 
 def create_app():
@@ -38,5 +38,14 @@ def create_app():
     def index():
         from flask import send_from_directory
         return send_from_directory(app.static_folder, "index.html")
+    @app.route("/api/hero-images")
+    def hero_images():
+        import os
+        images_dir = os.path.join(app.static_folder, "images")
+        if not os.path.isdir(images_dir):
+            return jsonify([])
+        valid_ext = (".jpg", ".jpeg", ".png", ".webp")
+        files = sorted(f for f in os.listdir(images_dir) if f.lower().endswith(valid_ext))
+        return jsonify(files)
 
     return app

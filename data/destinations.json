@@ -11,7 +11,9 @@
     "description": "Place centrale historique de Douala, entourée de bâtiments coloniaux et administratifs. Point de départ classique pour découvrir le vieux Bonanjo.",
     "avg_cost": 1000,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 4.3,
+    "reviews": 189
   },
   {
     "id": "dla-002",
@@ -25,7 +27,10 @@
     "description": "Musée retraçant l'histoire du port de Douala et la tradition maritime des peuples Sawa, avec pirogues traditionnelles et objets d'époque.",
     "avg_cost": 2000,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 3.4,
+    "reviews": 101,
+    "image": "musee-maritime.jpg"
   },
   {
     "id": "dla-003",
@@ -40,7 +45,9 @@
     "description": "Le plus grand marché de la ville, où trouver tissus, épices, artisanat local et produits alimentaires frais dans une ambiance très vivante.",
     "avg_cost": 0,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 3.8,
+    "reviews": 226
   },
   {
     "id": "dla-004",
@@ -54,7 +61,9 @@
     "description": "Marché coloré spécialisé dans les plantes, fleurs et arbustes, apprécié pour une promenade tranquille en plein centre-ville.",
     "avg_cost": 2000,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 3.7,
+    "reviews": 357
   },
   {
     "id": "dla-005",
@@ -68,7 +77,9 @@
     "description": "Grande cathédrale catholique connue pour son architecture imposante et ses vitraux, un repère visuel du centre de Douala.",
     "avg_cost": 0,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 4.4,
+    "reviews": 48
   },
   {
     "id": "dla-006",
@@ -83,7 +94,9 @@
     "description": "Réserve naturelle protégée abritant forêts denses, mangroves et une faune variée (gorilles, éléphants de forêt, oiseaux). Idéal pour l'écotourisme.",
     "avg_cost": 15000,
     "lat": 4.05,
-    "lng": 9.7
+    "lng": 9.7,
+    "rating": 4.3,
+    "reviews": 61
   },
   {
     "id": "dla-007",
@@ -97,7 +110,9 @@
     "description": "Espace regroupant des artisans locaux vendant sculptures sur bois, bijoux et objets d'art traditionnels camerounais.",
     "avg_cost": 5000,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 4.6,
+    "reviews": 444
   },
   {
     "id": "dla-008",
@@ -111,7 +126,9 @@
     "description": "Quartier animé au cœur de Douala, connu pour ses hôtels, restaurants, bars et son ambiance urbaine dynamique en soirée.",
     "avg_cost": 10000,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 3.5,
+    "reviews": 298
   },
   {
     "id": "dla-009",
@@ -125,7 +142,10 @@
     "description": "Pont emblématique reliant Douala à Bonabéri au-dessus du fleuve Wouri, offrant une vue panoramique appréciée au coucher du soleil.",
     "avg_cost": 1500,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 4.0,
+    "reviews": 72,
+    "image": "pont-du-wouri.jpg"
   },
   {
     "id": "dla-010",
@@ -139,7 +159,9 @@
     "description": "Marché de pêcheurs animé en bord de fleuve, où déguster poisson braisé frais dans une ambiance locale authentique.",
     "avg_cost": 3000,
     "lat": 4.03,
-    "lng": 9.72
+    "lng": 9.72,
+    "rating": 3.4,
+    "reviews": 211
   },
   {
     "id": "dla-011",
@@ -153,7 +175,9 @@
     "description": "Centre culturel accueillant expositions, concerts et projections, une référence pour la scène artistique de Douala.",
     "avg_cost": 2000,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 3.7,
+    "reviews": 322
   },
   {
     "id": "dla-012",
@@ -167,7 +191,9 @@
     "description": "Centre d'art contemporain proposant des expositions, sculptures et événements culturels.",
     "avg_cost": 12000,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 4.1,
+    "reviews": 53
   },
   {
     "id": "dla-013",
@@ -181,7 +207,10 @@
     "description": "Monument emblématique, sculpture monumentale réalisée à partir de matériaux recyclés.",
     "avg_cost": 8000,
     "lat": 4.05,
-    "lng": 9.7
+    "lng": 9.7,
+    "rating": 3.4,
+    "reviews": 283,
+    "image": "nouvelle-liberte.jpg"
   },
   {
     "id": "dla-014",
@@ -195,7 +224,9 @@
     "description": "Complexe sportif populaire pour assister à des matchs de football locaux ou pratiquer une activité sportive en journée.",
     "avg_cost": 2000,
     "lat": 4.05,
-    "lng": 9.7
+    "lng": 9.7,
+    "rating": 3.7,
+    "reviews": 133
   },
   {
     "id": "dla-015",
@@ -209,7 +240,9 @@
     "description": "Marché populaire connu pour son ambiance authentique, ses étals de nourriture de rue et ses prix attractifs.",
     "avg_cost": 0,
     "lat": 4.043,
-    "lng": 9.71
+    "lng": 9.71,
+    "rating": 4.3,
+    "reviews": 43
   },
   {
     "id": "dla-016",
@@ -223,7 +256,9 @@
     "description": "Complexe sportif populaire pour assister à des matchs de football locaux ou pratiquer une activité sportive en journée et la nuit.",
     "avg_cost": 20000,
     "lat": 4.095,
-    "lng": 9.775
+    "lng": 9.775,
+    "rating": 4.2,
+    "reviews": 68
   },
   {
     "id": "dla-017",
@@ -237,7 +272,9 @@
     "description": "Plus grand port du Cameroun et l'un des plus importants d'Afrique centrale, poumon économique de la ville. Vue impressionnante sur les activités portuaires et les cargos.",
     "avg_cost": 25000,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 3.7,
+    "reviews": 246
   },
   {
     "id": "dla-018",
@@ -252,7 +289,10 @@
     "description": "Centre commercial moderne avec boutiques, restaurants, cinéma et espaces de loisirs, une référence pour le shopping climatisé à Douala.",
     "avg_cost": 5000,
     "lat": 4.007,
-    "lng": 9.719
+    "lng": 9.719,
+    "rating": 4.2,
+    "reviews": 238,
+    "image": "douala-grand-mall.jpg"
   },
   {
     "id": "dla-019",
@@ -267,7 +307,10 @@
     "description": "Cours d'eau paisible aux abords de Douala, apprécié pour les balades en pirogue, la pêche traditionnelle et les paysages de mangrove.",
     "avg_cost": 3000,
     "lat": 4.07,
-    "lng": 9.79
+    "lng": 9.79,
+    "rating": 4.5,
+    "reviews": 59,
+    "image": "mangrove-du-wouri.jpg"
   },
   {
     "id": "dla-020",
@@ -280,7 +323,9 @@
     "description": "Principal aéroport international du Cameroun, porte d'entrée pour les voyageurs arrivant à Douala.",
     "avg_cost": 15000,
     "lat": 4.007,
-    "lng": 9.719
+    "lng": 9.719,
+    "rating": 3.4,
+    "reviews": 147
   },
   {
     "id": "dla-021",
@@ -294,7 +339,9 @@
     "description": "Parc de loisirs avec manèges et attractions, très populaire auprès des familles et des enfants le week-end.",
     "avg_cost": 4000,
     "lat": 4.095,
-    "lng": 9.775
+    "lng": 9.775,
+    "rating": 4.5,
+    "reviews": 70
   },
   {
     "id": "dla-022",
@@ -309,7 +356,10 @@
     "description": "Ancien palais des Rois Bell, l'un des monuments historiques les plus célèbres de Douala.",
     "avg_cost": 2500,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 4.4,
+    "reviews": 306,
+    "image": "la-pagode.jpg"
   },
   {
     "id": "dla-023",
@@ -324,7 +374,10 @@
     "description": "Site emblématique du peuple Sawa, accueillant chaque année le festival traditionnel du Ngondo avec rites, pirogues et cérémonies culturelles sur les rives du Wouri.",
     "avg_cost": 2500,
     "lat": 4.048,
-    "lng": 9.701
+    "lng": 9.701,
+    "rating": 3.9,
+    "reviews": 241,
+    "image": "festival-ngondo.jpg"
   },
   {
     "id": "dla-024",
@@ -338,7 +391,9 @@
     "description": "Parc d'attractions proposant plusieurs jeux et espaces de détente.",
     "avg_cost": 4000,
     "lat": 4.05,
-    "lng": 9.7
+    "lng": 9.7,
+    "rating": 3.6,
+    "reviews": 54
   },
   {
     "id": "dla-025",
@@ -352,7 +407,9 @@
     "description": "Parc aquatique avec piscines et jeux d'eau adapté aux familles et aux groupes d'amis.",
     "avg_cost": 3500,
     "lat": 4.033,
-    "lng": 9.745
+    "lng": 9.745,
+    "rating": 4.7,
+    "reviews": 447
   },
   {
     "id": "dla-026",
@@ -366,6 +423,58 @@
     "description": "Base des Forces Navales camerounaises située le long du Wouri, symbole de la présence militaire maritime du pays et repère du paysage portuaire de Douala.",
     "avg_cost": 6000,
     "lat": 4.047,
-    "lng": 9.6935
+    "lng": 9.6935,
+    "rating": 3.9,
+    "reviews": 313
+  },
+  {
+    "id": "dla-027",
+    "name": "Chambre de Commerce de Douala",
+    "quartier": "Bonanjo",
+    "tags": [
+      "histoire",
+      "architecture",
+      "economie"
+    ],
+    "description": "Batiment historique de style colonial datant de 1927-1928, siege de la Chambre de Commerce, d'Industrie, des Mines et de l'Artisanat du Littoral.",
+    "avg_cost": 0,
+    "lat": 4.047,
+    "lng": 9.6935,
+    "image": "chambre-de-commerce.jpg",
+    "rating": 4.3,
+    "reviews": 36
+  },
+  {
+    "id": "dla-028",
+    "name": "Eglise du Centenaire",
+    "quartier": "Deido",
+    "tags": [
+      "religieux",
+      "histoire",
+      "architecture"
+    ],
+    "description": "Eglise historique marquant un siecle de presence chretienne a Douala, reconnaissable a son architecture et son toit distinctif.",
+    "avg_cost": 0,
+    "lat": 4.067,
+    "lng": 9.705,
+    "image": "eglise-centenaire.jpg",
+    "rating": 4.4,
+    "reviews": 149
+  },
+  {
+    "id": "dla-029",
+    "name": "Palais de Justice de Douala",
+    "quartier": "Bonanjo",
+    "tags": [
+      "histoire",
+      "architecture"
+    ],
+    "description": "Batiment institutionnel emblematique du centre administratif de Douala, siege des juridictions de la ville.",
+    "avg_cost": 0,
+    "lat": 4.047,
+    "lng": 9.6935,
+    "image": "palais-de-justice.jpg",
+    "rating": 3.7,
+    "reviews": 401
   }
 ]

@@ -19,9 +19,10 @@ from app.models import (
     get_all_transport,
     get_transport_by_id,
     get_reservations_for_user,
+    get_reservation_by_id,
     save_reservation,
+    delete_reservation,
 )
-
 transport_bp = Blueprint("transport", __name__)
 
 
@@ -119,3 +120,22 @@ def list_reservations():
 
     reservations = get_reservations_for_user(username)
     return jsonify(reservations), 200
+@transport_bp.route("/transport/reservations/<reservation_id>", methods=["DELETE"])
+def cancel_reservation(reservation_id):
+    """Cancel a transport reservation owned by the authenticated user.
+
+    Returns 200 on success, 404 if not found, 403 if owned by another user.
+    Requires: Authorization: Bearer <token>
+    """
+    username = get_current_user(request)
+    if not username:
+        return jsonify({"error": "authentication required"}), 401
+
+    reservation = get_reservation_by_id(reservation_id)
+    if not reservation:
+        return jsonify({"error": "reservation not found"}), 404
+    if reservation.get("username") != username:
+        return jsonify({"error": "you do not own this reservation"}), 403
+
+    delete_reservation(reservation_id)
+    return jsonify({"message": "reservation cancelled"}), 200
