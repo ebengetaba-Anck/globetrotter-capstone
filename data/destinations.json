@@ -13,7 +13,8 @@
     "lat": 4.047,
     "lng": 9.6935,
     "rating": 4.3,
-    "reviews": 189
+    "reviews": 189,
+    "image": "place-du-gouvernement.jpg"
   },
   {
     "id": "dla-002",
@@ -47,7 +48,8 @@
     "lat": 4.048,
     "lng": 9.701,
     "rating": 3.8,
-    "reviews": 226
+    "reviews": 226,
+    "image": "marche-central.jpg"
   },
   {
     "id": "dla-004",
@@ -63,7 +65,8 @@
     "lat": 4.047,
     "lng": 9.6935,
     "rating": 3.7,
-    "reviews": 357
+    "reviews": 357,
+    "image": "marche-des-fleurs.jpg"
   },
   {
     "id": "dla-005",
@@ -79,7 +82,8 @@
     "lat": 4.048,
     "lng": 9.701,
     "rating": 4.4,
-    "reviews": 48
+    "reviews": 48,
+    "image": "cathedrale-st-pierre-paul.jpg"
   },
   {
     "id": "dla-006",
@@ -96,7 +100,8 @@
     "lat": 4.05,
     "lng": 9.7,
     "rating": 4.3,
-    "reviews": 61
+    "reviews": 61,
+    "image": "parc-douala-edea.jpg"
   },
   {
     "id": "dla-007",
@@ -112,7 +117,8 @@
     "lat": 4.047,
     "lng": 9.6935,
     "rating": 4.6,
-    "reviews": 444
+    "reviews": 444,
+    "image": "village-artisanal-bonanjo.jpg"
   },
   {
     "id": "dla-008",
@@ -128,7 +134,8 @@
     "lat": 4.048,
     "lng": 9.701,
     "rating": 3.5,
-    "reviews": 298
+    "reviews": 298,
+    "image": "akwa-palace.jpg"
   },
   {
     "id": "dla-009",
@@ -161,7 +168,8 @@
     "lat": 4.03,
     "lng": 9.72,
     "rating": 3.4,
-    "reviews": 211
+    "reviews": 211,
+    "image": "marche-poissons-youpwe.jpg"
   },
   {
     "id": "dla-011",
@@ -177,7 +185,8 @@
     "lat": 4.048,
     "lng": 9.701,
     "rating": 3.7,
-    "reviews": 322
+    "reviews": 322,
+    "image": "institut-francais.jpg"
   },
   {
     "id": "dla-012",
@@ -193,7 +202,8 @@
     "lat": 4.048,
     "lng": 9.701,
     "rating": 4.1,
-    "reviews": 53
+    "reviews": 53,
+    "image": "doual-art.jpg"
   },
   {
     "id": "dla-013",
@@ -226,7 +236,8 @@
     "lat": 4.05,
     "lng": 9.7,
     "rating": 3.7,
-    "reviews": 133
+    "reviews": 133,
+    "image": "complexe-omnisport-bepanda.jpg"
   },
   {
     "id": "dla-015",
@@ -242,7 +253,8 @@
     "lat": 4.043,
     "lng": 9.71,
     "rating": 4.3,
-    "reviews": 43
+    "reviews": 43,
+    "image": "marche-congo.jpg"
   },
   {
     "id": "dla-016",
@@ -258,7 +270,8 @@
     "lat": 4.095,
     "lng": 9.775,
     "rating": 4.2,
-    "reviews": 68
+    "reviews": 68,
+    "image": "complexe-japoma.jpg"
   },
   {
     "id": "dla-017",
@@ -274,7 +287,8 @@
     "lat": 4.047,
     "lng": 9.6935,
     "rating": 3.7,
-    "reviews": 246
+    "reviews": 246,
+    "image": "port-autonome.jpg"
   },
   {
     "id": "dla-018",
@@ -325,7 +339,8 @@
     "lat": 4.007,
     "lng": 9.719,
     "rating": 3.4,
-    "reviews": 147
+    "reviews": 147,
+    "image": "aeroport-douala.jpg"
   },
   {
     "id": "dla-021",
@@ -341,7 +356,8 @@
     "lat": 4.095,
     "lng": 9.775,
     "rating": 4.5,
-    "reviews": 70
+    "reviews": 70,
+    "image": "o-loko.jpg"
   },
   {
     "id": "dla-022",
@@ -409,7 +425,8 @@
     "lat": 4.033,
     "lng": 9.745,
     "rating": 4.7,
-    "reviews": 447
+    "reviews": 447,
+    "image": "eden-aqua-park.jpg"
   },
   {
     "id": "dla-026",
@@ -425,7 +442,8 @@
     "lat": 4.047,
     "lng": 9.6935,
     "rating": 3.9,
-    "reviews": 313
+    "reviews": 313,
+    "image": "base-navale.jpg"
   },
   {
     "id": "dla-027",
