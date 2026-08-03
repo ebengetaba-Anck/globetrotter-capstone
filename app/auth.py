@@ -1,12 +1,13 @@
 """
 app/auth.py
 
-User registration, login, and JWT handling.
+User registration, login, password reset, and JWT handling.
 
 Routes
 ------
-POST /register  – create a new user account
-POST /login     – authenticate and return a JWT token
+POST /register        - create a new user account
+POST /login            - authenticate and return a JWT token
+POST /reset-password   - reset a user's password (demo only)
 """
 import uuid
 import datetime
@@ -15,13 +16,13 @@ import jwt
 from flask import Blueprint, request, jsonify, current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from app.models import get_user_by_username, save_user
+from app.models import get_user_by_username, save_user, get_all_users, _write_json, USERS_FILE
 
 auth_bp = Blueprint("auth", __name__)
 
 
 # ---------------------------------------------------------------------------
-# Helper – JWT utilities
+# Helper - JWT utilities
 # ---------------------------------------------------------------------------
 
 def create_token(username: str, secret: str) -> str:
@@ -96,6 +97,30 @@ def register():
     return jsonify({"message": "user registered successfully", "username": username}), 201
 
 
+@auth_bp.route("/login", methods=["POST"])
+def login():
+    """Authenticate a user and return a JWT.
+
+    Expected JSON body:
+        { "username": "alice", "password": "s3cr3t" }
+
+    Returns 200 with a token on success, 400/401 on failure.
+    """
+    data = request.get_json(silent=True) or {}
+    username = data.get("username", "").strip()
+    password = data.get("password", "")
+
+    if not username or not password:
+        return jsonify({"error": "username and password are required"}), 400
+
+    user = get_user_by_username(username)
+    if not user or not check_password_hash(user["password_hash"], password):
+        return jsonify({"error": "invalid credentials"}), 401
+
+    token = create_token(username, current_app.config["SECRET_KEY"])
+    return jsonify({"token": token}), 200
+
+
 @auth_bp.route("/reset-password", methods=["POST"])
 def reset_password():
     """Reset a user's password (demo-only, no email verification).
@@ -119,12 +144,10 @@ def reset_password():
     if not user:
         return jsonify({"error": "user not found"}), 404
 
-    user["password_hash"] = generate_password_hash(new_password)
-    from app.models import get_all_users, _write_json, USERS_FILE
     users = get_all_users()
     for u in users:
         if u.get("username") == username:
-            u["password_hash"] = user["password_hash"]
+            u["password_hash"] = generate_password_hash(new_password)
     _write_json(USERS_FILE, users)
 
     return jsonify({"message": "password reset successfully"}), 200
