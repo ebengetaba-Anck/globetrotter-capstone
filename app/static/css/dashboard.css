@@ -1,0 +1,251 @@
+/* =====================================
+   Ô'MBOA - DASHBOARD STYLE
+===================================== */
+
+
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI", Arial, sans-serif;
+
+}
+
+
+body{
+
+    min-height:100vh;
+
+    background:#f8fafc;
+
+    color:#0f172a;
+
+}
+
+
+/* NAVBAR */
+
+.navbar{
+
+    height:80px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 60px;
+
+    background:white;
+
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+
+}
+
+
+
+.brand{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+}
+
+
+
+.brand img{
+
+    width:55px;
+
+    height:55px;
+
+    object-fit:contain;
+
+}
+
+
+
+.brand h1{
+
+    font-size:30px;
+
+    color:#2563eb;
+
+}
+
+
+
+#logoutBtn{
+
+    padding:12px 25px;
+
+    border:none;
+
+    border-radius:25px;
+
+    background:#2563eb;
+
+    color:white;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+}
+
+
+
+#logoutBtn:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+
+
+/* WELCOME */
+
+.welcome{
+
+    padding:50px 60px 30px;
+
+}
+
+
+
+.welcome h2{
+
+    font-size:38px;
+
+}
+
+
+
+.welcome span{
+
+    color:#2563eb;
+
+}
+
+
+
+.welcome p{
+
+    margin-top:15px;
+
+    color:#64748b;
+
+    font-size:18px;
+
+}
+
+
+
+/* CARTES */
+
+.cards{
+
+    padding:30px 60px;
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:25px;
+
+}
+
+
+
+.card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:25px;
+
+    box-shadow:
+    0 15px 35px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+
+.card:hover{
+
+    transform:translateY(-8px);
+
+}
+
+
+
+.card h3{
+
+    font-size:22px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.card p{
+
+    color:#64748b;
+
+    line-height:1.5;
+
+}
+
+
+
+
+@media(max-width:1000px){
+
+
+    .cards{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+
+}
+
+
+
+@media(max-width:600px){
+
+
+    .navbar{
+
+        padding:0 20px;
+
+    }
+
+
+    .cards{
+
+        grid-template-columns:1fr;
+
+        padding:20px;
+
+    }
+
+
+    .welcome{
+
+        padding:30px 20px;
+
+    }
+
+}
