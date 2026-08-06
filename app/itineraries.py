@@ -32,36 +32,23 @@ itineraries_bp = Blueprint("itineraries", __name__)
 def _validate_dates(start_date: str, end_date: str) -> str | None:
     """Return an error message if the date range is invalid, else None."""
     if not start_date or not end_date:
-        return None
+        return "Les dates de début et de fin sont obligatoires."  # Refus strict
     try:
         start = datetime.date.fromisoformat(start_date)
         end = datetime.date.fromisoformat(end_date)
     except ValueError:
-        return "start_date and end_date must be valid dates in YYYY-MM-DD format"
+        return "Les dates doivent être au format YYYY-MM-DD"
     if end < start:
-        return "end_date cannot be before start_date"
+        return "La date de fin ne peut pas être avant la date de début."
     return None
 
 
 @itineraries_bp.route("/itineraries", methods=["POST"])
 def create_itinerary():
-    """Create a new itinerary for the authenticated user.
-
-    Expected JSON body:
-        {
-          "title": "Summer in Douala",
-          "destinations": ["Marche Central"],
-          "start_date": "2026-08-01",
-          "end_date": "2026-08-15",
-          "notes": "Optional free-text notes"
-        }
-
-    Returns 201 with the created itinerary on success.
-    Requires: Authorization: Bearer <token>
-    """
+    """Create a new itinerary for the authenticated user."""
     username = get_current_user(request)
     if not username:
-        return jsonify({"error": "authentication required"}), 401
+        return jsonify({"error": "Authentification requise"}), 401
 
     data = request.get_json(silent=True) or {}
     title = data.get("title", "").strip()
@@ -69,8 +56,10 @@ def create_itinerary():
     start_date = data.get("start_date", "")
     end_date = data.get("end_date", "")
 
+    # Si pas de titre, on en crée un automatiquement
     if not title:
-        return jsonify({"error": "title is required"}), 400
+        title = f"Itinéraire du {datetime.datetime.now().strftime('%d/%m/%Y')}"
+
     if not isinstance(destinations, list):
         return jsonify({"error": "destinations must be a list"}), 400
 
@@ -89,19 +78,15 @@ def create_itinerary():
         "created_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
     }
     save_itinerary(itinerary)
-    return jsonify(itinerary), 201
+    return jsonify({"message": "Lieu ajouté à votre itinéraire avec succès !"}), 201
 
 
 @itineraries_bp.route("/itineraries", methods=["GET"])
 def list_itineraries():
-    """List all itineraries for the authenticated user.
-
-    Returns 200 with a JSON array of itinerary objects.
-    Requires: Authorization: Bearer <token>
-    """
+    """List all itineraries for the authenticated user."""
     username = get_current_user(request)
     if not username:
-        return jsonify({"error": "authentication required"}), 401
+        return jsonify({"error": "Authentification requise"}), 401
 
     itineraries = get_itineraries_for_user(username)
     return jsonify(itineraries), 200
@@ -109,22 +94,16 @@ def list_itineraries():
 
 @itineraries_bp.route("/itineraries/<itinerary_id>", methods=["PUT"])
 def edit_itinerary(itinerary_id):
-    """Update an itinerary owned by the authenticated user.
-
-    Accepts the same fields as creation; only provided fields are updated.
-    Returns 200 with the updated itinerary, 404 if not found, 403 if the
-    itinerary belongs to another user.
-    Requires: Authorization: Bearer <token>
-    """
+    """Update an itinerary owned by the authenticated user."""
     username = get_current_user(request)
     if not username:
-        return jsonify({"error": "authentication required"}), 401
+        return jsonify({"error": "Authentification requise"}), 401
 
     itinerary = get_itinerary_by_id(itinerary_id)
     if not itinerary:
-        return jsonify({"error": "itinerary not found"}), 404
+        return jsonify({"error": "Itinerary not found"}), 404
     if itinerary.get("username") != username:
-        return jsonify({"error": "you do not own this itinerary"}), 403
+        return jsonify({"error": "You do not own this itinerary"}), 403
 
     data = request.get_json(silent=True) or {}
     updates = {}
@@ -132,12 +111,12 @@ def edit_itinerary(itinerary_id):
     if "title" in data:
         title = data["title"].strip()
         if not title:
-            return jsonify({"error": "title cannot be empty"}), 400
+            return jsonify({"error": "Title cannot be empty"}), 400
         updates["title"] = title
 
     if "destinations" in data:
         if not isinstance(data["destinations"], list):
-            return jsonify({"error": "destinations must be a list"}), 400
+            return jsonify({"error": "Destinations must be a list"}), 400
         updates["destinations"] = data["destinations"]
 
     if "notes" in data:
@@ -159,20 +138,16 @@ def edit_itinerary(itinerary_id):
 
 @itineraries_bp.route("/itineraries/<itinerary_id>", methods=["DELETE"])
 def remove_itinerary(itinerary_id):
-    """Delete an itinerary owned by the authenticated user.
-
-    Returns 200 on success, 404 if not found, 403 if owned by another user.
-    Requires: Authorization: Bearer <token>
-    """
+    """Delete an itinerary owned by the authenticated user."""
     username = get_current_user(request)
     if not username:
-        return jsonify({"error": "authentication required"}), 401
+        return jsonify({"error": "Authentification requise"}), 401
 
     itinerary = get_itinerary_by_id(itinerary_id)
     if not itinerary:
-        return jsonify({"error": "itinerary not found"}), 404
+        return jsonify({"error": "Itinerary not found"}), 404
     if itinerary.get("username") != username:
-        return jsonify({"error": "you do not own this itinerary"}), 403
+        return jsonify({"error": "You do not own this itinerary"}), 403
 
     delete_itinerary(itinerary_id)
-    return jsonify({"message": "itinerary deleted"}), 200
+    return jsonify({"message": "Itinerary deleted"}), 200

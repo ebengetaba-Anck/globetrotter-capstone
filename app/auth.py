@@ -5,6 +5,7 @@ User registration, login, password reset, and JWT handling.
 
 Routes
 ------
+GET  /login            - Afficher la page de connexion (page HTML)
 POST /register        - create a new user account
 POST /login            - authenticate and return a JWT token
 POST /reset-password   - reset a user's password (demo only)
@@ -13,7 +14,7 @@ import uuid
 import datetime
 
 import jwt
-from flask import Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.models import get_user_by_username, save_user, get_all_users, _write_json, USERS_FILE
@@ -48,9 +49,14 @@ def get_current_user(request_obj) -> str | None:
     invalid.
     """
     auth_header = request_obj.headers.get("Authorization", "")
-    if not auth_header.startswith("Bearer "):
+    if not auth_header:
         return None
-    token = auth_header.split(" ", 1)[1]
+    
+    # Nettoyer le header (supprimer les espaces et 'Bearer ')
+    token = auth_header.replace("Bearer ", "").strip()
+    if not token:
+        return None
+
     try:
         payload = decode_token(token, current_app.config["SECRET_KEY"])
         return payload.get("sub")
@@ -62,17 +68,15 @@ def get_current_user(request_obj) -> str | None:
 # Routes
 # ---------------------------------------------------------------------------
 
+@auth_bp.route("/login", methods=["GET"])
+def show_login_page():
+    """Affiche la page de connexion (formulaire HTML)."""
+    return render_template("login.html")
+
+
 @auth_bp.route("/register", methods=["POST"])
 def register():
-    """Register a new user.
-
-    Expected JSON body:
-        { "username": "alice", "password": "s3cr3t", "email": "alice@example.com",
-          "phone": "670000000", "preferences": ["beach", "food"] }
-
-    Returns 201 on success, 400 on validation errors, 409 if the username is
-    already taken.
-    """
+    """Register a new user."""
     data = request.get_json(silent=True) or {}
     username = data.get("username", "").strip()
     password = data.get("password", "")
@@ -99,13 +103,7 @@ def register():
 
 @auth_bp.route("/login", methods=["POST"])
 def login():
-    """Authenticate a user and return a JWT.
-
-    Expected JSON body:
-        { "username": "alice", "password": "s3cr3t" }
-
-    Returns 200 with a token on success, 400/401 on failure.
-    """
+    """Authenticate a user and return a JWT."""
     data = request.get_json(silent=True) or {}
     username = data.get("username", "").strip()
     password = data.get("password", "")
@@ -123,16 +121,7 @@ def login():
 
 @auth_bp.route("/reset-password", methods=["POST"])
 def reset_password():
-    """Reset a user's password (demo-only, no email verification).
-
-    Expected JSON body:
-        { "username": "alice", "new_password": "newpass123" }
-
-    NOTE: This is a simplified demo flow with no identity verification via
-    email/SMS. Not suitable for production use as-is.
-
-    Returns 200 on success, 400/404 on error.
-    """
+    """Reset a user's password (demo-only, no email verification)."""
     data = request.get_json(silent=True) or {}
     username = data.get("username", "").strip()
     new_password = data.get("new_password", "")

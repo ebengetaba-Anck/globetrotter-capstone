@@ -23,6 +23,8 @@ DESTINATIONS_FILE = os.path.join(DATA_DIR, "destinations.json")
 ACTIVITIES_FILE = os.path.join(DATA_DIR, "activities.json")
 TRANSPORT_FILE = os.path.join(DATA_DIR, "transport.json")
 RESERVATIONS_FILE = os.path.join(DATA_DIR, "reservations.json")
+FAVORITES_FILE = os.path.join(DATA_DIR, "favorites.json")
+REVIEWS_FILE = os.path.join(DATA_DIR, "reviews.json")
 
 
 # ---------------------------------------------------------------------------
@@ -46,11 +48,14 @@ def _read_json(filepath: str) -> list:
     """
     if not os.path.exists(filepath):
         return []
-    with open(filepath, "r", encoding="utf-8") as fh:
-        content = fh.read().strip()
-        if not content:
-            return []
-        return json.loads(content)
+    try:
+        with open(filepath, "r", encoding="utf-8") as fh:
+            content = fh.read().strip()
+            if not content:
+                return []
+            return json.loads(content)
+    except (json.JSONDecodeError, Exception):
+        return []
 
 
 def _write_json(filepath: str, data: list) -> None:
@@ -143,6 +148,8 @@ def delete_itinerary(itinerary_id: str) -> bool:
         return False
     _write_json(ITINERARIES_FILE, filtered)
     return True
+
+
 # ---------------------------------------------------------------------------
 # Activity helpers
 # ---------------------------------------------------------------------------
@@ -205,3 +212,77 @@ def delete_reservation(reservation_id: str) -> bool:
         return False
     _write_json(RESERVATIONS_FILE, filtered)
     return True
+
+
+# ---------------------------------------------------------------------------
+# Favorites helpers
+# ---------------------------------------------------------------------------
+
+def get_all_favorites() -> list:
+    """Return all favorites. Returns empty list if file is missing or broken."""
+    if not os.path.exists(FAVORITES_FILE):
+        return []
+    try:
+        with open(FAVORITES_FILE, "r", encoding="utf-8") as fh:
+            content = fh.read().strip()
+            if not content:
+                return []
+            return json.loads(content)
+    except (json.JSONDecodeError, IOError):
+        return []
+
+def get_favorites_for_user(username: str) -> list:
+    """Return favorites that belong to *username*."""
+    return [f for f in get_all_favorites() if f.get("username") == username]
+
+def save_favorite(favorite: dict) -> None:
+    """Append *favorite* to the favorites store safely."""
+    favorites = get_all_favorites()
+    favorites.append(favorite)
+    temp_file = FAVORITES_FILE + ".tmp"
+    with open(temp_file, "w", encoding="utf-8") as fh:
+        json.dump(favorites, fh, indent=2)
+    os.replace(temp_file, FAVORITES_FILE)
+
+def delete_favorite(username: str, destination_id: str) -> bool:
+    """Delete the favorite matching *username* and *destination_id*."""
+    favorites = get_all_favorites()
+    filtered = [f for f in favorites if not (f.get("username") == username and str(f.get("destination_id")) == str(destination_id))]
+    if len(filtered) == len(favorites):
+        return False
+    temp_file = FAVORITES_FILE + ".tmp"
+    with open(temp_file, "w", encoding="utf-8") as fh:
+        json.dump(filtered, fh, indent=2)
+    os.replace(temp_file, FAVORITES_FILE)
+    return True
+
+
+# ---------------------------------------------------------------------------
+# Reviews helpers (AJOUTÉ ICI)
+# ---------------------------------------------------------------------------
+
+def get_all_reviews() -> list:
+    """Return all reviews. Returns empty list if file is missing or broken."""
+    if not os.path.exists(REVIEWS_FILE):
+        return []
+    try:
+        with open(REVIEWS_FILE, "r", encoding="utf-8") as fh:
+            content = fh.read().strip()
+            if not content:
+                return []
+            return json.loads(content)
+    except (json.JSONDecodeError, IOError):
+        return []
+
+def get_reviews_for_destination(destination_id: str) -> list:
+    """Return reviews that belong to *destination_id*."""
+    return [r for r in get_all_reviews() if str(r.get("destination_id")) == str(destination_id)]
+
+def save_review(review: dict) -> None:
+    """Append *review* to the reviews store safely."""
+    reviews = get_all_reviews()
+    reviews.append(review)
+    temp_file = REVIEWS_FILE + ".tmp"
+    with open(temp_file, "w", encoding="utf-8") as fh:
+        json.dump(reviews, fh, indent=2)
+    os.replace(temp_file, REVIEWS_FILE)
