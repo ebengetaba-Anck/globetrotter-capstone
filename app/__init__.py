@@ -77,6 +77,29 @@ def create_app():
     def my_itineraries_page():
         return render_template("my_itineraries.html")
 
+    @app.route("/itinerary/<itinerary_id>")
+    def itinerary_details(itinerary_id):
+        from app.models import get_itinerary_by_id, get_all_destinations
+        
+        itinerary = get_itinerary_by_id(itinerary_id)
+        if not itinerary:
+            return redirect("/my-itineraries")
+        
+        # Récupérer les détails des destinations (nom, quartier, coordonnées GPS)
+        all_destinations = get_all_destinations()
+        destination_details = []
+        for dest_id in itinerary.get("destinations", []):
+            dest = next((d for d in all_destinations if str(d.get("id")) == str(dest_id)), None)
+            if dest:
+                destination_details.append({
+                    "id": dest.get("id"),
+                    "name": dest.get("name"),
+                    "quartier": dest.get("quartier"),
+                    "lat": dest.get("lat"),
+                    "lng": dest.get("lng")
+                })
+        
+        return render_template("itinerary_detail.html", itinerary=itinerary, destination_details=destination_details)
 
     @app.route("/my-favorites")
     def my_favorites_page():
