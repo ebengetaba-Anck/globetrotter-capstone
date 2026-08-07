@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion - Ô'MBOA{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+
+    <!-- PARTIE GAUCHE : L'IMAGE -->
+    <div class="login-hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-brand">
+                <div class="brand-icon-circle"><i class="fa-solid fa-location-dot"></i></div>
+                <div>
+                    <h1>Ô'MBOA</h1>
+                    <p>Découvrez Douala autrement</p>
+                </div>
+            </div>
+            <div class="hero-main-text">
+                <h2>Explorez.<br>Découvrez.<br><span>Vivez Douala.</span></h2>
+                <p>Des lieux uniques, des expériences inoubliables, une ville qui ne dort jamais.</p>
+            </div>
+            <div class="hero-location-badge">
+                <i class="fa-solid fa-location-dot"></i> Rond-Point Deido, Douala
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fa-solid fa-building"></i></div>
+                    <div><strong>100+</strong><small>Lieux à découvrir</small></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                    <div><strong>4.8/5</strong><small>Appréciation globale</small></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                    <div><strong>10K+</strong><small>Explorateurs</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PARTIE DROITE : LE FORMULAIRE -->
+    <div class="login-form-section">
+        <div class="login-form-container">
+            <div class="form-logo">
+                <div class="brand-icon-circle blue"><i class="fa-solid fa-location-dot"></i></div>
+                <h2>Ô'<span>MBOA</span></h2>
+                <p>Découvrez Douala autrement</p>
+            </div>
+            <h3 class="form-title">Bon retour !</h3>
+            <p class="form-subtitle">Connectez-vous pour continuer l'aventure.</p>
+
+            <form id="loginForm">
+                <div class="input-group-custom">
+                    <i class="fa-regular fa-user input-icon"></i>
+                    <input type="text" id="username" name="username" placeholder="Adresse e-mail ou nom d'utilisateur" required>
+                </div>
+                <div class="input-group-custom">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" id="password" name="password" placeholder="Mot de passe" required>
+                    <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePassword()"></i>
+                </div>
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" checked> <span>Se souvenir de moi</span>
+                    </label>
+                    <a href="#" class="forgot-password">Mot de passe oublié ?</a>
+                </div>
+                <button type="submit" class="login-btn">
+                    Se connecter <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span></span><span class="divider-text">ou continuer avec</span><span></span>
+            </div>
+            <div class="social-buttons">
+                <button type="button" class="social-btn">
+                    <i class="fa-brands fa-google" style="color: #DB4437;"></i> Google
+                </button>
+                <button type="button" class="social-btn">
+                    <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i> Facebook
+                </button>
+            </div>
+            <p class="register-link">Pas encore de compte ? <a href="/signup">Créer un compte</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+// Gestionnaire de soumission du formulaire
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Empêche le rechargement de la page
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // Si la connexion est réussie, on stocke le token et on redirige
+            localStorage.setItem('token', data.token);
+            window.location.href = '/dashboard';
+        } else {
+            // Afficher l'erreur
+            alert('Erreur de connexion : ' + data.error);
+        }
+    } catch (error) {
+        console.error('Erreur réseau :', error);
+        alert('Une erreur est survenue lors de la connexion.');
+    }
+});
+
+function togglePassword() {
+    const passwordInput = document.getElementById('password');
+    const icon = document.querySelector('.toggle-password');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>
+{% endblock %}

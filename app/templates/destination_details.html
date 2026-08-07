@@ -1,0 +1,799 @@
+{% extends "base.html" %}
+
+{% block title %}{{ destination.name }} - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+
+        <!-- Fil d'Ariane et bouton retour -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <a href="/dashboard" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; font-weight: 500;">
+                <i class="fa-solid fa-arrow-left"></i> Retour à l'exploration
+            </a>
+            <div style="display: flex; gap: 15px;">
+                <button onclick="toggleFavorite(destId)" style="background: transparent; border: none; cursor: pointer; color: #dc3545; font-size: 16px; display: flex; align-items: center; gap: 5px;">
+                    <i id="detail-heart" class="fa-regular fa-heart"></i> Ajouter aux favoris
+                </button>
+                <button style="background: transparent; border: none; cursor: pointer; color: #333; font-size: 16px; display: flex; align-items: center; gap: 5px;">
+                    <i class="fa-solid fa-share-nodes"></i> Partager
+                </button>
+            </div>
+        </div>
+
+        <!-- TITRE PRINCIPAL -->
+        <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px;">{{ destination.name }}</h1>
+        
+        <!-- Note et Avis -->
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
+            <span style="background: #1a1a1a; color: white; padding: 3px 12px; border-radius: 4px; font-size: 12px; font-weight: 600;">Très bien noté</span>
+            <span style="display: flex; align-items: center; gap: 5px; font-weight: 600;">
+                <i class="fa-solid fa-star" style="color: #f5a623;"></i> <span id="avg-rating-display">0.0</span>
+            </span>
+            <span style="color: #666; font-size: 14px;">(<span id="review-count-display">0</span> avis)</span>
+            <span style="color: #ccc;">•</span>
+            <span style="color: #555; font-size: 14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
+        </div>
+
+        <!-- SECTION PRINCIPALE (GRID 2 COLONNES AVEC STICKY) -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start;">
+            
+            <!-- COLONNE GAUCHE : CONTENU (SCROLLABLE) -->
+            <div>
+                
+                <!-- GRILLE D'IMAGES -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px; gap: 10px; border-radius: 16px; overflow: hidden; margin-bottom: 30px;">
+                    <div style="grid-column: 1 / 2; grid-row: 1 / 3; background: url('{{ destination.image_url or "https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=800&auto=format&fit=crop" }}') center/cover;"></div>
+                    <div style="background: url('{{ destination.image_url or "https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop" }}') center/cover;"></div>
+                    <div style="background: url('{{ destination.image_url or "https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop" }}') center/cover; position: relative;">
+                        <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            Voir tout <i class="fa-solid fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION (AVEC BOUTON EN SAVOIR PLUS) -->
+                <div style="margin-bottom: 30px;">
+                    <div id="description-short" style="font-size: 16px; line-height: 1.6; color: #333;">
+                        {{ destination.short_description or destination.description|truncate(200, true, '...') }}
+                    </div>
+                    <div id="description-full" style="display: none; font-size: 16px; line-height: 1.6; color: #333;">
+                        {{ destination.description or "Vivez une expérience unique avec Ô'MBOA. Explorez les trésors cachés de Douala avec un guide expert." }}
+                    </div>
+                    <button onclick="toggleDescription()" style="background: none; border: none; color: #0056b3; font-weight: 600; cursor: pointer; padding: 0; margin-top: 5px; font-size: 14px;">
+                        <span id="desc-btn-text">En savoir plus</span>
+                    </button>
+                </div>
+
+                <!-- ACCORDÉONS (STYLE GETYOURGUIDE) -->
+                
+                <!-- 1. Ce qui est inclus -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion1')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Ce qui est inclus</span>
+                        <i id="icon-accordion1" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion1" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            {% for item in destination.included %}
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> {{ item }}
+                            </li>
+                            {% else %}
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Guide touristique compétent et professionnel
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Eau en bouteille
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Droit d'entrée
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Boisson d'adieu
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Serviette humide
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 2. Ce qui n'est pas inclus -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion2')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Ce qui n'est pas inclus</span>
+                        <i id="icon-accordion2" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion2" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            {% for item in destination.not_included %}
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> {{ item }}
+                            </li>
+                            {% else %}
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Prise en charge et dépose en dehors de ce site
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Petit-déjeuner
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Boissons alcoolisées
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Dîner
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Café et/ou thé
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Toilettes à bord
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Frais gouvernementaux
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3. Rendez-vous et prise en charge -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion3')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Rendez-vous et prise en charge</span>
+                        <i id="icon-accordion3" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion3" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <p><strong>Début :</strong> Plusieurs points de retrait sont proposés.</p>
+                        <p><strong>Lieu de rendez-vous :</strong> {{ destination.meeting_point or "Veuillez rencontrer votre guide devant l'entrée principale du site." }}</p>
+                        {% if destination.meeting_point_url %}
+                        <p><a href="{{ destination.meeting_point_url }}" target="_blank" style="color: #0056b3; text-decoration: underline;">Ouvrir dans Google Maps <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i></a></p>
+                        {% endif %}
+                        <p><strong>Prise en charge :</strong> Non incluse.</p>
+                    </div>
+                </div>
+
+                <!-- 4. Accessibilité -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion4')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Accessibilité</span>
+                        <i id="icon-accordion4" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion4" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #999;"></i> Non accessible aux fauteuils roulants</li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #999;"></i> À proximité des transports en commun</li>
+                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #999;"></i> Les nourrissons doivent être assis sur les genoux</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Pour toute question relative à l'accessibilité, n'hésitez pas à nous contacter.</p>
+                    </div>
+                </div>
+
+                <!-- 5. Politique d'annulation -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion5')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Politique d'annulation</span>
+                        <i id="icon-accordion5" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion5" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Pour obtenir un remboursement intégral, vous devez annuler au moins 24 heures avant le début de l'activité.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Si vous annulez moins de 24 heures avant le début de l'activité, le montant payé ne sera pas remboursé.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Aucune modification effectuée moins de 24 heures avant le début de l'expérience ne sera acceptée.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Les heures limites sont basées sur l'heure locale de l'expérience.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Cette activité est soumise aux conditions météorologiques. En cas d'annulation pour cause de mauvais temps, une autre date vous sera proposée ou vous serez intégralement remboursé.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 6. Informations Complémentaires -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion6')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Informations Complémentaires</span>
+                        <i id="icon-accordion6" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion6" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <ul style="list-style: none; padding: 0; margin: 0;">
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> La confirmation vous sera envoyée au moment de la réservation.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Aucun problème cardiaque ni autre affection médicale grave.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> La plupart des voyageurs peuvent participer.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Cette activité est soumise aux conditions météorologiques. En cas d'annulation pour cause de mauvais temps, une autre date vous sera proposée ou vous serez intégralement remboursé.
+                            </li>
+                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Cette excursion/activité accueillera un maximum de 9 voyageurs.
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 7. Aide -->
+                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
+                    <div onclick="toggleAccordion('accordion7')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
+                        <span>Aide</span>
+                        <i id="icon-accordion7" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
+                    </div>
+                    <div id="accordion7" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
+                        <p>Si vous avez des questions concernant cette excursion ou si vous avez besoin d'aide pour réserver, n'hésitez pas à nous contacter. Appelez-nous au numéro ci-dessous et indiquez la préoccupation exacte.</p>
+                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 8px; color: #0056b3; font-weight: 500; font-size: 14px;">
+                                <i class="fa-solid fa-phone" style="font-size: 16px;"></i>
+                                <span>+237 693 32 93 83</span>
+                            </div>
+                            <button onclick="openChatModal()" style="display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #0056b3; padding: 8px 18px; border-radius: 20px; color: #0056b3; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.3s;">
+                                <i class="fa-regular fa-comment-dots" style="font-size: 16px;"></i>
+                                Discutez maintenant
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AVIS DES EXPLORATEURS -->
+                <div style="margin-top: 40px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h4 style="margin: 0;">Avis des explorateurs</h4>
+                        <span id="review-count-footer" style="font-size: 14px; color: #666;">0 avis</span>
+                    </div>
+                    
+                    <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                            <span>Votre note : </span>
+                            <div id="star-rating" style="display: flex; gap: 5px; cursor: pointer;">
+                                <span class="star" data-value="1" style="font-size: 24px; color: #ccc;">★</span>
+                                <span class="star" data-value="2" style="font-size: 24px; color: #ccc;">★</span>
+                                <span class="star" data-value="3" style="font-size: 24px; color: #ccc;">★</span>
+                                <span class="star" data-value="4" style="font-size: 24px; color: #ccc;">★</span>
+                                <span class="star" data-value="5" style="font-size: 24px; color: #ccc;">★</span>
+                            </div>
+                            <span id="selected-rating-text" style="font-size: 14px; color: #777;">(Cliquez pour noter)</span>
+                        </div>
+                        <textarea id="review-comment" rows="2" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: inherit; resize: vertical;" placeholder="Partagez votre expérience..."></textarea>
+                        <button onclick="submitReview()" style="margin-top: 10px; padding: 8px 25px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Publier mon avis</button>
+                    </div>
+
+                    <div id="reviews-container" style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="text-align: center; padding: 20px; color: #999;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Chargement des avis...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUGGESTIONS -->
+                <div style="margin-top: 50px;">
+                    <h3 style="font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Vous aimerez aussi...</h3>
+                    <div id="suggestions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
+                        <div style="text-align: center; padding: 20px; color: #999;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Chargement des suggestions...
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- COLONNE DROITE : BLOC RÉSERVATION (STICKY) -->
+            <div style="position: sticky; top: 20px; align-self: start;">
+                
+                <!-- BLOC RÉSERVATION -->
+                <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
+                        <span style="font-size: 14px; color: #666;">À partir de</span>
+                        <span style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Peut afficher complet</span>
+                    </div>
+                    <div style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 20px;">
+                        <span style="font-size: 28px; font-weight: 700; color: #dc3545;" id="total-price-display">0</span>
+                        <span style="font-size: 16px; color: #666;">FCFA</span>
+                        <span style="font-size: 14px; color: #666;">par personne</span>
+                    </div>
+
+                    <!-- MENU DÉROULANT PASSAGERS -->
+                    <div style="position: relative; margin-bottom: 10px;">
+                        <div id="passenger-toggle" style="background: #f3f4f6; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
+                            <i class="fa-solid fa-user" style="color: #333;"></i>
+                            <span style="flex: 1; font-weight: 500;">Passagers</span>
+                            <span id="passenger-summary" style="font-weight: 600;">1 Adulte</span>
+                            <i id="passenger-chevron" class="fa-solid fa-chevron-down" style="color: #666; transition: 0.3s;"></i>
+                        </div>
+                        <div id="passenger-menu" style="display: none; position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 20px; z-index: 100; border: 1px solid #e0e0e0;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                                <div><strong>Adulte</strong><div style="font-size: 12px; color: #666;">(Âge 18-64)</div></div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button onclick="updatePassenger('adult', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
+                                    <span id="adult-count" style="font-weight: 600; width: 20px; text-align: center;">1</span>
+                                    <button onclick="updatePassenger('adult', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                                <div><strong>Jeune</strong><div style="font-size: 12px; color: #666;">(Âge 11-17)</div></div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button onclick="updatePassenger('youth', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
+                                    <span id="youth-count" style="font-weight: 600; width: 20px; text-align: center;">0</span>
+                                    <button onclick="updatePassenger('youth', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
+                                <div><strong>Enfant</strong><div style="font-size: 12px; color: #666;">(10 ans et moins)</div></div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button onclick="updatePassenger('child', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
+                                    <span id="child-count" style="font-weight: 600; width: 20px; text-align: center;">0</span>
+                                    <button onclick="updatePassenger('child', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
+                                <div><strong>Senior</strong><div style="font-size: 12px; color: #666;">(Âge 65-99)</div></div>
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <button onclick="updatePassenger('senior', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
+                                    <span id="senior-count" style="font-weight: 600; width: 20px; text-align: center;">0</span>
+                                    <button onclick="updatePassenger('senior', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                                </div>
+                            </div>
+                            <button onclick="closePassengerMenu()" style="width: 100%; margin-top: 15px; padding: 10px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Continuer</button>
+                        </div>
+                    </div>
+
+                    <!-- DATE -->
+                    <div style="background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                        <i class="fa-regular fa-calendar" style="color: #333;"></i>
+                        <span style="flex: 1; font-weight: 500;">Date</span>
+                        <input type="date" id="selected-date" style="background: transparent; border: none; outline: none; font-weight: 600; font-family: inherit; text-align: right; width: 140px; color: #333;">
+                    </div>
+
+                    <!-- LANGUE -->
+                    <div style="background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
+                        <i class="fa-solid fa-globe" style="color: #333;"></i>
+                        <span style="flex: 1; font-weight: 500;">Langue</span>
+                        <select id="language-select" style="background: transparent; border: none; outline: none; font-weight: 600; font-family: inherit; text-align: right; color: #333; width: 110px;">
+                            <option value="Français">Français</option>
+                            <option value="Anglais">Anglais</option>
+                        </select>
+                    </div>
+
+                    <button onclick="bookNow()" style="width: 100%; padding: 16px; background: #0056b3; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                        Voir les disponibilités
+                    </button>
+
+                    <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #2d8f5c; font-weight: 500;">
+                        <i class="fa-regular fa-circle-check" style="font-size: 18px;"></i> Annulation gratuite
+                        <span style="font-weight: 400; color: #666; font-size: 12px;">Annulez jusqu'à 24 heures avant pour un remboursement intégral</span>
+                    </div>
+                </div>
+
+                <!-- BANDEAU CONTACT (Sticky, en dessous du bloc réservation) -->
+                <div style="margin-top: 20px; background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
+                    <p style="font-weight: 600; font-size: 15px; color: #1a1a1a; margin-bottom: 12px;">Vous avez des questions concernant votre réservation ?</p>
+                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px; color: #0056b3; font-weight: 500; font-size: 14px;">
+                            <i class="fa-solid fa-phone" style="font-size: 16px;"></i>
+                            <span>+237 693 32 93 83</span>
+                        </div>
+                        <button onclick="openChatModal()" style="display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #0056b3; padding: 8px 18px; border-radius: 20px; color: #0056b3; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.3s;">
+                            <i class="fa-regular fa-comment-dots" style="font-size: 16px;"></i>
+                            Discutez maintenant
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODALE DE CHAT (POP-UP) -->
+<div id="chatModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
+    <div style="background: white; width: 100%; max-width: 480px; border-radius: 16px; padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 700;">Chat</h3>
+            <button onclick="closeChatModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">✕</button>
+        </div>
+        <form onsubmit="startChat(event)" style="display: flex; flex-direction: column; gap: 15px;">
+            <div>
+                <label style="font-size: 14px; font-weight: 500; color: #dc3545;">* First Name</label>
+                <input type="text" id="chat-firstname" required placeholder="Votre prénom" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none;">
+                <div style="font-size: 12px; color: #dc3545; display: none;" id="firstname-error">Complete this field.</div>
+            </div>
+            <div>
+                <label style="font-size: 14px; font-weight: 500; color: #dc3545;">* Last Name</label>
+                <input type="text" id="chat-lastname" required placeholder="Votre nom" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none;">
+                <div style="font-size: 12px; color: #dc3545; display: none;" id="lastname-error">Complete this field.</div>
+            </div>
+            <div>
+                <label style="font-size: 14px; font-weight: 500; color: #dc3545;">* Email</label>
+                <input type="email" id="chat-email" required placeholder="votre@email.com" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none;">
+                <div style="font-size: 12px; color: #dc3545; display: none;" id="email-error">Complete this field.</div>
+            </div>
+            <div>
+                <label style="font-size: 14px; font-weight: 500; color: #333;">* How can we help?</label>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; cursor: pointer;">
+                        <input type="radio" name="help-type" value="existing" checked> I have a question about an existing booking
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; cursor: pointer;">
+                        <input type="radio" name="help-type" value="new"> I want to book and I have a question
+                    </label>
+                </div>
+            </div>
+            <div style="font-size: 12px; color: #999; text-align: center; margin-top: 5px;">
+                This conversation may be recorded for training and quality purposes.
+            </div>
+            <button type="submit" style="width: 100%; padding: 14px; background: #000; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 5px;">
+                Start Conversation
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+const destId = new URLSearchParams(window.location.search).get('id');
+let selectedRating = 0;
+let basePrice = {{ destination.avg_cost or 0 }};
+let counts = { adult: 1, youth: 0, child: 0, senior: 0 };
+
+document.addEventListener('DOMContentLoaded', function() {
+    if (destId) {
+        loadReviews();
+        loadSuggestions();
+        updateTotalPrice();
+        updatePassengerSummary();
+        
+        document.getElementById('selected-date').addEventListener('change', updateTotalPrice);
+        document.getElementById('language-select').addEventListener('change', updateTotalPrice);
+    }
+});
+
+// ============================================
+// ACCORDÉONS
+// ============================================
+
+function toggleAccordion(id) {
+    const content = document.getElementById(id);
+    const icon = document.getElementById('icon-' + id);
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        icon.classList.remove('fa-chevron-down');
+        icon.classList.add('fa-chevron-up');
+    } else {
+        content.style.display = 'none';
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-chevron-down');
+    }
+}
+
+// ============================================
+// DESCRIPTION "EN SAVOIR PLUS"
+// ============================================
+
+function toggleDescription() {
+    const short = document.getElementById('description-short');
+    const full = document.getElementById('description-full');
+    const btn = document.getElementById('desc-btn-text');
+    
+    if (full.style.display === 'none') {
+        full.style.display = 'block';
+        short.style.display = 'none';
+        btn.innerText = 'Lire moins';
+    } else {
+        full.style.display = 'none';
+        short.style.display = 'block';
+        btn.innerText = 'En savoir plus';
+    }
+}
+
+// ============================================
+// GESTION PASSAGERS
+// ============================================
+
+document.getElementById('passenger-toggle').addEventListener('click', function() {
+    const menu = document.getElementById('passenger-menu');
+    const chevron = document.getElementById('passenger-chevron');
+    if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        chevron.classList.remove('fa-chevron-down');
+        chevron.classList.add('fa-chevron-up');
+        this.style.border = '1px solid #0056b3';
+    } else {
+        closePassengerMenu();
+    }
+});
+
+function closePassengerMenu() {
+    const menu = document.getElementById('passenger-menu');
+    const chevron = document.getElementById('passenger-chevron');
+    menu.style.display = 'none';
+    chevron.classList.remove('fa-chevron-up');
+    chevron.classList.add('fa-chevron-down');
+    document.getElementById('passenger-toggle').style.border = '1px solid transparent';
+}
+
+function updatePassenger(type, delta) {
+    const newVal = counts[type] + delta;
+    if (newVal < 0) return;
+    if (type === 'adult' && newVal === 0) return;
+    
+    counts[type] = newVal;
+    document.getElementById(`${type}-count`).innerText = newVal;
+    updatePassengerSummary();
+    updateTotalPrice();
+}
+
+function updatePassengerSummary() {
+    const total = counts.adult + counts.youth + counts.child + counts.senior;
+    let parts = [];
+    if (counts.adult > 0) parts.push(`${counts.adult} Adulte${counts.adult > 1 ? 's' : ''}`);
+    if (counts.youth > 0) parts.push(`${counts.youth} Jeune${counts.youth > 1 ? 's' : ''}`);
+    if (counts.child > 0) parts.push(`${counts.child} Enfant${counts.child > 1 ? 's' : ''}`);
+    if (counts.senior > 0) parts.push(`${counts.senior} Senior${counts.senior > 1 ? 's' : ''}`);
+    document.getElementById('passenger-summary').innerText = parts.join(', ') || '0 Passager';
+}
+
+function updateTotalPrice() {
+    const total = counts.adult + counts.youth + counts.child + counts.senior;
+    document.getElementById('total-price-display').innerText = total * basePrice;
+}
+
+// ============================================
+// ÉTOILES INTERACTIVES
+// ============================================
+
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', function() {
+        selectedRating = parseInt(this.dataset.value);
+        updateStars(selectedRating);
+        document.getElementById('selected-rating-text').innerText = `(${selectedRating} étoile${selectedRating > 1 ? 's' : ''})`;
+    });
+    star.addEventListener('mouseover', function() {
+        updateStars(parseInt(this.dataset.value), true);
+    });
+    star.addEventListener('mouseout', function() {
+        if (selectedRating === 0) updateStars(0, true);
+        else updateStars(selectedRating, true);
+    });
+});
+
+function updateStars(count, isHover = false) {
+    document.querySelectorAll('.star').forEach(s => {
+        const val = parseInt(s.dataset.value);
+        if (val <= count) {
+            s.style.color = '#f5a623';
+        } else {
+            s.style.color = '#ccc';
+        }
+    });
+}
+
+// ============================================
+// CHARGEMENT DES DONNÉES
+// ============================================
+
+function loadReviews() {
+    fetch(`/api/reviews?destination_id=${destId}`)
+        .then(r => r.json())
+        .then(reviews => {
+            const container = document.getElementById('reviews-container');
+            const countDisplay = document.getElementById('review-count-display');
+            const avgDisplay = document.getElementById('avg-rating-display');
+            const countFooter = document.getElementById('review-count-footer');
+            
+            countDisplay.innerText = reviews.length;
+            countFooter.innerText = `${reviews.length} avis`;
+            
+            if (reviews.length > 0) {
+                const avg = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
+                avgDisplay.innerText = avg;
+            } else {
+                avgDisplay.innerText = "0.0";
+            }
+
+            container.innerHTML = '';
+            if (reviews.length === 0) {
+                container.innerHTML = '<p style="color: #777; text-align: center;">Soyez le premier à laisser un avis !</p>';
+            } else {
+                reviews.forEach(rev => {
+                    const stars = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+                    const div = document.createElement('div');
+                    div.style.cssText = 'border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;';
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between;">
+                            <strong>${rev.author}</strong> 
+                            <span style="color: #f5a623;">${stars}</span>
+                        </div>
+                        <p style="font-size: 14px; color: #666; margin-top: 5px;">"${rev.comment}"</p>
+                        <small style="color: #999;">${rev.date}</small>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        })
+        .catch(err => console.error(err));
+}
+
+function loadSuggestions() {
+    fetch('/destinations')
+        .then(r => r.json())
+        .then(all => {
+            const current = all.find(d => d.id == destId);
+            if (!current) return;
+            const suggestions = all.filter(d => 
+                d.id != destId && 
+                (d.quartier === current.quartier || (d.tags && current.tags && d.tags.some(tag => current.tags.includes(tag))))
+            ).slice(0, 4);
+            const grid = document.getElementById('suggestions-grid');
+            grid.innerHTML = '';
+            if (suggestions.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: #777; grid-column: 1/-1;">Aucune autre suggestion.</p>';
+            } else {
+                suggestions.forEach(dest => {
+                    const card = document.createElement('div');
+                    card.style.cssText = `background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;`;
+                    card.onmouseover = function() { this.style.transform = 'translateY(-5px)'; };
+                    card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
+                    card.onclick = function() { window.location.href = `/destination?id=${dest.id}`; };
+                    const img = dest.image_url || 'https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=500&auto=format&fit=crop';
+                    card.innerHTML = `
+                        <div style="height: 140px; background: url('${img}') center/cover;"></div>
+                        <div style="padding: 15px;">
+                            <h4 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 600;">${dest.name}</h4>
+                            <span style="font-size: 13px; color: #666;">${dest.quartier}</span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        })
+        .catch(err => console.error(err));
+}
+
+// ============================================
+// PUBLICATION AVIS
+// ============================================
+
+function submitReview() {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Connectez-vous pour publier un avis."); return; }
+    if (selectedRating === 0) { alert("Veuillez sélectionner une note."); return; }
+    
+    const comment = document.getElementById('review-comment').value.trim();
+    
+    fetch('/api/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ destination_id: destId, rating: selectedRating, comment: comment })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (r.ok) {
+            alert("Avis publié avec succès !");
+            document.getElementById('review-comment').value = '';
+            selectedRating = 0;
+            updateStars(0);
+            document.getElementById('selected-rating-text').innerText = '(Cliquez pour noter)';
+            loadReviews();
+        } else {
+            alert("Erreur : " + (data.error || "Impossible de publier l'avis."));
+        }
+    })
+    .catch(err => console.error(err));
+}
+
+// ============================================
+// RÉSERVATION SIMULÉE
+// ============================================
+
+function bookNow() {
+    const date = document.getElementById('selected-date').value;
+    const lang = document.getElementById('language-select').value;
+    const total = (counts.adult + counts.youth + counts.child + counts.senior) * basePrice;
+    
+    alert(`📅 Réservation simulée pour ${destination.name} :
+    
+🗓️ Date : ${date || 'Non sélectionnée'}
+👤 Adultes : ${counts.adult}
+🧑 Jeunes : ${counts.youth}
+👶 Enfants : ${counts.child}
+👴 Seniors : ${counts.senior}
+🌍 Langue : ${lang}
+💰 Total : ${total} FCFA
+
+➡️ Pour réserver en réel, intégrez une API de paiement ici !`);
+}
+
+// ============================================
+// FAVORIS
+// ============================================
+
+function toggleFavorite(destId) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Connectez-vous."); return; }
+    const icon = document.getElementById('detail-heart');
+    const isFavorite = icon.classList.contains('fa-solid');
+    
+    if (isFavorite) {
+        fetch(`/api/favorites?destination_id=${destId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } })
+            .then(r => r.json())
+            .then(() => {
+                icon.classList.remove('fa-solid');
+                icon.classList.add('fa-regular');
+            })
+            .catch(err => console.error(err));
+    } else {
+        fetch('/api/favorites', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ destination_id: destId }) })
+            .then(r => r.json())
+            .then(() => {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+            })
+            .catch(err => console.error(err));
+    }
+}
+
+// ============================================
+// CHAT MODAL
+// ============================================
+
+function openChatModal() {
+    document.getElementById('chatModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeChatModal() {
+    document.getElementById('chatModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function startChat(event) {
+    event.preventDefault();
+    
+    const firstName = document.getElementById('chat-firstname').value.trim();
+    const lastName = document.getElementById('chat-lastname').value.trim();
+    const email = document.getElementById('chat-email').value.trim();
+    const helpType = document.querySelector('input[name="help-type"]:checked').value;
+
+    let valid = true;
+    if (!firstName) {
+        document.getElementById('firstname-error').style.display = 'block';
+        valid = false;
+    } else {
+        document.getElementById('firstname-error').style.display = 'none';
+    }
+    if (!lastName) {
+        document.getElementById('lastname-error').style.display = 'block';
+        valid = false;
+    } else {
+        document.getElementById('lastname-error').style.display = 'none';
+    }
+    if (!email) {
+        document.getElementById('email-error').style.display = 'block';
+        valid = false;
+    } else {
+        document.getElementById('email-error').style.display = 'none';
+    }
+
+    if (!valid) return;
+
+    alert(`✅ Demande de chat envoyée !\n\nNom : ${firstName} ${lastName}\nEmail : ${email}\nSujet : ${helpType === 'existing' ? 'Question sur une réservation existante' : 'Nouvelle réservation avec question'}\n\nUn agent vous répondra sous peu.`);
+    
+    closeChatModal();
+}
+</script>
+{% endblock %}

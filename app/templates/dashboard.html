@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+
+    <div style="max-width: 1200px; margin: 0 auto;">
+        
+        <h2 style="font-weight: 700; margin-bottom: 10px; color: #1a1a1a;">Explorez Douala</h2>
+        <p style="color: #777; margin-bottom: 30px;">Trouvez les lieux parfaits selon votre budget, votre temps et vos envies.</p>
+
+        <!-- BARRE DE FILTRES -->
+        <div style="background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end;">
+            
+            <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Budget</label>
+                <select id="filterBudget" style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: white; font-family: inherit;">
+                    <option value="">Tous</option>
+                    <option value="0">Gratuit</option>
+                    <option value="1000">< 1000 FCFA</option>
+                    <option value="2000">< 2000 FCFA</option>
+                    <option value="5000">< 5000 FCFA</option>
+                </select>
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Temps</label>
+                <select id="filterTime" style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: white; font-family: inherit;">
+                    <option value="">Indifférent</option>
+                    <option value="30">< 30 min</option>
+                    <option value="60">1h</option>
+                    <option value="120">2h</option>
+                </select>
+            </div>
+
+            <div style="flex: 1; min-width: 150px;">
+                <label style="font-size: 13px; font-weight: 600; color: #555; display: block; margin-bottom: 5px;">Type</label>
+                <select id="filterTag" style="width: 100%; padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 8px; background: white; font-family: inherit;">
+                    <option value="">Tous</option>
+                    <option value="Culture">Culture</option>
+                    <option value="Gastronomie">Gastronomie</option>
+                    <option value="Nature">Nature</option>
+                </select>
+            </div>
+
+            <button onclick="applyFilters()" style="padding: 10px 30px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; height: 44px;">
+                <i class="fa-solid fa-magnifying-glass"></i> Rechercher
+            </button>
+        </div>
+
+        <!-- Grille de cartes -->
+        <div id="destinations-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des destinations...
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+let allDestinations = [];
+let allFavorites = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    if (!token) { 
+        window.location.href = "/login"; 
+        return; 
+    }
+
+    // On charge les destinations ET les favoris en même temps
+    Promise.all([
+        fetch('/destinations').then(r => r.json()),
+        fetch('/api/favorites', { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json())
+    ])
+    .then(([destinations, favorites]) => {
+        allDestinations = destinations;
+        allFavorites = favorites;
+        renderDestinations(destinations);
+    })
+    .catch(err => {
+        console.error('Erreur:', err);
+        document.getElementById('destinations-grid').innerHTML = `<p style="text-align: center; color: red;">Erreur de chargement des données.</p>`;
+    });
+});
+
+function applyFilters() {
+    const budget = document.getElementById('filterBudget').value;
+    const time = document.getElementById('filterTime').value;
+    const tag = document.getElementById('filterTag').value.toLowerCase();
+    let filtered = allDestinations;
+
+    if (budget !== "") {
+        const maxBudget = parseInt(budget);
+        filtered = filtered.filter(d => parseInt(d.avg_cost) <= maxBudget);
+    }
+    if (time !== "") {
+        const maxTime = parseInt(time);
+        filtered = filtered.filter(d => (parseInt(d.estimated_time) || 60) <= maxTime);
+    }
+    if (tag !== "") {
+        filtered = filtered.filter(d => d.tags && d.tags.some(t => t.toLowerCase().includes(tag)));
+    }
+
+    renderDestinations(filtered);
+}
+
+function renderDestinations(destinations) {
+    const grid = document.getElementById('destinations-grid');
+    grid.innerHTML = '';
+    
+    if (destinations.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777; font-size: 16px;">Aucun lieu trouvé.</p>';
+        return;
+    }
+
+    destinations.forEach(dest => {
+        const card = document.createElement('div');
+        card.style.cssText = `
+            background: white; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            transition: transform 0.3s; 
+            cursor: pointer;
+        `;
+        card.onclick = () => window.location.href = `/destination?id=${dest.id}`;
+        card.onmouseover = function() { this.style.transform = 'translateY(-5px)'; };
+        card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
+
+        const img = dest.image_url || 'https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=500&auto=format&fit=crop';
+        
+        // Compter les vrais likes
+        const realLikes = allFavorites.filter(f => f.destination_id === dest.id).length;
+        const userLiked = allFavorites.some(f => f.destination_id === dest.id);
+
+        card.innerHTML = `
+            <div style="position: relative;">
+                <div style="height: 180px; background: url('${img}') center/cover;"></div>
+                <button onclick="event.stopPropagation(); toggleFavorite('${dest.id}')" 
+                        style="position: absolute; top: 12px; right: 12px; background: white; border: none; border-radius: 50%; width: 36px; height: 36px; box-shadow: 0 2px 8px rgba(0,0,0,0.15); cursor: pointer; font-size: 18px;">
+                    <i class="${userLiked ? 'fa-solid' : 'fa-regular'} fa-heart" style="color: #dc3545;"></i>
+                </button>
+                <div style="position: absolute; bottom: 10px; left: 12px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 12px; font-size: 12px;">
+                    ❤️ ${realLikes}
+                </div>
+            </div>
+            <div style="padding: 20px;">
+                <h3 style="margin: 0 0 8px 0; font-size: 18px; font-weight: 600;">${dest.name}</h3>
+                <span style="background: #f0f0f0; padding: 4px 10px; border-radius: 12px; font-size: 12px;">${dest.quartier}</span>
+                <p style="color: #666; font-size: 14px; margin: 15px 0;">${dest.description ? dest.description.substring(0, 80) + '...' : ''}</p>
+                <div style="display: flex; justify-content: space-between; border-top: 1px solid #f0f0f0; padding-top: 12px;">
+                    <div style="color: #f5a623;">${'★'.repeat(4)}</div>
+                    <span style="font-weight: 600; color: #0056b3;">${dest.avg_cost ? dest.avg_cost + ' FCFA' : 'Gratuit'}</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function toggleFavorite(destId) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Connectez-vous."); return; }
+
+    const btn = event.target.closest('button');
+    const icon = btn.querySelector('i');
+    const isFavorite = icon.classList.contains('fa-solid');
+
+    if (isFavorite) {
+        fetch(`/api/favorites?destination_id=${destId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } })
+            .then(r => r.json())
+            .then(() => {
+                icon.classList.remove('fa-solid');
+                icon.classList.add('fa-regular');
+                allFavorites = allFavorites.filter(f => f.destination_id !== destId);
+                const likesSpan = btn.parentElement.querySelector('div[style*="bottom: 10px;"]');
+                const currentLikes = parseInt(likesSpan.innerText.replace('❤️ ', ''));
+                likesSpan.innerText = `❤️ ${currentLikes - 1}`;
+            })
+            .catch(err => console.error(err));
+    } else {
+        fetch('/api/favorites', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ destination_id: destId }) })
+            .then(r => r.json())
+            .then(() => {
+                icon.classList.remove('fa-regular');
+                icon.classList.add('fa-solid');
+                allFavorites.push({ destination_id: destId });
+                const likesSpan = btn.parentElement.querySelector('div[style*="bottom: 10px;"]');
+                const currentLikes = parseInt(likesSpan.innerText.replace('❤️ ', ''));
+                likesSpan.innerText = `❤️ ${currentLikes + 1}`;
+            })
+            .catch(err => console.error(err));
+    }
+}
+</script>
+{% endblock %}

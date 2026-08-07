@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Inscription - Ô'MBOA{% endblock %}
+
+{% block content %}
+<div class="login-wrapper">
+
+    <!-- PARTIE GAUCHE : L'IMAGE -->
+    <div class="login-hero-section">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <div class="hero-brand">
+                <div class="brand-icon-circle"><i class="fa-solid fa-location-dot"></i></div>
+                <div>
+                    <h1>Ô'MBOA</h1>
+                    <p>Découvrez Douala autrement</p>
+                </div>
+            </div>
+            <div class="hero-main-text">
+                <h2>Rejoignez<br>l'aventure.<br><span>Explorez Douala.</span></h2>
+                <p>Créez votre compte et commencez à découvrir les trésors cachés de la capitale économique.</p>
+            </div>
+            <div class="hero-location-badge">
+                <i class="fa-solid fa-location-dot"></i> Rond-Point Deido, Douala
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fa-solid fa-building"></i></div>
+                    <div><strong>100+</strong><small>Lieux à découvrir</small></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                    <div><strong>4.8/5</strong><small>Appréciation globale</small></div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                    <div><strong>10K+</strong><small>Explorateurs</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PARTIE DROITE : LE FORMULAIRE D'INSCRIPTION -->
+    <div class="login-form-section">
+        <div class="login-form-container">
+            <div class="form-logo">
+                <div class="brand-icon-circle blue"><i class="fa-solid fa-location-dot"></i></div>
+                <h2>Ô'<span>MBOA</span></h2>
+                <p>Découvrez Douala autrement</p>
+            </div>
+            <h3 class="form-title">Créer un compte</h3>
+            <p class="form-subtitle">Rejoignez la communauté des explorateurs.</p>
+
+            <!-- Bloc d'affichage des erreurs (ajouté juste au-dessus du formulaire) -->
+            {% if error %}
+            <div class="alert alert-danger" role="alert" style="border-radius: 8px; font-size: 14px; text-align: center; margin-bottom: 20px;">
+                {{ error }}
+            </div>
+            {% endif %}
+
+            <!-- Le formulaire envoie vers /register en POST -->
+            <form method="POST" action="/register">
+                <div class="input-group-custom">
+                    <i class="fa-regular fa-user input-icon"></i>
+                    <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+                </div>
+                <div class="input-group-custom">
+                    <i class="fa-regular fa-envelope input-icon"></i>
+                    <input type="email" name="email" placeholder="Adresse e-mail" required>
+                </div>
+                <div class="input-group-custom">
+                    <i class="fa-solid fa-lock input-icon"></i>
+                    <input type="password" name="password" id="passwordInput" placeholder="Mot de passe" required>
+                    <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePassword()"></i>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    S'inscrire <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span></span><span class="divider-text">ou continuer avec</span><span></span>
+            </div>
+            <div class="social-buttons">
+                <button type="button" class="social-btn">
+                    <i class="fa-brands fa-google" style="color: #DB4437;"></i> Google
+                </button>
+                <button type="button" class="social-btn">
+                    <i class="fa-brands fa-facebook-f" style="color: #1877F2;"></i> Facebook
+                </button>
+            </div>
+            <p class="register-link">Déjà un compte ? <a href="/login">Se connecter</a></p>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour afficher/masquer le mot de passe -->
+<script>
+function togglePassword() {
+    const passwordInput = document.getElementById('passwordInput');
+    const icon = document.querySelector('.toggle-password');
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    } else {
+        passwordInput.type = 'password';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    }
+}
+</script>
+{% endblock %}

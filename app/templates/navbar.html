@@ -1,0 +1,29 @@
+<nav style="background: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e0e0e0; font-family: 'Inter', sans-serif;">
+    
+    <!-- Logo à gauche -->
+    <a href="/dashboard" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+        <div class="brand-icon-circle blue" style="width: 35px; height: 35px; font-size: 16px; margin: 0;">
+            <i class="fa-solid fa-location-dot"></i>
+        </div>
+        <span style="font-size: 20px; font-weight: 700; color: #1a1a1a;">Ô'MBOA</span>
+    </a>
+
+    <!-- Menu du milieu (liens) -->
+    <div style="display: flex; gap: 30px;">
+        <a href="/dashboard" style="text-decoration: none; color: #333; font-weight: 500;">Explorer</a>
+        <a href="/my-itineraries" style="text-decoration: none; color: #333; font-weight: 600;">Mes itinéraires</a>
+        <a href="/my-favorites" style="text-decoration: none; color: #666;">Mes favoris</a>
+    </div>
+
+    <!-- Bouton Déconnexion à droite -->
+    <button onclick="logoutUser()" style="background: transparent; border: 1px solid #e0e0e0; padding: 8px 20px; border-radius: 20px; font-weight: 500; color: #333; cursor: pointer; transition: 0.3s;">
+        <i class="fa-solid fa-right-from-bracket" style="margin-right: 8px;"></i> Déconnexion
+    </button>
+</nav>
+
+<script>
+function logoutUser() {
+    localStorage.removeItem('token');
+    window.location.href = "/login";
+}
+</script>

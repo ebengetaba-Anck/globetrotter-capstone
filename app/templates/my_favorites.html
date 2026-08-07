@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Mes Favoris - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+        
+        <h2 style="font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Mes Favoris</h2>
+        <p style="color: #777; margin-bottom: 30px;">Retrouvez tous les lieux que vous avez aimés.</p>
+
+        <div id="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
+            
+            <div style="text-align: center; padding: 40px; color: #999;">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i> Chargement de vos favoris...
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "/login";
+        return;
+    }
+
+    // 1. Charger les favoris de l'utilisateur
+    fetch('/api/favorites', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(favorites => {
+        
+        // 2. Charger toutes les destinations pour avoir les noms et images
+        fetch('/destinations')
+        .then(response => response.json())
+        .then(allDestinations => {
+
+            const grid = document.getElementById('favorites-grid');
+            grid.innerHTML = '';
+
+            if (favorites.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">
+                        <i class="fa-solid fa-heart" style="font-size: 50px; color: #ccc; margin-bottom: 15px; display: block;"></i>
+                        Vous n'avez pas encore de favoris.<br>
+                        <a href="/dashboard" style="color: #0056b3; text-decoration: none; font-weight: 600;">Explorer et aimer des lieux</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Pour chaque favori, trouver la destination correspondante
+            favorites.forEach(fav => {
+                const dest = allDestinations.find(d => d.id == fav.destination_id);
+                if (!dest) return; // Si la destination n'existe plus, on ignore
+
+                const card = document.createElement('div');
+                card.style.cssText = `
+                    background: white; border-radius: 16px; overflow: hidden;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+                    transition: transform 0.3s; cursor: pointer;
+                `;
+                card.onmouseover = function() { this.style.transform = 'translateY(-5px)'; };
+                card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
+                card.onclick = function() { window.location.href = `/destination?id=${dest.id}`; };
+
+                const imageUrl = dest.image_url || 'https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=500&auto=format&fit=crop';
+
+                card.innerHTML = `
+                    <div style="height: 180px; background: url('${imageUrl}') center/cover; position: relative;">
+                        <div style="position: absolute; top: 12px; right: 12px; background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
+                            <i class="fa-solid fa-heart" style="color: #dc3545;"></i>
+                        </div>
+                    </div>
+                    <div style="padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
+                            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">${dest.name}</h3>
+                            <span style="background: #f0f0f0; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; color: #555;">${dest.quartier || 'Douala'}</span>
+                        </div>
+                        <p style="color: #666; font-size: 14px; margin: 0 0 15px 0; line-height: 1.4;">${dest.description ? dest.description.substring(0, 80) + '...' : 'Un lieu emblématique de Douala.'}</p>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 12px;">
+                            <div style="display: flex; gap: 5px; color: #f5a623;">
+                                ${'<i class="fa-solid fa-star"></i>'.repeat(Math.floor(Math.random() * 2) + 4)}
+                            </div>
+                            <span style="font-weight: 600; color: #0056b3;">${dest.avg_cost ? dest.avg_cost + ' FCFA' : 'Gratuit'}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        })
+        .catch(error => console.error('Erreur chargement destinations:', error));
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        document.getElementById('favorites-grid').innerHTML = '<p style="text-align: center; color: red;">Erreur lors du chargement de vos favoris.</p>';
+    });
+});
+</script>
+{% endblock %}

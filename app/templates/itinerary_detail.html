@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}{{ itinerary.title }} - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+
+        <a href="/my-itineraries" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; margin-bottom: 25px; font-weight: 500;">
+            <i class="fa-solid fa-arrow-left"></i> Retour à mes itinéraires
+        </a>
+
+        <div style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+            
+            <div style="display: flex; justify-content: space-between; align-items: start; flex-wrap: wrap; margin-bottom: 20px;">
+                <div>
+                    <h1 style="font-size: 32px; font-weight: 700; margin: 0; color: #1a1a1a;">{{ itinerary.title }}</h1>
+                    <p style="color: #666; margin-top: 8px; font-size: 14px;">
+                        Créé le {{ itinerary.created_at.split('T')[0] }}
+                        {% if itinerary.start_date and itinerary.end_date %}
+                        • Du {{ itinerary.start_date }} au {{ itinerary.end_date }}
+                        {% endif %}
+                    </p>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="editItinerary('{{ itinerary.id }}')" style="background: transparent; border: 1px solid #0056b3; padding: 10px 20px; border-radius: 20px; color: #0056b3; font-weight: 500; cursor: pointer;">
+                        <i class="fa-regular fa-pen-to-square"></i> Modifier
+                    </button>
+                    <button onclick="deleteItinerary('{{ itinerary.id }}')" style="background: transparent; border: 1px solid #dc3545; padding: 10px 20px; border-radius: 20px; color: #dc3545; font-weight: 500; cursor: pointer;">
+                        <i class="fa-regular fa-trash-can"></i> Supprimer
+                    </button>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid #f0f0f0; padding-top: 20px; margin-bottom: 20px;">
+                <h4 style="font-weight: 600; margin-bottom: 10px;">📌 Destinations</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    {% for dest in destination_details %}
+                    <span style="background: #e8f4fd; color: #0056b3; padding: 8px 16px; border-radius: 20px; font-size: 14px; font-weight: 500;">
+                        {{ dest.name }}
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+
+            {% if itinerary.notes %}
+            <div style="border-top: 1px solid #f0f0f0; padding-top: 20px; margin-bottom: 20px;">
+                <h4 style="font-weight: 600; margin-bottom: 10px;">📝 Notes</h4>
+                <p style="color: #555; line-height: 1.6;">{{ itinerary.notes }}</p>
+            </div>
+            {% endif %}
+
+            <!-- ============================================== -->
+            <!-- BOUTON GOOGLE MAPS (Ouverture application) -->
+            <!-- ============================================== -->
+            <div style="border-top: 1px solid #f0f0f0; padding-top: 20px;">
+                <h4 style="font-weight: 600; margin-bottom: 10px;">🗺️ Itinéraire GPS</h4>
+                <p style="color: #666; font-size: 14px;">Cliquez sur le bouton ci-dessous pour ouvrir l'itinéraire complet directement dans Google Maps.</p>
+                
+                <!-- Lien universel : s'ouvre dans l'app mobile ou dans le navigateur -->
+                <a href="https://www.google.com/maps/dir/
+                    {%- for dest in destination_details -%}
+                        {{ dest.lat }},{{ dest.lng }}
+                        {%- if not loop.last -%}/{%- endif -%}
+                    {%- endfor -%}" 
+                    target="_blank"
+                    style="display: inline-flex; align-items: center; gap: 10px; background: #0056b3; color: white; padding: 14px 30px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 16px; transition: 0.3s;">
+                    <i class="fa-solid fa-location-dot"></i> Voir l'itinéraire sur Google Maps
+                </a>
+                
+                <p style="font-size: 12px; color: #999; margin-top: 10px;">*L'itinéraire s'ouvrira dans une nouvelle fenêtre ou sur votre application mobile Google Maps.</p>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+// Fonctions pour modifier et supprimer
+function deleteItinerary(itineraryId) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Session expirée."); return; }
+    if (!confirm("Voulez-vous supprimer cet itinéraire ?")) return;
+
+    fetch(`/itineraries/${itineraryId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } })
+        .then(response => {
+            if (response.ok) {
+                alert("Itinéraire supprimé.");
+                window.location.href = "/my-itineraries";
+            } else {
+                alert("Erreur lors de la suppression.");
+            }
+        });
+}
+
+function editItinerary(itineraryId) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Session expirée."); return; }
+
+    const newTitle = prompt("Nouveau titre :");
+    if (newTitle === null) return;
+
+    const newStart = prompt("Date de début (AAAA-MM-JJ) :");
+    if (newStart === null) return;
+
+    const newEnd = prompt("Date de fin (AAAA-MM-JJ) :");
+    if (newEnd === null) return;
+
+    const newNotes = prompt("Nouvelles notes :") || "";
+
+    fetch(`/itineraries/${itineraryId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ title: newTitle, start_date: newStart, end_date: newEnd, notes: newNotes })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Itinéraire modifié !");
+            location.reload();
+        } else {
+            alert("Erreur lors de la modification.");
+        }
+    });
+}
+</script>
+{% endblock %}
