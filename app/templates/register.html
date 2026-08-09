@@ -51,26 +51,36 @@
             <h3 class="form-title">Créer un compte</h3>
             <p class="form-subtitle">Rejoignez la communauté des explorateurs.</p>
 
-            <!-- Bloc d'affichage des erreurs (ajouté juste au-dessus du formulaire) -->
             {% if error %}
             <div class="alert alert-danger" role="alert" style="border-radius: 8px; font-size: 14px; text-align: center; margin-bottom: 20px;">
                 {{ error }}
             </div>
             {% endif %}
 
-            <!-- Le formulaire envoie vers /register en POST -->
-            <form method="POST" action="/register">
+            <!-- Formulaire d'inscription avec ID pour le JavaScript -->
+            <form id="registerForm" method="POST" action="/register">
                 <div class="input-group-custom">
                     <i class="fa-regular fa-user input-icon"></i>
-                    <input type="text" name="username" placeholder="Nom d'utilisateur" required>
+                    <input type="text" id="username" name="username" placeholder="Nom d'utilisateur" required>
                 </div>
                 <div class="input-group-custom">
                     <i class="fa-regular fa-envelope input-icon"></i>
-                    <input type="email" name="email" placeholder="Adresse e-mail" required>
+                    <input type="email" id="email" name="email" placeholder="Adresse e-mail" required>
                 </div>
+                
+                <!-- CHAMP : Genre -->
+                <div class="input-group-custom" style="margin-bottom: 15px;">
+                    <i class="fa-regular fa-venus-mars input-icon"></i>
+                    <select id="gender" name="gender" required style="width: 100%; padding: 14px 15px 14px 45px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; background: #f9f9f9; font-family: inherit;">
+                        <option value="">Sélectionnez votre genre</option>
+                        <option value="masculin">Homme</option>
+                        <option value="feminin">Femme</option>
+                    </select>
+                </div>
+
                 <div class="input-group-custom">
                     <i class="fa-solid fa-lock input-icon"></i>
-                    <input type="password" name="password" id="passwordInput" placeholder="Mot de passe" required>
+                    <input type="password" id="password" name="password" placeholder="Mot de passe" required>
                     <i class="fa-regular fa-eye-slash toggle-password" onclick="togglePassword()"></i>
                 </div>
                 
@@ -95,10 +105,53 @@
     </div>
 </div>
 
-<!-- Script pour afficher/masquer le mot de passe -->
+<!-- ============================================== -->
+<!-- SCRIPT D'INSCRIPTION EN JSON (CORRIGÉ) -->
+<!-- ============================================== -->
 <script>
+document.getElementById('registerForm').addEventListener('submit', async function(e) {
+    e.preventDefault(); // Empêche le rechargement de la page
+
+    const username = document.getElementById('username').value;
+    const email = document.getElementById('email').value;
+    const gender = document.getElementById('gender').value;
+    const password = document.getElementById('password').value;
+
+    if (!gender) {
+        alert("Veuillez sélectionner votre genre.");
+        return;
+    }
+
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                username: username, 
+                email: email,
+                gender: gender, 
+                password: password 
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("Compte créé avec succès ! Bienvenue sur Ô'MBOA.");
+            window.location.href = "/login";
+        } else {
+            alert("Erreur : " + (data.error || "Une erreur est survenue."));
+        }
+    } catch (error) {
+        console.error('Erreur:', error);
+        alert("Erreur réseau. Veuillez réessayer.");
+    }
+});
+
 function togglePassword() {
-    const passwordInput = document.getElementById('passwordInput');
+    const passwordInput = document.getElementById('password');
     const icon = document.querySelector('.toggle-password');
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';

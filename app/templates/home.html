@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Ô'MBOA - Votre assistant de voyage à Douala{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+
+        <!-- SALUTATION -->
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px;">Bienvenue sur Ô'MBOA, <span id="user-name" style="color: #0056b3;">Explorateur</span> 👋</h1>
+            <p id="welcome-greeting" style="color: #666; font-size: 18px; font-style: italic; display: none;"></p>
+        </div>
+
+        <!-- CHIPS INTERACTIFS (VRAIS LIENS VERS CATÉGORIES) -->
+        <div style="margin-bottom: 40px;">
+            <h3 style="font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">Que souhaitez-vous faire aujourd'hui à Douala ?</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                <a href="/category/destination" class="chip" style="background: #e8f4fd; border: none; border-radius: 30px; padding: 12px 24px; font-size: 15px; font-weight: 500; color: #0056b3; text-decoration: none; transition: 0.3s; display: inline-block;">
+                    🏛 Découvrir les destinations
+                </a>
+                <a href="/category/sortie" class="chip" style="background: #e8f4fd; border: none; border-radius: 30px; padding: 12px 24px; font-size: 15px; font-weight: 500; color: #0056b3; text-decoration: none; transition: 0.3s; display: inline-block;">
+                    🎉 Sortir et s'amuser
+                </a>
+                <a href="/category/nature" class="chip" style="background: #e8f4fd; border: none; border-radius: 30px; padding: 12px 24px; font-size: 15px; font-weight: 500; color: #0056b3; text-decoration: none; transition: 0.3s; display: inline-block;">
+                    🌴 Se détendre dans la nature
+                </a>
+                <a href="/category/infrastructure" class="chip" style="background: #e8f4fd; border: none; border-radius: 30px; padding: 12px 24px; font-size: 15px; font-weight: 500; color: #0056b3; text-decoration: none; transition: 0.3s; display: inline-block;">
+                    ⚽ Activités sportives & infrastructures
+                </a>
+                <a href="/category/destination" class="chip" style="background: #e8f4fd; border: none; border-radius: 30px; padding: 12px 24px; font-size: 15px; font-weight: 500; color: #0056b3; text-decoration: none; transition: 0.3s; display: inline-block;">
+                    📸 Faire de belles photos
+                </a>
+                <a href="/category/sortie" class="chip" style="background: #e8f4fd; border: none; border-radius: 30px; padding: 12px 24px; font-size: 15px; font-weight: 500; color: #0056b3; text-decoration: none; transition: 0.3s; display: inline-block;">
+                    🍽 Découvrir la gastronomie
+                </a>
+            </div>
+        </div>
+
+        <!-- RECOMMANDÉ POUR VOUS -->
+        <div style="margin-bottom: 40px;">
+            <h3 style="font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">✨ Recommandé pour vous</h3>
+            <div id="recommended-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                <div style="text-align: center; padding: 20px; color: #999;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Chargement...
+                </div>
+            </div>
+        </div>
+
+        <!-- POPULAIRE ACTUELLEMENT -->
+        <div style="margin-bottom: 40px;">
+            <h3 style="font-weight: 600; margin-bottom: 15px; color: #1a1a1a;">🔥 Populaire actuellement</h3>
+            <div id="popular-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+                <div style="text-align: center; padding: 20px; color: #999;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Chargement...
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = "/login"; return; }
+    
+    fetch('/api/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.username) {
+            document.getElementById('user-name').innerText = data.username;
+            const greetingEl = document.getElementById('welcome-greeting');
+            if (data.gender === 'feminin') {
+                greetingEl.innerText = 'Ravie de vous revoir !';
+            } else {
+                greetingEl.innerText = 'Quel plaisir de vous retrouver !';
+            }
+            greetingEl.style.display = 'block';
+        } else {
+            document.getElementById('user-name').innerText = "Explorateur";
+        }
+    })
+    .catch(error => {
+        console.error('Erreur lors du chargement du nom:', error);
+        document.getElementById('user-name').innerText = "Explorateur";
+    });
+
+    loadRecommended();
+    loadPopular();
+});
+
+// ==========================================
+// RECOMMANDÉ POUR VOUS
+// ==========================================
+function loadRecommended() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    fetch('/api/recommendations', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(r => r.json())
+    .then(dests => {
+        renderGrid('recommended-grid', dests);
+    })
+    .catch(err => console.error(err));
+}
+
+// ==========================================
+// POPULAIRE ACTUELLEMENT
+// ==========================================
+function loadPopular() {
+    fetch('/destinations')
+        .then(r => r.json())
+        .then(dests => {
+            const sorted = dests.sort((a, b) => (b.reviews || 0) - (a.reviews || 0)).slice(0, 3);
+            renderGrid('popular-grid', sorted);
+        });
+}
+
+// ==========================================
+// AFFICHER LA GRILLE
+// ==========================================
+function renderGrid(id, destinations) {
+    const grid = document.getElementById(id);
+    grid.innerHTML = '';
+    if (destinations.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Aucune destination trouvée.</p>';
+        return;
+    }
+    destinations.forEach(d => {
+        const img = `/static/images/${d.id}/01.jpg`;
+        
+        const card = document.createElement('div');
+        card.style.cssText = `background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;`;
+        card.onmouseover = function() { this.style.transform = 'translateY(-5px)'; };
+        card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
+        card.onclick = function() { window.location.href = `/destination?id=${d.id}`; };
+        
+        card.innerHTML = `
+            <div style="height: 160px; background: url('${img}') center/cover; background-size: cover;"></div>
+            <div style="padding: 15px;">
+                <h4 style="margin: 0; font-size: 16px; font-weight: 600;">${d.name}</h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                    <span style="font-size: 13px; color: #666;">${d.quartier}</span>
+                    <span style="font-size: 13px; font-weight: 600; color: #0056b3;">⭐ ${d.rating || 0}</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+</script>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+
+{% block title %}Mon programme idéal - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 800px; margin: 0 auto;">
+
+        <!-- Titre -->
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px;">✨ Mon programme idéal</h1>
+            <p style="color: #666; font-size: 16px;">Répondez à 3 questions et laissez Ô'MBOA créer votre expérience parfaite à Douala.</p>
+        </div>
+
+        <!-- Carte principale -->
+        <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+
+            <!-- Question 1 : Mood -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">Quel est votre mood aujourd'hui ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="mood-btn" data-value="relax" onclick="selectMood('relax')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">😊 Relax</button>
+                    <button class="mood-btn" data-value="ambiance" onclick="selectMood('ambiance')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🔥 Ambiance</button>
+                    <button class="mood-btn" data-value="decouverte" onclick="selectMood('decouverte')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">📸 Découverte</button>
+                    <button class="mood-btn" data-value="romantique" onclick="selectMood('romantique')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">❤️ Romantique</button>
+                    <button class="mood-btn" data-value="famille" onclick="selectMood('famille')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">👨‍👩‍👧 Famille</button>
+                    <button class="mood-btn" data-value="amis" onclick="selectMood('amis')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">👥 Entre amis</button>
+                </div>
+            </div>
+
+            <!-- Question 2 : Temps -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">Combien de temps avez-vous ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="time-btn" data-value="2h" onclick="selectTime('2h')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ 2 heures</button>
+                    <button class="time-btn" data-value="demi" onclick="selectTime('demi')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ Une demi-journée</button>
+                    <button class="time-btn" data-value="journee" onclick="selectTime('journee')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ Une journée</button>
+                    <button class="time-btn" data-value="weekend" onclick="selectTime('weekend')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ Weekend</button>
+                </div>
+            </div>
+
+            <!-- Question 3 : Budget -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">Votre budget ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="budget-btn" data-value="petit" onclick="selectBudget('petit')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">💰 Petit budget</button>
+                    <button class="budget-btn" data-value="moyen" onclick="selectBudget('moyen')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">💰💰 Moyen</button>
+                    <button class="budget-btn" data-value="premium" onclick="selectBudget('premium')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">💰💰💰 Premium</button>
+                </div>
+            </div>
+
+            <!-- Bouton Générer -->
+            <div style="text-align: center; margin-top: 10px;">
+                <button onclick="generateProgram()" style="padding: 15px 40px; background: #0056b3; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Générer mon programme
+                </button>
+            </div>
+
+            <!-- Résultat -->
+            <div id="program-result" style="margin-top: 40px; display: none; padding: 30px; background: #f8f9fa; border-radius: 16px; border: 1px solid #e0e0e0;">
+                <h4 style="font-weight: 600; margin-bottom: 20px; color: #1a1a1a;">Voici votre expérience Douala aujourd'hui</h4>
+                <div id="program-content"></div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+let selectedMood = null;
+let selectedTime = null;
+let selectedBudget = null;
+
+function selectMood(value) {
+    selectedMood = value;
+    document.querySelectorAll('.mood-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.mood-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function selectTime(value) {
+    selectedTime = value;
+    document.querySelectorAll('.time-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.time-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function selectBudget(value) {
+    selectedBudget = value;
+    document.querySelectorAll('.budget-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.budget-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function generateProgram() {
+    if (!selectedMood || !selectedTime || !selectedBudget) {
+        alert("Veuillez sélectionner une option pour chaque question.");
+        return;
+    }
+
+    // Afficher un message de chargement
+    const resultDiv = document.getElementById('program-result');
+    const container = document.getElementById('program-content');
+    resultDiv.style.display = 'block';
+    container.innerHTML = '<p style="color: #666;"><i class="fa-solid fa-spinner fa-spin"></i> Génération de votre programme...</p>';
+
+    fetch('/api/build-itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mood: selectedMood,
+            time: selectedTime,
+            budget: selectedBudget
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            // Si le serveur renvoie une erreur (ex: 500, 404)
+            return response.text().then(text => {
+                throw new Error(`Erreur serveur (${response.status}): ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.length === 0) {
+            container.innerHTML = '<p style="color: #666;">Aucune expérience trouvée pour ces critères. Essayez de modifier vos choix.</p>';
+            return;
+        }
+
+        // Répartir les résultats par moment de la journée
+        const morning = data.slice(0, 2);
+        const afternoon = data.slice(2, 4);
+        const evening = data.slice(4, 6);
+
+        container.innerHTML = `
+            ${morning.length > 0 ? `<div style="margin-bottom: 20px;"><strong style="font-size: 18px;">🌅 Matin</strong><br>${morning.map(d => `• <a href="/destination?id=${d.id}" style="color: #0056b3; text-decoration: none; font-weight: 500;">${d.name}</a>`).join('<br>')}</div>` : ''}
+            ${afternoon.length > 0 ? `<div style="margin-bottom: 20px;"><strong style="font-size: 18px;">☀️ Après-midi</strong><br>${afternoon.map(d => `• <a href="/destination?id=${d.id}" style="color: #0056b3; text-decoration: none; font-weight: 500;">${d.name}</a>`).join('<br>')}</div>` : ''}
+            ${evening.length > 0 ? `<div><strong style="font-size: 18px;">🌙 Soir</strong><br>${evening.map(d => `• <a href="/destination?id=${d.id}" style="color: #0056b3; text-decoration: none; font-weight: 500;">${d.name}</a>`).join('<br>')}</div>` : ''}
+        `;
+    })
+    .catch(err => {
+        // Afficher l'erreur réelle dans la page
+        console.error(err);
+        container.innerHTML = `
+            <div style="color: #dc3545; padding: 15px; background: #fce8e8; border-radius: 8px;">
+                <strong>❌ Une erreur est survenue :</strong><br>
+                <span style="font-size: 14px;">${err.message}</span>
+                <br><br>
+                <small>Vérifiez que le serveur Flask est bien en cours d'exécution et que la route /api/build-itinerary est accessible.</small>
+            </div>
+        `;
+    });
+}
+</script>
+{% endblock %}

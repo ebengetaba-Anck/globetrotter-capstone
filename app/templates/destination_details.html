@@ -44,16 +44,62 @@
             <!-- COLONNE GAUCHE : CONTENU (SCROLLABLE) -->
             <div>
                 
-                <!-- GRILLE D'IMAGES -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 200px 200px; gap: 10px; border-radius: 16px; overflow: hidden; margin-bottom: 30px;">
-                    <div style="grid-column: 1 / 2; grid-row: 1 / 3; background: url('{{ destination.image_url or "https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=800&auto=format&fit=crop" }}') center/cover;"></div>
-                    <div style="background: url('{{ destination.image_url or "https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop" }}') center/cover;"></div>
-                    <div style="background: url('{{ destination.image_url or "https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop" }}') center/cover; position: relative;">
-                        <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                            Voir tout <i class="fa-solid fa-arrow-right"></i>
+                <!-- ============================================================ -->
+                <!-- GRILLE D'IMAGES ET VIDÉO (LECTURE LOCALE CORRIGÉE) -->
+                <!-- ============================================================ -->
+                <div style="display: grid; grid-template-columns: 0.7fr 1fr 0.7fr; grid-template-rows: 250px 250px; gap: 10px; border-radius: 16px; overflow: hidden; margin-bottom: 30px;">
+                    
+                    <!-- 1. Colonne Vidéo (Gauche, prend toute la hauteur) -->
+                    <div style="grid-column: 1 / 2; grid-row: 1 / 3; background: url('/static/images/{{ destination.id }}/01.jpg') center/cover; background-size: cover; position: relative; display: flex; align-items: center; justify-content: center;">
+                        
+                        <!-- Bouton Play (pour indiquer que c'est la future vidéo) -->
+                        <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 24px; color: #0056b3;">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        
+                        <!-- Étiquette Video -->
+                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            <i class="fa-solid fa-video"></i> Vidéo bientôt disponible
+                        </div>
+                    </div>
+
+                    <!-- 2. Image Principale (Milieu, prend toute la hauteur) -->
+                    <div style="grid-column: 2 / 3; grid-row: 1 / 3; background: url('/static/images/{{ destination.id }}/02.jpg') center/cover; background-size: cover; position: relative;">
+                        
+                        <!-- Étiquette Photo Principale -->
+                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            <i class="fa-solid fa-image"></i> Photo principale
+                        </div>
+                    </div>
+
+                    <!-- 3. Image Secondaire (Droite, haut) -->
+                    <div style="grid-column: 3 / 4; grid-row: 1 / 2; background: url('/static/images/{{ destination.id }}/03.jpg') center/cover; background-size: cover; position: relative;">
+                        
+                        <!-- Étiquette Photo -->
+                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            <i class="fa-solid fa-image"></i> Photo 2
+                        </div>
+                    </div>
+
+                    <!-- 4. Image Secondaire (Droite, bas) + Bouton Voir tout -->
+                    <div style="grid-column: 3 / 4; grid-row: 2 / 3; background: url('/static/images/{{ destination.id }}/04.jpg') center/cover; background-size: cover; position: relative;">
+                        
+                        <!-- Bouton Voir tout (corrigé) -->
+                        <a href="/gallery/{{ destination.id }}" style="text-decoration: none;">
+                            <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                                Voir tout <i class="fa-solid fa-arrow-right"></i>
+                            </div>
+                        </a>
+                        
+                        <!-- Étiquette Photo -->
+                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            <i class="fa-solid fa-image"></i> Photo 3
                         </div>
                     </div>
                 </div>
+                <!-- ============================================================ -->
+                <!-- FIN GRILLE D'IMAGES ET VIDÉO -->
+                <!-- ============================================================ -->
 
                 <!-- DESCRIPTION (AVEC BOUTON EN SAVOIR PLUS) -->
                 <div style="margin-bottom: 30px;">
@@ -69,8 +115,6 @@
                 </div>
 
                 <!-- ACCORDÉONS (STYLE GETYOURGUIDE) -->
-                
-                <!-- 1. Ce qui est inclus -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion1')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Ce qui est inclus</span>
@@ -103,7 +147,6 @@
                     </div>
                 </div>
 
-                <!-- 2. Ce qui n'est pas inclus -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion2')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Ce qui n'est pas inclus</span>
@@ -142,7 +185,6 @@
                     </div>
                 </div>
 
-                <!-- 3. Rendez-vous et prise en charge -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion3')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Rendez-vous et prise en charge</span>
@@ -158,7 +200,6 @@
                     </div>
                 </div>
 
-                <!-- 4. Accessibilité -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion4')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Accessibilité</span>
@@ -174,7 +215,6 @@
                     </div>
                 </div>
 
-                <!-- 5. Politique d'annulation -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion5')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Politique d'annulation</span>
@@ -201,7 +241,6 @@
                     </div>
                 </div>
 
-                <!-- 6. Informations Complémentaires -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion6')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Informations Complémentaires</span>
@@ -228,7 +267,6 @@
                     </div>
                 </div>
 
-                <!-- 7. Aide -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion7')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Aide</span>
@@ -379,7 +417,7 @@
                     </div>
                 </div>
 
-                <!-- BANDEAU CONTACT (Sticky, en dessous du bloc réservation) -->
+                <!-- BANDEAU CONTACT -->
                 <div style="margin-top: 20px; background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
                     <p style="font-weight: 600; font-size: 15px; color: #1a1a1a; margin-bottom: 12px;">Vous avez des questions concernant votre réservation ?</p>
                     <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
@@ -641,7 +679,7 @@ function loadSuggestions() {
             const grid = document.getElementById('suggestions-grid');
             grid.innerHTML = '';
             if (suggestions.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: #777; grid-column: 1/-1;">Aucune autre suggestion.</p>';
+                grid.innerHTML = '<p style="text-align: center; color: #777;">Aucune autre suggestion.</p>';
             } else {
                 suggestions.forEach(dest => {
                     const card = document.createElement('div');
