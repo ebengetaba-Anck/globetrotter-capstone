@@ -12,7 +12,8 @@ DESTINATIONS_FILE = os.path.join(os.path.dirname(__file__), "..", "data", "desti
 def read_destinations():
     if not os.path.exists(DESTINATIONS_FILE):
         return []
-    with open(DESTINATIONS_FILE, "r") as f:
+    # CORRECTION ICI : On précise encoding="utf-8" pour lire les accents correctement
+    with open(DESTINATIONS_FILE, "r", encoding="utf-8") as f:
         return json.load(f)
 
 def get_username_from_token(auth_header):
@@ -27,18 +28,12 @@ def get_username_from_token(auth_header):
         return None
 
 
-# ============================================================
-# AJOUT DE LA ROUTE /destinations (Pour les cartes du dashboard)
-# ============================================================
 @app.route("/destinations", methods=["GET"])
 def get_all_destinations():
     destinations = read_destinations()
     return jsonify(destinations), 200
 
 
-# ============================================================
-# Route des recommandations (existante)
-# ============================================================
 @app.route("/recommendations", methods=["GET"])
 def get_recommendations():
     auth_header = request.headers.get("Authorization", "")
@@ -46,7 +41,6 @@ def get_recommendations():
     if not username:
         return jsonify({"error": "Authentification requise"}), 401
 
-    # 1. Appeler le User Service pour obtenir les préférences
     try:
         user_response = requests.get(
             "http://127.0.0.1:5001/me",
@@ -60,10 +54,8 @@ def get_recommendations():
     except requests.exceptions.RequestException:
         return jsonify({"error": "User service inaccessible"}), 500
 
-    # 2. Lire les destinations
     destinations = read_destinations()
 
-    # 3. Calculer les recommandations basées sur les préférences
     scored = []
     for d in destinations:
         score = 0
@@ -79,6 +71,23 @@ def get_recommendations():
     recommendations = [d for _, d in scored[:6]]
 
     return jsonify(recommendations), 200
+
+
+@app.route("/api/gallery/<dest_id>")
+def api_gallery_images(dest_id):
+    folder_path = os.path.join(os.path.dirname(__file__), "..", "app", "static", "images", dest_id)
+    
+    if not os.path.isdir(folder_path):
+        return jsonify([])
+    
+    valid_ext = (".jpg", ".jpeg", ".png", ".webp", ".mp4", ".mov", ".avi")
+    files = sorted([
+        f for f in os.listdir(folder_path) 
+        if f.lower().endswith(valid_ext)
+    ])
+    
+    urls = [f"/static/images/{dest_id}/{f}" for f in files]
+    return jsonify(urls)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5003, debug=True)

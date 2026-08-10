@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirection Favoris</title>
+</head>
+<body>
+    <form id="favForm" action="/my-favorites" method="POST">
+        <input type="hidden" name="token" id="tokenInput">
+    </form>
+    <script>
+        const token = localStorage.getItem('token');
+        if (token) {
+            document.getElementById('tokenInput').value = token;
+            document.getElementById('favForm').submit();
+        } else {
+            window.location.href = "/login";
+        }
+    </script>
+</body>
+</html>
