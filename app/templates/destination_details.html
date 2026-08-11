@@ -44,15 +44,13 @@
             <!-- COLONNE GAUCHE : CONTENU (SCROLLABLE) -->
             <div>
                 
-                <!-- ============================================================ -->
-                <!-- GRILLE D'IMAGES ET VIDÉO (LECTURE LOCALE CORRIGÉE) -->
-                <!-- ============================================================ -->
+                <!-- GRILLE D'IMAGES ET VIDÉO (STYLE GETYOURGUIDE) -->
                 <div style="display: grid; grid-template-columns: 0.7fr 1fr 0.7fr; grid-template-rows: 250px 250px; gap: 10px; border-radius: 16px; overflow: hidden; margin-bottom: 30px;">
                     
-                    <!-- 1. Colonne Vidéo (Gauche, prend toute la hauteur) -->
+                    <!-- 1. Colonne Vidéo (Gauche) -->
                     <div style="grid-column: 1 / 2; grid-row: 1 / 3; background: url('/static/images/{{ destination.id }}/01.jpg') center/cover; background-size: cover; position: relative; display: flex; align-items: center; justify-content: center;">
                         
-                        <!-- Bouton Play (pour indiquer que c'est la future vidéo) -->
+                        <!-- Bouton Play -->
                         <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 24px; color: #0056b3;">
                             <i class="fa-solid fa-play"></i>
                         </div>
@@ -63,7 +61,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. Image Principale (Milieu, prend toute la hauteur) -->
+                    <!-- 2. Image Principale (Milieu) -->
                     <div style="grid-column: 2 / 3; grid-row: 1 / 3; background: url('/static/images/{{ destination.id }}/02.jpg') center/cover; background-size: cover; position: relative;">
                         
                         <!-- Étiquette Photo Principale -->
@@ -84,7 +82,7 @@
                     <!-- 4. Image Secondaire (Droite, bas) + Bouton Voir tout -->
                     <div style="grid-column: 3 / 4; grid-row: 2 / 3; background: url('/static/images/{{ destination.id }}/04.jpg') center/cover; background-size: cover; position: relative;">
                         
-                        <!-- Bouton Voir tout (corrigé) -->
+                        <!-- Bouton Voir tout -->
                         <a href="/gallery/{{ destination.id }}" style="text-decoration: none;">
                             <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                                 Voir tout <i class="fa-solid fa-arrow-right"></i>
@@ -97,14 +95,11 @@
                         </div>
                     </div>
                 </div>
-                <!-- ============================================================ -->
-                <!-- FIN GRILLE D'IMAGES ET VIDÉO -->
-                <!-- ============================================================ -->
 
-                <!-- DESCRIPTION (AVEC BOUTON EN SAVOIR PLUS) -->
+                <!-- DESCRIPTION -->
                 <div style="margin-bottom: 30px;">
                     <div id="description-short" style="font-size: 16px; line-height: 1.6; color: #333;">
-                        {{ destination.short_description or destination.description|truncate(200, true, '...') }}
+                        {{ destination.description_courte or destination.description|truncate(200, true, '...') }}
                     </div>
                     <div id="description-full" style="display: none; font-size: 16px; line-height: 1.6; color: #333;">
                         {{ destination.description or "Vivez une expérience unique avec Ô'MBOA. Explorez les trésors cachés de Douala avec un guide expert." }}
@@ -114,7 +109,76 @@
                     </button>
                 </div>
 
-                <!-- ACCORDÉONS (STYLE GETYOURGUIDE) -->
+                <!-- ACTIVITÉS -->
+                {% if destination.activities %}
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-weight: 600; color: #1a1a1a;">🎯 Activités</h4>
+                    <ul style="list-style: none; padding: 0; margin: 0;">
+                        {% for act in destination.activities %}
+                        <li style="padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #555;">
+                            <i class="fa-solid fa-circle-check" style="color: #0056b3; font-size: 12px; margin-right: 8px;"></i> {{ act }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- TARIFS -->
+                {% if destination.tarifs %}
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-weight: 600; color: #1a1a1a;">💰 Tarifs</h4>
+                    <div style="font-size: 14px; color: #555; line-height: 1.8;">
+                        {{ destination.tarifs|safe }}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- SERVICES PROCHES -->
+                {% if destination.services_proches %}
+                <div style="margin-bottom: 20px;">
+                    <h4 style="font-weight: 600; color: #1a1a1a;">📍 Services à proximité</h4>
+                    <div style="font-size: 14px; color: #555; line-height: 1.6;">
+                        <p><strong>🏥 Hôpital :</strong> {{ destination.services_proches.hopital_proche }} (à {{ destination.services_proches.distance_hopital }} km)</p>
+                        <p><strong>👮 Police :</strong> {{ destination.services_proches.police_proche }} (à {{ destination.services_proches.distance_police }} km)</p>
+                        <p><strong>🍽 Restaurant :</strong> {{ destination.services_proches.restaurant_proche }} (à {{ destination.services_proches.distance_restaurant }} km)</p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- LOCALISATION ET ITINÉRAIRE (BOUTON GPS VERS GOOGLE MAPS - SANS CLÉ API) -->
+                {% if destination.latitude and destination.longitude %}
+                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
+                    <h4 style="font-weight: 600; margin-bottom: 10px;">🗺️ Localisation</h4>
+                    <p style="font-size: 14px; color: #555;">{{ destination.adresse }}</p>
+                    
+                    <!-- BOUTON "Ouvrir dans Google Maps" (Pas de clé API, ouvre l'app mobile) -->
+                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" 
+                       target="_blank"
+                       style="display: inline-flex; align-items: center; gap: 10px; background: #0056b3; color: white; padding: 12px 25px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 16px; transition: 0.3s;">
+                        <i class="fa-solid fa-location-arrow"></i> Ouvrir l'itinéraire dans Google Maps
+                    </a>
+
+                    <!-- SERVICES À PROXIMITÉ (avec liens Google Maps individuels) -->
+                    {% if destination.services_proches %}
+                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f0f0f0;">
+                        <h5 style="font-weight: 600; margin-bottom: 10px;">Services à proximité</h5>
+                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
+                            <p><strong>🏥 Hôpital :</strong> {{ destination.services_proches.hopital_proche }} 
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" target="_blank" style="color: #0056b3; font-size: 12px; text-decoration: underline;">Itinéraire</a>
+                            </p>
+                            <p><strong>👮 Police :</strong> {{ destination.services_proches.police_proche }} 
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" target="_blank" style="color: #0056b3; font-size: 12px; text-decoration: underline;">Itinéraire</a>
+                            </p>
+                            <p><strong>🍽 Restaurant :</strong> {{ destination.services_proches.restaurant_proche }} 
+                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" target="_blank" style="color: #0056b3; font-size: 12px; text-decoration: underline;">Itinéraire</a>
+                            </p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <!-- ACCORDÉONS (INCLUS / NON INCLUS) -->
                 <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
                     <div onclick="toggleAccordion('accordion1')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
                         <span>Ce qui est inclus</span>
@@ -128,19 +192,7 @@
                             </li>
                             {% else %}
                             <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Guide touristique compétent et professionnel
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Eau en bouteille
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Droit d'entrée
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Boisson d'adieu
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Serviette humide
+                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Guide touristique
                             </li>
                             {% endfor %}
                         </ul>
@@ -160,130 +212,10 @@
                             </li>
                             {% else %}
                             <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Prise en charge et dépose en dehors de ce site
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Petit-déjeuner
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Boissons alcoolisées
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Dîner
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Café et/ou thé
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Toilettes à bord
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Frais gouvernementaux
+                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Prise en charge hôtel
                             </li>
                             {% endfor %}
                         </ul>
-                    </div>
-                </div>
-
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion3')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Rendez-vous et prise en charge</span>
-                        <i id="icon-accordion3" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion3" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <p><strong>Début :</strong> Plusieurs points de retrait sont proposés.</p>
-                        <p><strong>Lieu de rendez-vous :</strong> {{ destination.meeting_point or "Veuillez rencontrer votre guide devant l'entrée principale du site." }}</p>
-                        {% if destination.meeting_point_url %}
-                        <p><a href="{{ destination.meeting_point_url }}" target="_blank" style="color: #0056b3; text-decoration: underline;">Ouvrir dans Google Maps <i class="fa-solid fa-arrow-right" style="font-size: 12px;"></i></a></p>
-                        {% endif %}
-                        <p><strong>Prise en charge :</strong> Non incluse.</p>
-                    </div>
-                </div>
-
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion4')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Accessibilité</span>
-                        <i id="icon-accordion4" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion4" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #999;"></i> Non accessible aux fauteuils roulants</li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #999;"></i> À proximité des transports en commun</li>
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;"><i class="fa-solid fa-circle" style="font-size: 8px; color: #999;"></i> Les nourrissons doivent être assis sur les genoux</li>
-                        </ul>
-                        <p style="margin-top: 10px;">Pour toute question relative à l'accessibilité, n'hésitez pas à nous contacter.</p>
-                    </div>
-                </div>
-
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion5')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Politique d'annulation</span>
-                        <i id="icon-accordion5" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion5" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Pour obtenir un remboursement intégral, vous devez annuler au moins 24 heures avant le début de l'activité.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Si vous annulez moins de 24 heures avant le début de l'activité, le montant payé ne sera pas remboursé.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Aucune modification effectuée moins de 24 heures avant le début de l'expérience ne sera acceptée.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Les heures limites sont basées sur l'heure locale de l'expérience.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Cette activité est soumise aux conditions météorologiques. En cas d'annulation pour cause de mauvais temps, une autre date vous sera proposée ou vous serez intégralement remboursé.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion6')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Informations Complémentaires</span>
-                        <i id="icon-accordion6" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion6" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> La confirmation vous sera envoyée au moment de la réservation.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Aucun problème cardiaque ni autre affection médicale grave.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> La plupart des voyageurs peuvent participer.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Cette activité est soumise aux conditions météorologiques. En cas d'annulation pour cause de mauvais temps, une autre date vous sera proposée ou vous serez intégralement remboursé.
-                            </li>
-                            <li style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
-                                <i class="fa-solid fa-circle" style="font-size: 6px; color: #999;"></i> Cette excursion/activité accueillera un maximum de 9 voyageurs.
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion7')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Aide</span>
-                        <i id="icon-accordion7" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion7" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <p>Si vous avez des questions concernant cette excursion ou si vous avez besoin d'aide pour réserver, n'hésitez pas à nous contacter. Appelez-nous au numéro ci-dessous et indiquez la préoccupation exacte.</p>
-                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 10px; flex-wrap: wrap;">
-                            <div style="display: flex; align-items: center; gap: 8px; color: #0056b3; font-weight: 500; font-size: 14px;">
-                                <i class="fa-solid fa-phone" style="font-size: 16px;"></i>
-                                <span>+237 693 32 93 83</span>
-                            </div>
-                            <button onclick="openChatModal()" style="display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #0056b3; padding: 8px 18px; border-radius: 20px; color: #0056b3; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.3s;">
-                                <i class="fa-regular fa-comment-dots" style="font-size: 16px;"></i>
-                                Discutez maintenant
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -407,14 +339,25 @@
                         </select>
                     </div>
 
+                    <!-- BOUTON VOIR LES DISPONIBILITÉS -->
                     <button onclick="bookNow()" style="width: 100%; padding: 16px; background: #0056b3; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;">
                         Voir les disponibilités
                     </button>
 
+                    <!-- BOUTON AJOUTER À L'ITINÉRAIRE -->
+                    <button onclick="addToItinerary()" style="width: 100%; margin-top: 15px; padding: 16px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                        <i class="fa-solid fa-plus-circle"></i> Ajouter ce lieu à mon itinéraire
+                    </button>
+
+                    <!-- ============================================================== -->
+                    <!-- ANNULATION GRATUITE (RESTAURÉE) -->
+                    <!-- ============================================================== -->
                     <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #2d8f5c; font-weight: 500;">
                         <i class="fa-regular fa-circle-check" style="font-size: 18px;"></i> Annulation gratuite
                         <span style="font-weight: 400; color: #666; font-size: 12px;">Annulez jusqu'à 24 heures avant pour un remboursement intégral</span>
                     </div>
+                    <!-- ============================================================== -->
+
                 </div>
 
                 <!-- BANDEAU CONTACT -->
@@ -832,6 +775,54 @@ function startChat(event) {
     alert(`✅ Demande de chat envoyée !\n\nNom : ${firstName} ${lastName}\nEmail : ${email}\nSujet : ${helpType === 'existing' ? 'Question sur une réservation existante' : 'Nouvelle réservation avec question'}\n\nUn agent vous répondra sous peu.`);
     
     closeChatModal();
+}
+
+// ============================================
+// AJOUTER À L'ITINÉRAIRE
+// ============================================
+
+function addToItinerary() {
+    const token = localStorage.getItem('token');
+    if (!token) { 
+        alert("Vous devez être connecté pour ajouter un lieu."); 
+        window.location.href = "/login";
+        return; 
+    }
+
+    const date = document.getElementById('selected-date').value;
+    if (!date) {
+        alert("Veuillez sélectionner une date de visite.");
+        return;
+    }
+
+    fetch('/api/itineraries', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+            destinations: [destId], 
+            start_date: date,
+            end_date: date,
+            notes: "Ajouté depuis la page de détails" 
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`Erreur serveur (${response.status}) : ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert("Lieu ajouté à votre itinéraire ! Retrouvez-le dans Mes itinéraires.");
+    })
+    .catch(error => {
+        console.error("Erreur complète :", error);
+        alert("Erreur : " + error.message + "\n\nVérifiez que le service des itinéraires est bien lancé.");
+    });
 }
 </script>
 {% endblock %}

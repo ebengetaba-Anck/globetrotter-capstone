@@ -8,12 +8,12 @@
         <span style="font-size: 20px; font-weight: 700; color: #1a1a1a;">Ô'MBOA</span>
     </a>
 
-    <!-- Menu -->
+    <!-- Menu du milieu -->
     <div style="display: flex; gap: 30px;">
         <a href="/dashboard" style="text-decoration: none; color: #333; font-weight: 500;">Explorer</a>
         <a href="/itinerary-builder" style="text-decoration: none; color: #333; font-weight: 600;">Mon programme</a>
-        <a href="/my-itineraries" style="text-decoration: none; color: #666;">Mes itinéraires</a>
-        <a href="/my-favorites" style="text-decoration: none; color: #666;">Mes favoris</a>
+        <a href="/my-itineraries" style="text-decoration: none; color: #666;" onclick="event.preventDefault(); goToItineraries();">Mes itinéraires</a>
+        <a href="/my-favorites" style="text-decoration: none; color: #666;" onclick="event.preventDefault(); goToFavorites();">Mes favoris</a>
     </div>
 
     <!-- Déconnexion -->
@@ -26,5 +26,23 @@
 function logoutUser() {
     localStorage.removeItem('token');
     window.location.href = "/login";
+}
+
+function goToFavorites() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "/login";
+        return;
+    }
+    window.location.href = `/my-favorites?token=${token}`;
+}
+
+function goToItineraries() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = "/login";
+        return;
+    }
+    window.location.href = `/my-itineraries?token=${token}`;
 }
 </script>

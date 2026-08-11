@@ -10,12 +10,12 @@
     <div style="max-width: 1100px; margin: 0 auto;">
         
         <h2 style="font-weight: 700; margin-bottom: 10px; color: #1a1a1a;">Mes itinéraires</h2>
-        <p style="color: #777; margin-bottom: 30px;">Cliquez sur un itinéraire pour voir le détail complet et l'itinéraire GPS.</p>
+        <p style="color: #777; margin-bottom: 30px;">Cliquez sur un itinéraire pour voir le détail complet.</p>
 
         <div id="itineraries-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;">
             
             <div style="text-align: center; padding: 40px; color: #999; grid-column: 1/-1;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i> Chargement de vos itinéraires...
+                <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i> Chargement...
             </div>
 
         </div>
@@ -28,11 +28,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
     if (!token) { window.location.href = "/login"; return; }
 
+    // 1. Charger les destinations pour les noms
     fetch('/destinations')
         .then(response => response.json())
         .then(allDestinations => {
-            fetch('/itineraries', { headers: { 'Authorization': `Bearer ${token}` } })
-            .then(response => response.json())
+            
+            // 2. Charger les itinéraires
+            fetch('/api/itineraries', { 
+                headers: { 'Authorization': `Bearer ${token}` }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
+                return response.json();
+            })
             .then(itineraries => {
                 const grid = document.getElementById('itineraries-grid');
                 grid.innerHTML = '';
@@ -56,23 +64,26 @@ document.addEventListener('DOMContentLoaded', function() {
                         return foundDest ? foundDest.name : destId;
                     });
 
-                    const cleanNotes = itinerary.notes ? itinerary.notes.replace(/\\u00e7/g, 'ç').replace(/\\u00e9/g, 'é').replace(/\\u00e8/g, 'è') : '';
-
                     const card = document.createElement('div');
                     card.style.cssText = `
                         background: white; border-radius: 16px; padding: 25px;
                         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
                         transition: transform 0.3s;
-                        cursor: pointer;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
                     `;
                     card.onmouseover = function() { this.style.transform = 'translateY(-3px)'; };
                     card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
-                    // LA CARTE EST CLIQUABLE ! Redirection vers la page de détails
+                    
+                    // Redirection vers la page de détails
                     card.onclick = function() { 
-                        window.location.href = `/itinerary/${itinerary.id}`; 
+                        window.location.href = `/itinerary/${itinerary.id}?token=${token}`; 
                     };
 
-                    card.innerHTML = `
+                    // Contenu de la carte
+                    const infoDiv = document.createElement('div');
+                    infoDiv.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
                             <h4 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">${itinerary.title}</h4>
                             <span style="background: #e8f4fd; color: #0056b3; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${new Date(itinerary.created_at).toLocaleDateString('fr-FR')}</span>
@@ -89,14 +100,113 @@ document.addEventListener('DOMContentLoaded', function() {
                                     'Dates non définies'}
                             </span>
                         </div>
-                        ${cleanNotes ? `<div style="margin-top: 10px; font-size: 14px; color: #555; font-style: italic; border-top: 1px solid #f0f0f0; padding-top: 10px;">📝 ${cleanNotes}</div>` : ''}
+                        ${itinerary.notes ? `<div style="margin-top: 10px; font-size: 14px; color: #555; font-style: italic; border-top: 1px solid #f0f0f0; padding-top: 10px;">📝 ${itinerary.notes}</div>` : ''}
                     `;
+                    card.appendChild(infoDiv);
+
+                    // Boutons Modifier / Supprimer
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.style.cssText = `
+                        border-top: 1px solid #f0f0f0; padding-top: 15px; margin-top: 15px;
+                        display: flex; justify-content: flex-end; gap: 10px;
+                    `;
+                    actionsDiv.innerHTML = `
+                        <button onclick="event.stopPropagation(); editItinerary('${itinerary.id}')" style="background: transparent; border: 1px solid #0056b3; padding: 8px 20px; border-radius: 20px; color: #0056b3; font-weight: 500; cursor: pointer; transition: 0.3s;">
+                            <i class="fa-regular fa-pen-to-square"></i> Modifier
+                        </button>
+                        <button onclick="event.stopPropagation(); deleteItinerary('${itinerary.id}')" style="background: transparent; border: 1px solid #dc3545; padding: 8px 20px; border-radius: 20px; color: #dc3545; font-weight: 500; cursor: pointer; transition: 0.3s;">
+                            <i class="fa-regular fa-trash-can"></i> Supprimer
+                        </button>
+                    `;
+                    card.appendChild(actionsDiv);
+
                     grid.appendChild(card);
                 });
             })
-            .catch(error => { console.error('Erreur:', error); });
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.getElementById('itineraries-grid').innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: red;">
+                        <p>Erreur de chargement : ${error.message}</p>
+                    </div>
+                `;
+            });
         })
-        .catch(error => { console.error('Erreur:', error); });
+        .catch(error => {
+            console.error('Erreur destinations:', error);
+        });
 });
+
+// ============================================
+// FONCTIONS DE GESTION (Modifier / Supprimer)
+// ============================================
+
+function deleteItinerary(itineraryId) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Session expirée. Veuillez vous reconnecter."); return; }
+
+    if (!confirm("Voulez-vous vraiment supprimer cet itinéraire ? Cette action est irréversible.")) return;
+
+    fetch(`/api/itineraries/${itineraryId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Itinéraire supprimé avec succès !");
+            location.reload(); // Recharge la page
+        } else {
+            return response.json().then(errData => {
+                throw new Error(errData.error || "Erreur lors de la suppression.");
+            });
+        }
+    })
+    .catch(error => {
+        alert("Erreur : " + error.message);
+    });
+}
+
+function editItinerary(itineraryId) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Session expirée. Veuillez vous reconnecter."); return; }
+
+    const newTitle = prompt("Nouveau titre de l'itinéraire :");
+    if (newTitle === null) return;
+
+    const newStart = prompt("Nouvelle date de début (AAAA-MM-JJ) :");
+    if (newStart === null) return;
+
+    const newEnd = prompt("Nouvelle date de fin (AAAA-MM-JJ) :");
+    if (newEnd === null) return;
+
+    const newNotes = prompt("Nouvelles notes (optionnel) :") || "";
+
+    fetch(`/api/itineraries/${itineraryId}`, {
+        method: 'PUT',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            title: newTitle,
+            start_date: newStart,
+            end_date: newEnd,
+            notes: newNotes
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Itinéraire modifié avec succès !");
+            location.reload();
+        } else {
+            return response.json().then(errData => {
+                throw new Error(errData.error || "Erreur lors de la modification.");
+            });
+        }
+    })
+    .catch(error => {
+        alert("Erreur : " + error.message);
+    });
+}
 </script>
 {% endblock %}
