@@ -4,6 +4,7 @@ import os
 import requests
 import jwt
 import random
+from datetime import datetime
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "microservices-secret-key-change-in-prod"
@@ -96,12 +97,28 @@ def api_gallery_images(dest_id):
 
 
 # ============================================================
-# MOTEUR DE RECOMMANDATION AVEC "BON PLAN AMOUREUX"
+# SMART PLANNER ENGINE
 # ============================================================
 
-def get_destination_by_id(dest_id):
-    destinations = read_destinations()
-    return next((d for d in destinations if d.get('id') == dest_id), None)
+# Matrice Mood / Période (score de compatibilité)
+MOOD_TIME_MATRIX = {
+    "relax":    {"matin": 5, "apres_midi": 5, "soir": 4, "nuit": 2},
+    "ambiance": {"matin": 1, "apres_midi": 2, "soir": 5, "nuit": 5},
+    "decouverte": {"matin": 5, "apres_midi": 5, "soir": 3, "nuit": 1},
+    "romantique": {"matin": 3, "apres_midi": 4, "soir": 5, "nuit": 4},
+    "famille":  {"matin": 5, "apres_midi": 5, "soir": 3, "nuit": 0},
+    "amis":     {"matin": 3, "apres_midi": 4, "soir": 5, "nuit": 5},
+    "food":     {"matin": 4, "apres_midi": 4, "soir": 5, "nuit": 3},
+    "evasion":  {"matin": 4, "apres_midi": 5, "soir": 4, "nuit": 2}
+}
+
+def get_period_from_time(time_str):
+    if time_str == '2h' or time_str == 'soir':
+        return 'soir'
+    if time_str == 'nuit':
+        return 'nuit'
+    # Pour les autres cas, on déduit par la suite
+    return None
 
 @app.route("/api/build-itinerary", methods=["POST"])
 def build_itinerary():
@@ -113,76 +130,147 @@ def build_itinerary():
     surprise = data.get("surprise", "non")
 
     destinations = read_destinations()
+    current_hour = datetime.now().hour
 
     # =============================================================
-    # 1. SI L'UTILISATEUR CHOISIT ROMANTIQUE + WEEKEND + MOYEN/PREMIUM
-    #    ON LUI PROPOSE LE "BON PLAN AMOUREUX" PRÉ-DÉFINI
+    # ÉTAPE 1 : FILTRE DUR (Élimination des lieux impossibles)
     # =============================================================
+    
+    candidates = []
+    for d in destinations:
+        # 1. Vérifier si le lieu est ouvert à cette heure
+        opening = d.get('opening_hours', '')
+        if opening and opening != '00:00-23:59':
+            try:
+                open_start, open_end = opening.split('-')
+                open_hour = int(open_start.split(':')[0])
+                close_hour = int(open_end.split(':')[0])
+                if not (open_hour <= current_hour < close_hour):
+                    continue
+            except:
+                pass
+
+        # 2. Vérifier la compatibilité MOOD (via mood_scores)
+        mood_scores = d.get('mood_scores', {})
+        if mood_scores.get(mood, 0) < 20:
+            continue
+
+        # 3. Vérifier le BUDGET (via budget_min / budget_max)
+        budget_min = d.get('budget_min', 0)
+        budget_max = d.get('budget_max', 999999)
+        if budget == 'petit' and budget_min > 2000:
+            continue
+        if budget == 'moyen' and budget_max < 2000 and budget_min > 10000:
+            continue
+        if budget == 'premium' and budget_max < 5000:
+            continue
+
+        # 4. Vérifier la DURÉE
+        duration_min = d.get('duration_min', 0)
+        duration_max = d.get('duration_max', 999)
+        if time == '2h' and duration_max > 180:
+            continue
+        if time == 'demi' and duration_max > 240:
+            continue
+
+        # 5. Règle d'exclusion : Ambiance + Matin → pas de lieux culturels
+        if mood == 'ambiance' and 6 <= current_hour < 12:
+            if d.get('type') == 'decouvrir' or not d.get('is_nightlife', False):
+                continue
+
+        # 6. Règle d'exclusion : Famille + Nuit → éliminé
+        if mood == 'famille' and current_hour >= 22:
+            continue
+
+        candidates.append(d)
+
+    # =============================================================
+    # ÉTAPE 2 : SCORE (Classement des lieux restants)
+    # =============================================================
+
+    # Déterminer la période
+    period = 'matin'
+    if current_hour >= 18:
+        period = 'soir'
+    elif current_hour >= 22:
+        period = 'nuit'
+    elif current_hour >= 12:
+        period = 'apres_midi'
+
+    scored = []
+    for d in candidates:
+        score = 0
+        
+        # Score Mood (35%) : basé sur les mood_scores
+        mood_score = d.get('mood_scores', {}).get(mood, 0)
+        score += mood_score * 0.35
+
+        # Score Période (20%) : basé sur la matrice
+        time_score = d.get('time_scores', {}).get(period, 50)
+        score += time_score * 0.20
+
+        # Score Budget (10%)
+        budget_min = d.get('budget_min', 0)
+        budget_max = d.get('budget_max', 999999)
+        if budget == 'petit' and budget_min <= 2000:
+            score += 10
+        elif budget == 'moyen' and budget_min <= 10000:
+            score += 8
+        elif budget == 'premium' and budget_min > 5000:
+            score += 10
+        else:
+            score += 5
+
+        # Score Activité (15%)
+        if d.get('activities') and len(d.get('activities', [])) > 0:
+            score += 15
+
+        # Score Popularité (5%)
+        score += min(d.get('reviews', 0) / 100 * 5, 5)
+
+        # Score Distance (10%) : fictif, car on n'a pas de GPS en temps réel
+        score += 10
+
+        scored.append((score, d))
+
+    scored.sort(key=lambda x: -x[0])
+
+    # =============================================================
+    # ÉTAPE 3 : CONSTRUCTION DU PROGRAMME
+    # =============================================================
+
+    # Si c'est un plan romantique spécial
     if mood == 'romantique' and time == 'weekend' and budget in ['moyen', 'premium']:
-        # Lieux du plan amoureux
-        les_mangroves = get_destination_by_id('dla-151')
-        one_rooftop = get_destination_by_id('dla-153')
-        nshi_pool_bar = get_destination_by_id('dla-152')
-        
-        # On ne garde que les lieux qui existent
-        romantic_plan = []
-        if les_mangroves: romantic_plan.append(les_mangroves)
-        if one_rooftop: romantic_plan.append(one_rooftop)
-        if nshi_pool_bar: romantic_plan.append(nshi_pool_bar)
-        
-        # Si on a au moins 2 lieux, on retourne ce plan spécial
-        if len(romantic_plan) >= 2:
+        # On force les lieux romantiques à être en haut du classement
+        romantic_ids = ['dla-132', 'dla-133', 'dla-134', 'dla-135', 'dla-136']
+        romantic_candidates = [d for d in candidates if d.get('id') in romantic_ids]
+        if len(romantic_candidates) >= 2:
             return jsonify({
                 "type": "romantic_plan",
-                "plan": romantic_plan
+                "time": time,
+                "plan": romantic_candidates[:3]
             }), 200
 
-    # =============================================================
-    # 2. SI CE N'EST PAS UN PLAN AMOUREUX, ON UTILISE LE MOTEUR CLASSIQUE
-    # =============================================================
-    # Filtrer par MOOD
-    mood_results = []
-    for d in destinations:
-        if d.get('mood') and mood in d['mood']:
-            mood_results.append(d)
-
-    # Filtrer par SEARCH
-    search_results = []
-    if search:
-        for d in mood_results:
-            if d.get('search') and search in d['search']:
-                search_results.append(d)
-        if not search_results:
-            search_results = mood_results
+    # Si c'est 2h, on ne garde qu'un seul lieu (ou 2 max)
+    if time == '2h':
+        final_results = [d for _, d in scored[:2]]
     else:
-        search_results = mood_results
-
-    # Filtrer par BUDGET
-    budget_results = []
-    for d in search_results:
-        level = d.get('budget_level', 'moyen')
-        if budget == 'petit':
-            if level in ['economique', 'moyen']:
-                budget_results.append(d)
-        elif budget == 'moyen':
-            if level in ['economique', 'moyen', 'plaisir']:
-                budget_results.append(d)
-        elif budget == 'premium':
-            if level in ['plaisir', 'premium']:
-                budget_results.append(d)
-        else:
-            budget_results.append(d)
+        final_results = [d for _, d in scored[:6]]
 
     # Surprise
-    final_results = budget_results[:6]
-    if surprise == 'oui' and len(budget_results) > 6:
-        remaining = [d for d in budget_results if d not in final_results]
+    if surprise == 'oui' and len(candidates) > len(final_results):
+        remaining = [d for d in candidates if d not in final_results]
         if remaining:
             surprise_place = random.choice(remaining)
             final_results.append(surprise_place)
 
+    # Vérification finale : est-ce réalisable ?
+    if not final_results:
+        return jsonify({"type": "classic", "time": time, "plan": []}), 200
+
     return jsonify({
         "type": "classic",
+        "time": time,
         "plan": final_results[:6]
     }), 200
 
@@ -200,36 +288,25 @@ def replace_suggestion():
     budget = data.get("budget", "")
 
     destinations = read_destinations()
+    current_hour = datetime.now().hour
 
     mood_results = []
     for d in destinations:
-        if d.get('mood') and mood in d['mood']:
+        mood_scores = d.get('mood_scores', {})
+        if mood_scores.get(mood, 0) >= 20:
             mood_results.append(d)
 
-    search_results = []
-    if search:
-        for d in mood_results:
-            if d.get('search') and search in d['search']:
-                search_results.append(d)
-        if not search_results:
-            search_results = mood_results
-    else:
-        search_results = mood_results
-
     budget_results = []
-    for d in search_results:
-        level = d.get('budget_level', 'moyen')
-        if budget == 'petit':
-            if level in ['economique', 'moyen']:
-                budget_results.append(d)
-        elif budget == 'moyen':
-            if level in ['economique', 'moyen', 'plaisir']:
-                budget_results.append(d)
-        elif budget == 'premium':
-            if level in ['plaisir', 'premium']:
-                budget_results.append(d)
-        else:
-            budget_results.append(d)
+    for d in mood_results:
+        budget_min = d.get('budget_min', 0)
+        budget_max = d.get('budget_max', 999999)
+        if budget == 'petit' and budget_min > 2000:
+            continue
+        if budget == 'moyen' and budget_max < 2000 and budget_min > 10000:
+            continue
+        if budget == 'premium' and budget_max < 5000:
+            continue
+        budget_results.append(d)
 
     candidates = [d for d in budget_results if d.get('id') != current_id]
 

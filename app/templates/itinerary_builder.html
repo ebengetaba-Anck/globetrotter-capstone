@@ -145,7 +145,7 @@ function generateProgram() {
     const resultDiv = document.getElementById('program-result');
     const container = document.getElementById('program-content');
     resultDiv.style.display = 'block';
-    container.innerHTML = '<p style="color: #666; text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Ô\'MBOA prépare votre journée...</p>';
+    container.innerHTML = '<p style="color: #666; text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Ô\'MBOA prépare votre sortie...</p>';
 
     const surprise = document.querySelector('input[name="surprise"]:checked').value;
 
@@ -164,6 +164,7 @@ function generateProgram() {
     .then(data => {
         generatedDestinations = data.plan || [];
         const planType = data.type || 'classic';
+        const selectedTime = data.time || 'journee';
 
         const moodMap = {
             'relax': '😌 Besoin de souffler',
@@ -187,9 +188,19 @@ function generateProgram() {
             'weekend': '⏱ Weekend'
         };
 
+        // TITRE DYNAMIQUE
+        let title = "✨ J'ai préparé ta journée !";
+        if (selectedTime === '2h') {
+            title = "✨ J'ai préparé ta sortie !";
+        } else if (selectedTime === 'demi') {
+            title = "✨ J'ai préparé ton après-midi !";
+        } else if (selectedTime === 'weekend') {
+            title = "✨ J'ai préparé ton weekend !";
+        }
+
         let html = `
             <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
-                <h4 style="font-weight: 600; margin-bottom: 5px; color: #1a1a1a;">✨ J'ai préparé ta journée !</h4>
+                <h4 style="font-weight: 600; margin-bottom: 5px; color: #1a1a1a;">${title}</h4>
                 <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; color: #666; font-size: 14px;">
                     <span>${moodMap[selectedMood] || selectedMood}</span>
                     <span>•</span>
@@ -252,18 +263,27 @@ function generateProgram() {
         }
 
         let displayCount = 0;
-        let hasMorning = false;
-        let hasAfternoon = false;
-        let hasEvening = false;
 
-        // Répartir les lieux selon le nombre
-        const morning = generatedDestinations.slice(0, 2);
-        const afternoon = generatedDestinations.slice(2, 4);
-        const evening = generatedDestinations.slice(4, 6);
+        // =============================================================
+        // LOGIQUE D'AFFICHAGE : SI 2h, ON COMMENCE DIRECTEMENT LE SOIR
+        // =============================================================
 
-        // MATIN / DÉBUT
+        let morning = [];
+        let afternoon = [];
+        let evening = [];
+
+        if (selectedTime === '2h') {
+            // Si c'est une courte durée, tout va dans le soir
+            evening = generatedDestinations.slice(0, 4);
+        } else {
+            // Répartition classique
+            morning = generatedDestinations.slice(0, 2);
+            afternoon = generatedDestinations.slice(2, 4);
+            evening = generatedDestinations.slice(4, 6);
+        }
+
+        // MATIN (seulement si ce n'est pas 2h)
         if (morning.length > 0) {
-            hasMorning = true;
             const title = planType === 'romantic_plan' ? "🌅 On commence doucement" : "🌅 Matin";
             html += `
                     <div style="margin-bottom: 25px;">
@@ -299,9 +319,8 @@ function generateProgram() {
             html += `</div>`;
         }
 
-        // APRÈS-MIDI / MILIEU
+        // APRÈS-MIDI (seulement si ce n'est pas 2h)
         if (afternoon.length > 0) {
-            hasAfternoon = true;
             const title = planType === 'romantic_plan' ? "☀️ Le cœur de la journée" : "☀️ Après-midi";
             html += `
                     <div style="margin-bottom: 25px;">
@@ -337,10 +356,13 @@ function generateProgram() {
             html += `</div>`;
         }
 
-        // SOIR / FIN
+        // SOIR (toujours affiché)
         if (evening.length > 0) {
-            hasEvening = true;
-            const title = planType === 'romantic_plan' ? "🌙 La touche finale" : "🌙 Soir";
+            let title = planType === 'romantic_plan' ? "🌙 La touche finale" : "🌙 Soir";
+            // Si c'est 2h, on change le titre pour "🔥 La soirée"
+            if (selectedTime === '2h') {
+                title = "🔥 La soirée";
+            }
             html += `
                     <div style="margin-bottom: 25px;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
@@ -384,7 +406,6 @@ function generateProgram() {
         ];
         const randomTip = tips[Math.floor(Math.random() * tips.length)];
 
-        // MESSAGE SPÉCIAL POUR LE PLAN ROMANTIQUE
         let romanticEnding = '';
         if (planType === 'romantic_plan') {
             romanticEnding = `
