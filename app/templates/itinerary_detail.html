@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Mes itinéraires - Ô'MBOA{% endblock %}
+{% block title %}Détail de l'itinéraire - Ô'MBOA{% endblock %}
 
 {% block content %}
 
@@ -9,94 +9,68 @@
 <div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
     <div style="max-width: 1100px; margin: 0 auto;">
         
-        <h2 style="font-weight: 700; margin-bottom: 10px; color: #1a1a1a;">Mes itinéraires</h2>
-        <p style="color: #777; margin-bottom: 30px;">Cliquez sur un itinéraire pour voir le détail complet et l'itinéraire GPS.</p>
+        <a href="#" onclick="window.location.href='/my-itineraries?token='+localStorage.getItem('token')" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; margin-bottom: 25px; font-weight: 500;">
+            <i class="fa-solid fa-arrow-left"></i> Retour à mes itinéraires
+        </a>
 
-        <div id="itineraries-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;">
-            
-            <div style="text-align: center; padding: 40px; color: #999; grid-column: 1/-1;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i> Chargement de vos itinéraires...
+        <h2 style="font-weight: 700; margin-bottom: 5px; color: #1a1a1a;">{{ itinerary.title }}</h2>
+        <p style="color: #777; margin-bottom: 30px;">
+            Créé le {{ itinerary.created_at[:10] }}
+        </p>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
+            <!-- Colonne gauche : Destinations -->
+            <div>
+                <h4 style="font-weight: 600; margin-bottom: 15px;">📍 Destinations</h4>
+                {% if destination_details %}
+                    {% for dest in destination_details %}
+                    <div onclick="window.location.href='/destination?id={{ dest.id }}'" style="background: white; border-radius: 12px; padding: 15px 20px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); cursor: pointer; transition: 0.3s;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="font-size: 16px;">{{ dest.name }}</strong>
+                                <div style="font-size: 13px; color: #666;">{{ dest.quartier or 'Douala' }}</div>
+                            </div>
+                            <span style="font-weight: 600; color: #0056b3;">{{ dest.avg_cost or 0 }} FCFA</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: #999;">Aucune destination dans cet itinéraire.</p>
+                {% endif %}
+
+                {% if itinerary.notes %}
+                <div style="margin-top: 20px; background: white; border-radius: 12px; padding: 15px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                    <h4 style="font-weight: 600; margin-bottom: 5px;">📝 Notes</h4>
+                    <p style="color: #555; margin: 0;">{{ itinerary.notes }}</p>
+                </div>
+                {% endif %}
             </div>
 
+            <!-- Colonne droite : Infos -->
+            <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); align-self: start;">
+                <h4 style="font-weight: 600; margin-bottom: 15px;">📅 Détails</h4>
+                <div style="margin-bottom: 12px;">
+                    <strong style="color: #555;">Dates :</strong>
+                    <div style="color: #333;">
+                        {% if itinerary.start_date and itinerary.end_date %}
+                            Du {{ itinerary.start_date }} au {{ itinerary.end_date }}
+                        {% else %}
+                            Dates non définies
+                        {% endif %}
+                    </div>
+                </div>
+                <div style="margin-bottom: 12px;">
+                    <strong style="color: #555;">Destinations :</strong>
+                    <div style="color: #333;">{{ destination_details|length }}</div>
+                </div>
+                <div style="border-top: 1px solid #f0f0f0; padding-top: 15px; margin-top: 10px;">
+                    <button onclick="window.location.href='/itinerary-builder'" style="width: 100%; padding: 12px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                        <i class="fa-solid fa-plus"></i> Ajouter des destinations
+                    </button>
+                </div>
+            </div>
         </div>
 
     </div>
 </div>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('token');
-    if (!token) { window.location.href = "/login"; return; }
-
-    fetch('/destinations')
-        .then(response => response.json())
-        .then(allDestinations => {
-            fetch('/itineraries', { headers: { 'Authorization': `Bearer ${token}` } })
-            .then(response => response.json())
-            .then(itineraries => {
-                const grid = document.getElementById('itineraries-grid');
-                grid.innerHTML = '';
-
-                if (itineraries.length === 0) {
-                    grid.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">
-                            <i class="fa-solid fa-suitcase-rolling" style="font-size: 50px; color: #ccc; margin-bottom: 15px; display: block;"></i>
-                            Vous n'avez pas encore d'itinéraire.<br>
-                            <a href="/dashboard" style="color: #0056b3; text-decoration: none; font-weight: 600;">Explorer les destinations</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                itineraries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-                itineraries.forEach(itinerary => {
-                    const destinationNames = itinerary.destinations.map(destId => {
-                        const foundDest = allDestinations.find(d => d.id == destId);
-                        return foundDest ? foundDest.name : destId;
-                    });
-
-                    const cleanNotes = itinerary.notes ? itinerary.notes.replace(/\\u00e7/g, 'ç').replace(/\\u00e9/g, 'é').replace(/\\u00e8/g, 'è') : '';
-
-                    const card = document.createElement('div');
-                    card.style.cssText = `
-                        background: white; border-radius: 16px; padding: 25px;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-                        transition: transform 0.3s;
-                        cursor: pointer;
-                    `;
-                    card.onmouseover = function() { this.style.transform = 'translateY(-3px)'; };
-                    card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
-                    // Redirection vers la page de détails avec le token dans l'URL
-                    card.onclick = function() { 
-                        window.location.href = `/itinerary/${itinerary.id}?token=${token}`; 
-                    };
-
-                    card.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                            <h4 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">${itinerary.title}</h4>
-                            <span style="background: #e8f4fd; color: #0056b3; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${new Date(itinerary.created_at).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                        <div style="margin-top: 15px; font-size: 14px; color: #555; line-height: 1.6;">
-                            <strong style="color: #333;">Destinations :</strong> 
-                            <span style="display: block; margin-top: 5px;">${destinationNames.length > 0 ? destinationNames.join(' → ') : 'Aucune destination'}</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px; color: #555;">
-                            <strong style="color: #333;">Dates :</strong>
-                            <span style="display: block; margin-top: 5px;">
-                                ${itinerary.start_date && itinerary.end_date ? 
-                                    `Du ${itinerary.start_date} au ${itinerary.end_date}` : 
-                                    'Dates non définies'}
-                            </span>
-                        </div>
-                        ${cleanNotes ? `<div style="margin-top: 10px; font-size: 14px; color: #555; font-style: italic; border-top: 1px solid #f0f0f0; padding-top: 10px;">📝 ${cleanNotes}</div>` : ''}
-                    `;
-                    grid.appendChild(card);
-                });
-            })
-            .catch(error => { console.error('Erreur:', error); });
-        })
-        .catch(error => { console.error('Erreur:', error); });
-});
-</script>
 {% endblock %}

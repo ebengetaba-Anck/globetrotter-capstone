@@ -174,5 +174,45 @@
     "rating": 1,
     "comment": "j aime bien",
     "date": "2026-08-06"
+  },
+  {
+    "id": "1",
+    "destination_id": "dla-107",
+    "username": "bobo",
+    "rating": 3,
+    "comment": "trop cool",
+    "created_at": "28/08/2026"
+  },
+  {
+    "id": "2",
+    "destination_id": "dla-107",
+    "username": "bobo",
+    "rating": 3,
+    "comment": "trop cool",
+    "created_at": "28/08/2026"
+  },
+  {
+    "id": "3",
+    "destination_id": "dla-107",
+    "username": "bobo",
+    "rating": 3,
+    "comment": "trop cool",
+    "created_at": "28/08/2026"
+  },
+  {
+    "id": "4",
+    "destination_id": "dla-107",
+    "username": "bobo",
+    "rating": 3,
+    "comment": "trop cool",
+    "created_at": "28/08/2026"
+  },
+  {
+    "id": "5",
+    "destination_id": "dla-107",
+    "username": "bobo",
+    "rating": 3,
+    "comment": "cool",
+    "created_at": "28/08/2026"
   }
 ]

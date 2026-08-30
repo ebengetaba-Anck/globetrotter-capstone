@@ -1,158 +1,235 @@
 [
   {
-    "id": "taxi-001",
-    "type": "taxi_classique",
-    "chauffeur": "Jean Mbarga",
-    "vehicule": "Toyota Corolla jaune",
-    "quartier_base": "Bonanjo",
-    "capacite": 4,
-    "tags": ["economique", "depot", "aller-simple"],
-    "prix_min": 3500,
-    "prix_max": 3500,
-    "disponible": true
+    "id": "trp-001",
+    "category": "courses",
+    "name": "Course ponctuelle",
+    "description": "Déplacement d'un point A à un point B en ville",
+    "icon": "fa-solid fa-car",
+    "subcategories": [
+      {
+        "id": "trp-001-01",
+        "name": "Yango Éco",
+        "description": "Course économique en ville",
+        "price": "À partir de 1 500 FCFA",
+        "eta": "5-15 min"
+      },
+      {
+        "id": "trp-001-02",
+        "name": "Yango Confort",
+        "description": "Course confortable",
+        "price": "À partir de 2 500 FCFA",
+        "eta": "5-15 min"
+      },
+      {
+        "id": "trp-001-03",
+        "name": "Yango Moto",
+        "description": "Rapide dans les embouteillages",
+        "price": "À partir de 1 000 FCFA",
+        "eta": "3-10 min"
+      }
+    ]
   },
   {
-    "id": "taxi-002",
-    "type": "taxi_classique",
-    "chauffeur": "Paul Nkeng",
-    "vehicule": "Toyota Corolla jaune",
-    "quartier_base": "Akwa",
-    "capacite": 4,
-    "tags": ["economique", "depot", "aller-simple"],
-    "prix_min": 3500,
-    "prix_max": 3500,
-    "disponible": true
+    "id": "trp-002",
+    "category": "depot",
+    "name": "Dépôt",
+    "description": "Vous déposez quelqu'un ou attendez un passager",
+    "icon": "fa-solid fa-clock",
+    "subcategories": [
+      {
+        "id": "trp-002-01",
+        "name": "Dépôt express",
+        "description": "Dépose rapide en centre-ville",
+        "price": "À partir de 1 000 FCFA",
+        "eta": "5-10 min"
+      },
+      {
+        "id": "trp-002-02",
+        "name": "Dépôt avec attente",
+        "description": "Dépose avec 15 min d'attente incluse",
+        "price": "À partir de 2 000 FCFA",
+        "eta": "5-15 min"
+      }
+    ]
   },
   {
-    "id": "taxi-003",
-    "type": "moto_taxi",
-    "chauffeur": "Eric Fotso",
-    "vehicule": "Moto Bend-Skin",
-    "quartier_base": "Marche Central",
-    "capacite": 1,
-    "tags": ["rapide", "economique", "embouteillage"],
-    "prix_min": 1500,
-    "prix_max": 2000,
-    "disponible": true
+    "id": "trp-003",
+    "category": "transferts",
+    "name": "Transferts",
+    "description": "Transferts aéroport, gare, domicile",
+    "icon": "fa-solid fa-plane",
+    "subcategories": [
+      {
+        "id": "trp-003-01",
+        "name": "Aéroport → Hôtel",
+        "description": "Transfert de l'aéroport vers votre hôtel",
+        "price": "À partir de 5 000 FCFA",
+        "eta": "30-45 min",
+        "luggage": "2 valises incluses"
+      },
+      {
+        "id": "trp-003-02",
+        "name": "Hôtel → Aéroport",
+        "description": "Transfert de votre hôtel vers l'aéroport",
+        "price": "À partir de 5 000 FCFA",
+        "eta": "30-45 min",
+        "luggage": "2 valises incluses"
+      },
+      {
+        "id": "trp-003-03",
+        "name": "Gare → Hôtel",
+        "description": "Transfert de la gare vers votre hôtel",
+        "price": "À partir de 3 500 FCFA",
+        "eta": "20-35 min",
+        "luggage": "2 valises incluses"
+      },
+      {
+        "id": "trp-003-04",
+        "name": "Domicile → Destination",
+        "description": "Prise en charge à domicile",
+        "price": "À partir de 2 500 FCFA",
+        "eta": "10-20 min"
+      }
+    ]
   },
   {
-    "id": "taxi-004",
-    "type": "moto_taxi",
-    "chauffeur": "Samuel Njoya",
-    "vehicule": "Moto Bend-Skin",
-    "quartier_base": "New Bell",
-    "capacite": 1,
-    "tags": ["rapide", "economique", "embouteillage"],
-    "prix_min": 1500,
-    "prix_max": 2000,
-    "disponible": true
+    "id": "trp-004",
+    "category": "circuits",
+    "name": "Circuits touristiques",
+    "description": "Découvrez Douala en toute simplicité",
+    "icon": "fa-solid fa-route",
+    "circuits": [
+      {
+        "id": "trp-004-01",
+        "name": "Circuit Douala Culture",
+        "description": "Découverte du patrimoine culturel de Douala",
+        "duration": "3-4 heures",
+        "price": "À partir de 15 000 FCFA",
+        "stops": [
+          "Bonanjo",
+          "Musée Maritime",
+          "Doual'art",
+          "La Pagode",
+          "Marché des Fleurs"
+        ]
+      },
+      {
+        "id": "trp-004-02",
+        "name": "Circuit Douala Gastronomie",
+        "description": "Découverte des saveurs de Douala",
+        "duration": "3-4 heures",
+        "price": "À partir de 18 000 FCFA",
+        "stops": [
+          "Marché aux Poissons de Youpwe",
+          "Chez Chepélé",
+          "Restaurant Kotcha",
+          "Restaurant Piccola Venezia",
+          "Dégustation de fruits de mer"
+        ]
+      },
+      {
+        "id": "trp-004-03",
+        "name": "Circuit Douala Nature",
+        "description": "Évasion au bord du Wouri",
+        "duration": "4-6 heures",
+        "price": "À partir de 25 000 FCFA",
+        "stops": [
+          "Fleuve Wouri",
+          "Pont sur le Wouri",
+          "Les Mangroves",
+          "Parc National de Douala-Édéa",
+          "Coucher de soleil sur le Wouri"
+        ]
+      },
+      {
+        "id": "trp-004-04",
+        "name": "Circuit Douala Nightlife",
+        "description": "La nuit doualaise version premium",
+        "duration": "5-7 heures",
+        "price": "À partir de 30 000 FCFA",
+        "stops": [
+          "One Rooftop (Apéritif)",
+          "N'shi Pool Bar (Cocktails)",
+          "Le Club des Cinq (Soirée)",
+          "OPIOM Lounge",
+          "Retour à l'hôtel"
+        ]
+      }
+    ]
   },
   {
-    "id": "taxi-005",
-    "type": "vtc_confort",
-    "chauffeur": "Michel Ateba",
-    "vehicule": "Berline climatisee",
-    "quartier_base": "Bonapriso",
-    "capacite": 4,
-    "tags": ["confort", "climatisation", "app"],
-    "prix_min": 4500,
-    "prix_max": 7000,
-    "disponible": true
+    "id": "trp-005",
+    "category": "chauffeur-prive",
+    "name": "Chauffeur privé",
+    "description": "Un chauffeur à votre disposition",
+    "icon": "fa-solid fa-user-tie",
+    "formules": [
+      {
+        "id": "trp-005-01",
+        "name": "1 heure",
+        "description": "Course rapide en ville",
+        "price": "À partir de 5 000 FCFA"
+      },
+      {
+        "id": "trp-005-02",
+        "name": "2 heures",
+        "description": "Plusieurs arrêts en ville",
+        "price": "À partir de 8 000 FCFA"
+      },
+      {
+        "id": "trp-005-03",
+        "name": "4 heures",
+        "description": "Demi-journée en ville",
+        "price": "À partir de 12 000 FCFA"
+      },
+      {
+        "id": "trp-005-04",
+        "name": "8 heures",
+        "description": "Journée complète",
+        "price": "À partir de 20 000 FCFA"
+      },
+      {
+        "id": "trp-005-05",
+        "name": "Demi-journée",
+        "description": "Matin ou après-midi",
+        "price": "À partir de 15 000 FCFA"
+      },
+      {
+        "id": "trp-005-06",
+        "name": "Journée complète",
+        "description": "9h00 - 19h00",
+        "price": "À partir de 25 000 FCFA"
+      }
+    ]
   },
   {
-    "id": "taxi-006",
-    "type": "vtc_confort",
-    "chauffeur": "David Essomba",
-    "vehicule": "Citadine confort",
-    "quartier_base": "Akwa",
-    "capacite": 4,
-    "tags": ["confort", "app"],
-    "prix_min": 4500,
-    "prix_max": 7000,
-    "disponible": true
-  },
-  {
-    "id": "taxi-007",
-    "type": "taxi_classique",
-    "chauffeur": "Andre Talla",
-    "vehicule": "Toyota Corolla jaune",
-    "quartier_base": "Bepanda",
-    "capacite": 4,
-    "tags": ["economique", "depot", "aller-simple"],
-    "prix_min": 3500,
-    "prix_max": 3500,
-    "disponible": false
-  },
-  {
-    "id": "taxi-008",
-    "type": "moto_taxi",
-    "chauffeur": "Christian Owona",
-    "vehicule": "Moto Bend-Skin",
-    "quartier_base": "Bonaberi",
-    "capacite": 1,
-    "tags": ["rapide", "economique"],
-    "prix_min": 1500,
-    "prix_max": 2000,
-    "disponible": true
-  },
-  {
-    "id": "taxi-009",
-    "type": "vtc_aeroport",
-    "chauffeur": "Robert Manga",
-    "vehicule": "Berline climatisee",
-    "quartier_base": "Texaco Aeroport",
-    "capacite": 4,
-    "tags": ["aeroport", "app", "confort"],
-    "prix_min": 10000,
-    "prix_max": 10000,
-    "disponible": true
-  },
-  {
-    "id": "taxi-010",
-    "type": "taxi_classique",
-    "chauffeur": "Francois Biya",
-    "vehicule": "Toyota Corolla jaune",
-    "quartier_base": "Youpwe",
-    "capacite": 4,
-    "tags": ["economique", "depot", "aller-simple"],
-    "prix_min": 3500,
-    "prix_max": 3500,
-    "disponible": true
-  },
-  {
-    "id": "taxi-011",
-    "type": "van_familial",
-    "chauffeur": "Patrice Ekwalla",
-    "vehicule": "Toyota Hiace (van 8 places)",
-    "quartier_base": "Bonapriso",
-    "capacite": 8,
-    "tags": ["famille", "groupe", "bagages"],
-    "prix_min": 8000,
-    "prix_max": 12000,
-    "disponible": true
-  },
-  {
-    "id": "taxi-012",
-    "type": "van_familial",
-    "chauffeur": "Georges Mbappe",
-    "vehicule": "Minibus 12 places",
-    "quartier_base": "Akwa",
-    "capacite": 12,
-    "tags": ["famille", "groupe", "excursion"],
-    "prix_min": 15000,
-    "prix_max": 20000,
-    "disponible": true
-  },
-  {
-    "id": "taxi-013",
-    "type": "van_familial",
-    "chauffeur": "Innocent Zang",
-    "vehicule": "Toyota Hiace (van 8 places)",
-    "quartier_base": "Texaco Aeroport",
-    "capacite": 8,
-    "tags": ["famille", "groupe", "aeroport", "bagages"],
-    "prix_min": 12000,
-    "prix_max": 15000,
-    "disponible": true
+    "id": "trp-006",
+    "category": "groupe",
+    "name": "Groupe",
+    "description": "Transport pour groupes",
+    "icon": "fa-solid fa-users",
+    "vehicules": [
+      {
+        "id": "trp-006-01",
+        "name": "Van 7 places",
+        "description": "Idéal pour les familles",
+        "capacity": "7 passagers",
+        "price": "À partir de 10 000 FCFA/heure"
+      },
+      {
+        "id": "trp-006-02",
+        "name": "Minibus 15 places",
+        "description": "Idéal pour les entreprises et écoles",
+        "capacity": "15 passagers",
+        "price": "À partir de 15 000 FCFA/heure"
+      },
+      {
+        "id": "trp-006-03",
+        "name": "Véhicule familial 5 places",
+        "description": "Idéal pour les petites familles",
+        "capacity": "5 passagers",
+        "price": "À partir de 6 000 FCFA/heure"
+      }
+    ]
   }
 ]

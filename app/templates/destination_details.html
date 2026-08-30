@@ -4,527 +4,704 @@
 
 {% block content %}
 
-{% include "navbar.html" %}
+<div class="container py-4" style="max-width:1200px;">
 
-<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
-    <div style="max-width: 1200px; margin: 0 auto;">
+    <!-- Fil d'Ariane -->
+    <nav style="font-size:14px;color:#64748b;margin-bottom:20px;">
+        <a href="/" style="color:#64748b;text-decoration:none;">Accueil</a> › 
+        <a href="/destinations" style="color:#64748b;text-decoration:none;">Découvrir</a> › 
+        <span style="color:#0f172a;font-weight:500;">{{ destination.name }}</span>
+    </nav>
 
-        <!-- Fil d'Ariane et bouton retour -->
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <a href="/dashboard" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; font-weight: 500;">
-                <i class="fa-solid fa-arrow-left"></i> Retour à l'exploration
-            </a>
-            <div style="display: flex; gap: 15px;">
-                <button onclick="toggleFavorite(destId)" style="background: transparent; border: none; cursor: pointer; color: #dc3545; font-size: 16px; display: flex; align-items: center; gap: 5px;">
-                    <i id="detail-heart" class="fa-regular fa-heart"></i> Ajouter aux favoris
-                </button>
-                <button style="background: transparent; border: none; cursor: pointer; color: #333; font-size: 16px; display: flex; align-items: center; gap: 5px;">
-                    <i class="fa-solid fa-share-nodes"></i> Partager
-                </button>
-            </div>
-        </div>
+    <div class="row g-4">
 
-        <!-- TITRE PRINCIPAL -->
-        <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px;">{{ destination.name }}</h1>
-        
-        <!-- Note et Avis -->
-        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 20px;">
-            <span style="background: #1a1a1a; color: white; padding: 3px 12px; border-radius: 4px; font-size: 12px; font-weight: 600;">Très bien noté</span>
-            <span style="display: flex; align-items: center; gap: 5px; font-weight: 600;">
-                <i class="fa-solid fa-star" style="color: #f5a623;"></i> <span id="avg-rating-display">0.0</span>
-            </span>
-            <span style="color: #666; font-size: 14px;">(<span id="review-count-display">0</span> avis)</span>
-            <span style="color: #ccc;">•</span>
-            <span style="color: #555; font-size: 14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
-        </div>
+        <!-- ============================================================ -->
+        <!-- COLONNE GAUCHE -->
+        <!-- ============================================================ -->
+        <div class="col-lg-8">
 
-        <!-- SECTION PRINCIPALE (GRID 2 COLONNES AVEC STICKY) -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; align-items: start;">
-            
-            <!-- COLONNE GAUCHE : CONTENU (SCROLLABLE) -->
-            <div>
-                
-                <!-- GRILLE D'IMAGES ET VIDÉO (STYLE GETYOURGUIDE) -->
-                <div style="display: grid; grid-template-columns: 0.7fr 1fr 0.7fr; grid-template-rows: 250px 250px; gap: 10px; border-radius: 16px; overflow: hidden; margin-bottom: 30px;">
-                    
-                    <!-- 1. Colonne Vidéo (Gauche) -->
-                    <div style="grid-column: 1 / 2; grid-row: 1 / 3; background: url('/static/images/{{ destination.id }}/01.jpg') center/cover; background-size: cover; position: relative; display: flex; align-items: center; justify-content: center;">
-                        
-                        <!-- Bouton Play -->
-                        <div style="width: 60px; height: 60px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 24px; color: #0056b3;">
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                        
-                        <!-- Étiquette Video -->
-                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
-                            <i class="fa-solid fa-video"></i> Vidéo bientôt disponible
-                        </div>
-                    </div>
-
-                    <!-- 2. Image Principale (Milieu) -->
-                    <div style="grid-column: 2 / 3; grid-row: 1 / 3; background: url('/static/images/{{ destination.id }}/02.jpg') center/cover; background-size: cover; position: relative;">
-                        
-                        <!-- Étiquette Photo Principale -->
-                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
-                            <i class="fa-solid fa-image"></i> Photo principale
-                        </div>
-                    </div>
-
-                    <!-- 3. Image Secondaire (Droite, haut) -->
-                    <div style="grid-column: 3 / 4; grid-row: 1 / 2; background: url('/static/images/{{ destination.id }}/03.jpg') center/cover; background-size: cover; position: relative;">
-                        
-                        <!-- Étiquette Photo -->
-                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
-                            <i class="fa-solid fa-image"></i> Photo 2
-                        </div>
-                    </div>
-
-                    <!-- 4. Image Secondaire (Droite, bas) + Bouton Voir tout -->
-                    <div style="grid-column: 3 / 4; grid-row: 2 / 3; background: url('/static/images/{{ destination.id }}/04.jpg') center/cover; background-size: cover; position: relative;">
-                        
-                        <!-- Bouton Voir tout -->
-                        <a href="/gallery/{{ destination.id }}" style="text-decoration: none;">
-                            <div style="position: absolute; bottom: 10px; right: 10px; background: white; padding: 8px 15px; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                                Voir tout <i class="fa-solid fa-arrow-right"></i>
-                            </div>
-                        </a>
-                        
-                        <!-- Étiquette Photo -->
-                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
-                            <i class="fa-solid fa-image"></i> Photo 3
-                        </div>
+            <!-- GRILLE IMAGES + VIDEO -->
+            <div class="row g-2 mb-4">
+                <!-- VIDEO -->
+                <div class="col-6">
+                    <div id="video-container" style="position:relative;height:300px;background:#0f172a;border-radius:12px;overflow:hidden;">
+                        <video id="destination-video" 
+                               autoplay loop muted playsinline
+                               style="width:100%;height:100%;object-fit:cover;"
+                               poster="/static/images/{{ destination.id }}/01.jpg">
+                            <source src="/static/videos/{{ destination.id }}.mp4" type="video/mp4">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                        <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.7);color:white;font-size:11px;padding:4px 14px;border-radius:20px;font-weight:600;z-index:2;">
+                            <i class="fas fa-play-circle"></i> Vidéo
+                        </span>
+                        <span style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);color:rgba(255,255,255,0.7);font-size:10px;padding:4px 12px;border-radius:20px;z-index:2;">
+                            <i class="fas fa-volume-mute"></i> En boucle
+                        </span>
                     </div>
                 </div>
 
-                <!-- DESCRIPTION -->
-                <div style="margin-bottom: 30px;">
-                    <div id="description-short" style="font-size: 16px; line-height: 1.6; color: #333;">
-                        {{ destination.description_courte or destination.description|truncate(200, true, '...') }}
-                    </div>
-                    <div id="description-full" style="display: none; font-size: 16px; line-height: 1.6; color: #333;">
-                        {{ destination.description or "Vivez une expérience unique avec Ô'MBOA. Explorez les trésors cachés de Douala avec un guide expert." }}
-                    </div>
-                    <button onclick="toggleDescription()" style="background: none; border: none; color: #0056b3; font-weight: 600; cursor: pointer; padding: 0; margin-top: 5px; font-size: 14px;">
-                        <span id="desc-btn-text">En savoir plus</span>
+                <!-- IMAGE PRINCIPALE -->
+                <div class="col-3">
+                    <img src="/static/images/{{ destination.id }}/01.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop'"
+                         class="img-fluid rounded-3" 
+                         style="height:300px;width:100%;object-fit:cover;cursor:pointer;"
+                         onclick="openLightbox('/static/images/{{ destination.id }}/01.jpg')"
+                         alt="{{ destination.name }}">
+                </div>
+
+                <!-- IMAGE SECONDAIRE HAUT -->
+                <div class="col-3">
+                    <img src="/static/images/{{ destination.id }}/02.jpg" 
+                         onerror="this.style.display='none'"
+                         class="img-fluid rounded-3" 
+                         style="height:145px;width:100%;object-fit:cover;cursor:pointer;"
+                         onclick="openLightbox('/static/images/{{ destination.id }}/02.jpg')"
+                         alt="{{ destination.name }}">
+                </div>
+
+                <!-- IMAGE SECONDAIRE BAS + BOUTON VOIR TOUT -->
+                <div class="col-3" style="position:relative;">
+                    <img src="/static/images/{{ destination.id }}/03.jpg" 
+                         onerror="this.style.display='none'"
+                         class="img-fluid rounded-3" 
+                         style="height:145px;width:100%;object-fit:cover;cursor:pointer;"
+                         onclick="openLightbox('/static/images/{{ destination.id }}/03.jpg')"
+                         alt="{{ destination.name }}">
+                    
+                    <a href="/gallery/{{ destination.id }}" style="
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                        background: white;
+                        padding: 6px 16px;
+                        border-radius: 20px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        color: #0f172a;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                    ">
+                        <i class="fas fa-images"></i> Voir tout
+                    </a>
+                </div>
+            </div>
+
+            <!-- BADGES -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="badge" style="background:#0f172a;color:white;padding:6px 14px;">Très bien noté</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-weight:600;">
+                        <i class="fas fa-star" style="color:#f5a623;"></i> {{ destination.rating or 0 }}
+                        <span style="color:#94a3b8;font-weight:400;">({{ destination.reviews or 0 }} avis)</span>
+                    </span>
+                    <span style="color:#94a3b8;">•</span>
+                    <span style="color:#64748b;font-size:14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button onclick="toggleFavoriteDetail('{{ destination.id }}')" 
+                            class="btn btn-outline-danger btn-sm rounded-pill" 
+                            style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
+                        <i class="fas fa-heart" id="detail-heart" style="color:#94a3b8;"></i> Favoris
+                    </button>
+                    <button onclick="openShareModal()" 
+                            class="btn btn-outline-secondary btn-sm rounded-pill" 
+                            style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
+                        <i class="fas fa-share-alt"></i> Partager
                     </button>
                 </div>
+            </div>
 
-                <!-- ACTIVITÉS -->
-                {% if destination.activities %}
-                <div style="margin-bottom: 20px;">
-                    <h4 style="font-weight: 600; color: #1a1a1a;">🎯 Activités</h4>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        {% for act in destination.activities %}
-                        <li style="padding: 6px 0; border-bottom: 1px solid #f0f0f0; color: #555;">
-                            <i class="fa-solid fa-circle-check" style="color: #0056b3; font-size: 12px; margin-right: 8px;"></i> {{ act }}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
+            <!-- TITRE -->
+            <h1 style="font-size:28px;font-weight:700;color:#0f172a;margin-bottom:12px;">
+                {{ destination.name }}
+            </h1>
 
-                <!-- TARIFS -->
-                {% if destination.tarifs %}
-                <div style="margin-bottom: 20px;">
-                    <h4 style="font-weight: 600; color: #1a1a1a;">💰 Tarifs</h4>
-                    <div style="font-size: 14px; color: #555; line-height: 1.8;">
-                        {{ destination.tarifs|safe }}
+            <!-- DESCRIPTION -->
+            <p style="color:#475569;line-height:1.7;font-size:15px;margin-bottom:20px;">
+                {{ destination.description or destination.description_courte or "Découvrez ce lieu emblématique de Douala." }}
+            </p>
+
+            <!-- HORAIRES -->
+            {% if destination.horaires %}
+            <div style="background:#f8fafc;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+                <h6 style="font-weight:600;color:#0f172a;margin:0 0 4px 0;"><i class="far fa-clock"></i> Horaires</h6>
+                <p style="font-size:14px;color:#475569;margin:0;">{{ destination.horaires }}</p>
+            </div>
+            {% endif %}
+
+            <!-- ACTIVITÉS -->
+            {% if destination.activities %}
+            <div style="margin-bottom:16px;">
+                <h5 style="font-weight:600;font-size:16px;color:#0f172a;">🎯 Activités</h5>
+                <ul style="list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px;">
+                    {% for act in destination.activities %}
+                    <li style="background:#f1f5f9;padding:4px 14px;border-radius:20px;font-size:13px;color:#475569;">
+                        <i class="fas fa-check text-success me-1"></i> {{ act }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- INCLUS / NON INCLUS -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;">
+                        <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">✅ Ce qui est inclus</h6>
+                        <ul style="list-style:none;padding:0;margin:0;font-size:14px;color:#475569;">
+                            {% for item in destination.included %}
+                            <li style="padding:4px 0;"><i class="fas fa-check text-success me-2"></i> {{ item }}</li>
+                            {% else %}
+                            <li style="padding:4px 0;"><i class="fas fa-check text-success me-2"></i> Guide touristique</li>
+                            <li style="padding:4px 0;"><i class="fas fa-check text-success me-2"></i> Billets d'entrée</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-                {% endif %}
-
-                <!-- SERVICES PROCHES -->
-                {% if destination.services_proches %}
-                <div style="margin-bottom: 20px;">
-                    <h4 style="font-weight: 600; color: #1a1a1a;">📍 Services à proximité</h4>
-                    <div style="font-size: 14px; color: #555; line-height: 1.6;">
-                        <p><strong>🏥 Hôpital :</strong> {{ destination.services_proches.hopital_proche }} (à {{ destination.services_proches.distance_hopital }} km)</p>
-                        <p><strong>👮 Police :</strong> {{ destination.services_proches.police_proche }} (à {{ destination.services_proches.distance_police }} km)</p>
-                        <p><strong>🍽 Restaurant :</strong> {{ destination.services_proches.restaurant_proche }} (à {{ destination.services_proches.distance_restaurant }} km)</p>
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;">
+                        <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">❌ Non inclus</h6>
+                        <ul style="list-style:none;padding:0;margin:0;font-size:14px;color:#475569;">
+                            {% for item in destination.not_included %}
+                            <li style="padding:4px 0;"><i class="fas fa-times text-danger me-2"></i> {{ item }}</li>
+                            {% else %}
+                            <li style="padding:4px 0;"><i class="fas fa-times text-danger me-2"></i> Prise en charge hôtel</li>
+                            <li style="padding:4px 0;"><i class="fas fa-times text-danger me-2"></i> Repas</li>
+                            {% endfor %}
+                        </ul>
                     </div>
                 </div>
-                {% endif %}
+            </div>
 
-                <!-- LOCALISATION ET ITINÉRAIRE (BOUTON GPS VERS GOOGLE MAPS - SANS CLÉ API) -->
-                {% if destination.latitude and destination.longitude %}
-                <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
-                    <h4 style="font-weight: 600; margin-bottom: 10px;">🗺️ Localisation</h4>
-                    <p style="font-size: 14px; color: #555;">{{ destination.adresse }}</p>
-                    
-                    <!-- BOUTON "Ouvrir dans Google Maps" (Pas de clé API, ouvre l'app mobile) -->
-                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" 
-                       target="_blank"
-                       style="display: inline-flex; align-items: center; gap: 10px; background: #0056b3; color: white; padding: 12px 25px; border-radius: 12px; font-weight: 600; text-decoration: none; font-size: 16px; transition: 0.3s;">
-                        <i class="fa-solid fa-location-arrow"></i> Ouvrir l'itinéraire dans Google Maps
-                    </a>
-
-                    <!-- SERVICES À PROXIMITÉ (avec liens Google Maps individuels) -->
-                    {% if destination.services_proches %}
-                    <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #f0f0f0;">
-                        <h5 style="font-weight: 600; margin-bottom: 10px;">Services à proximité</h5>
-                        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14px;">
-                            <p><strong>🏥 Hôpital :</strong> {{ destination.services_proches.hopital_proche }} 
-                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" target="_blank" style="color: #0056b3; font-size: 12px; text-decoration: underline;">Itinéraire</a>
-                            </p>
-                            <p><strong>👮 Police :</strong> {{ destination.services_proches.police_proche }} 
-                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" target="_blank" style="color: #0056b3; font-size: 12px; text-decoration: underline;">Itinéraire</a>
-                            </p>
-                            <p><strong>🍽 Restaurant :</strong> {{ destination.services_proches.restaurant_proche }} 
-                                <a href="https://www.google.com/maps/dir/?api=1&destination={{ destination.latitude }},{{ destination.longitude }}" target="_blank" style="color: #0056b3; font-size: 12px; text-decoration: underline;">Itinéraire</a>
-                            </p>
-                        </div>
+            <!-- LIEUX À PROXIMITÉ -->
+            {% if destination.proximite %}
+            <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px;">
+                <h6 style="font-weight:600;color:#0f172a;margin-bottom:10px;">📍 À proximité</h6>
+                <div class="row g-2">
+                    {% if destination.proximite.hopital %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-hospital text-danger"></i> Hôpital: {{ destination.proximite.hopital }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.police %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Police: {{ destination.proximite.police }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.gendarmerie %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Gendarmerie: {{ destination.proximite.gendarmerie }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.hotels %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-hotel text-warning"></i> Hôtels: {{ destination.proximite.hotels|join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.restaurants %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-utensils text-success"></i> Restaurants: {{ destination.proximite.restaurants|join(', ') }}</span>
                     </div>
                     {% endif %}
                 </div>
-                {% endif %}
+            </div>
+            {% endif %}
 
-                <!-- ACCORDÉONS (INCLUS / NON INCLUS) -->
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion1')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Ce qui est inclus</span>
-                        <i id="icon-accordion1" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion1" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            {% for item in destination.included %}
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> {{ item }}
-                            </li>
-                            {% else %}
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-check" style="color: #2d8f5c;"></i> Guide touristique
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+            <!-- CARTE -->
+            {% if destination.latitude and destination.longitude %}
+            <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px;">
+                <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">📍 Localisation</h6>
+                <p style="font-size:14px;color:#475569;margin-bottom:8px;">
+                    {{ destination.adresse or destination.quartier or 'Douala' }}
+                </p>
+                <a href="https://www.google.com/maps?q={{ destination.latitude }},{{ destination.longitude }}" 
+                   target="_blank" 
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-route"></i> Ouvrir dans Google Maps
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- AVIS -->
+            <div style="margin-top:30px;padding-top:20px;border-top:1px solid #f1f5f9;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 style="font-weight:600;color:#0f172a;margin:0;">💬 Avis des explorateurs</h5>
+                    <span id="review-count" style="color:#94a3b8;font-size:14px;">0 avis</span>
                 </div>
 
-                <div style="border-bottom: 1px solid #e0e0e0; padding: 15px 0;">
-                    <div onclick="toggleAccordion('accordion2')" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; font-size: 16px;">
-                        <span>Ce qui n'est pas inclus</span>
-                        <i id="icon-accordion2" class="fa-solid fa-chevron-down" style="transition: 0.3s;"></i>
-                    </div>
-                    <div id="accordion2" style="display: none; padding-top: 15px; color: #555; font-size: 14px; line-height: 1.6;">
-                        <ul style="list-style: none; padding: 0; margin: 0;">
-                            {% for item in destination.not_included %}
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> {{ item }}
-                            </li>
-                            {% else %}
-                            <li style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <i class="fa-solid fa-xmark" style="color: #dc3545;"></i> Prise en charge hôtel
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- AVIS DES EXPLORATEURS -->
-                <div style="margin-top: 40px;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h4 style="margin: 0;">Avis des explorateurs</h4>
-                        <span id="review-count-footer" style="font-size: 14px; color: #666;">0 avis</span>
-                    </div>
+                <div id="review-form" style="background:#f8fafc;border-radius:12px;padding:20px;margin-bottom:20px;">
+                    <p style="font-weight:600;color:#0f172a;margin-bottom:12px;">Partagez votre expérience</p>
                     
-                    <div style="background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 20px;">
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                            <span>Votre note : </span>
-                            <div id="star-rating" style="display: flex; gap: 5px; cursor: pointer;">
-                                <span class="star" data-value="1" style="font-size: 24px; color: #ccc;">★</span>
-                                <span class="star" data-value="2" style="font-size: 24px; color: #ccc;">★</span>
-                                <span class="star" data-value="3" style="font-size: 24px; color: #ccc;">★</span>
-                                <span class="star" data-value="4" style="font-size: 24px; color: #ccc;">★</span>
-                                <span class="star" data-value="5" style="font-size: 24px; color: #ccc;">★</span>
-                            </div>
-                            <span id="selected-rating-text" style="font-size: 14px; color: #777;">(Cliquez pour noter)</span>
+                    <div class="mb-3">
+                        <label style="font-size:14px;font-weight:500;color:#475569;display:block;margin-bottom:6px;">Votre note</label>
+                        <div id="star-rating" style="display:flex;gap:6px;cursor:pointer;">
+                            <span class="star" data-value="1" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="2" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="3" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="4" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="5" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
                         </div>
-                        <textarea id="review-comment" rows="2" style="width: 100%; padding: 10px; border: 1px solid #e0e0e0; border-radius: 8px; font-family: inherit; resize: vertical;" placeholder="Partagez votre expérience..."></textarea>
-                        <button onclick="submitReview()" style="margin-top: 10px; padding: 8px 25px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Publier mon avis</button>
+                        <span id="selected-rating-text" style="font-size:14px;color:#94a3b8;margin-left:10px;">Cliquez pour noter</span>
                     </div>
 
-                    <div id="reviews-container" style="display: flex; flex-direction: column; gap: 15px;">
-                        <div style="text-align: center; padding: 20px; color: #999;">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Chargement des avis...
-                        </div>
+                    <div class="mb-3">
+                        <textarea id="review-comment" rows="3" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;" placeholder="Racontez votre expérience..."></textarea>
                     </div>
+
+                    <button onclick="submitReview()" class="btn btn-primary" style="padding:10px 28px;border:none;border-radius:10px;background:#2563eb;color:white;font-weight:600;cursor:pointer;">
+                        <i class="fas fa-paper-plane"></i> Publier mon avis
+                    </button>
+                    <span id="review-status" style="display:none;margin-left:12px;font-size:14px;"></span>
                 </div>
 
-                <!-- SUGGESTIONS -->
-                <div style="margin-top: 50px;">
-                    <h3 style="font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Vous aimerez aussi...</h3>
-                    <div id="suggestions-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px;">
-                        <div style="text-align: center; padding: 20px; color: #999;">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Chargement des suggestions...
-                        </div>
-                    </div>
+                <div id="reviews-container">
+                    <div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin"></i> Chargement des avis...</div>
                 </div>
-
             </div>
 
-            <!-- COLONNE DROITE : BLOC RÉSERVATION (STICKY) -->
-            <div style="position: sticky; top: 20px; align-self: start;">
-                
-                <!-- BLOC RÉSERVATION -->
-                <div style="background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px;">
-                        <span style="font-size: 14px; color: #666;">À partir de</span>
-                        <span style="background: #dc3545; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600;">Peut afficher complet</span>
-                    </div>
-                    <div style="display: flex; align-items: baseline; gap: 5px; margin-bottom: 20px;">
-                        <span style="font-size: 28px; font-weight: 700; color: #dc3545;" id="total-price-display">0</span>
-                        <span style="font-size: 16px; color: #666;">FCFA</span>
-                        <span style="font-size: 14px; color: #666;">par personne</span>
-                    </div>
+        </div>
 
-                    <!-- MENU DÉROULANT PASSAGERS -->
-                    <div style="position: relative; margin-bottom: 10px;">
-                        <div id="passenger-toggle" style="background: #f3f4f6; border-radius: 8px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s;">
-                            <i class="fa-solid fa-user" style="color: #333;"></i>
-                            <span style="flex: 1; font-weight: 500;">Passagers</span>
-                            <span id="passenger-summary" style="font-weight: 600;">1 Adulte</span>
-                            <i id="passenger-chevron" class="fa-solid fa-chevron-down" style="color: #666; transition: 0.3s;"></i>
+        <!-- ============================================================ -->
+        <!-- COLONNE DROITE : RÉSERVATION -->
+        <!-- ============================================================ -->
+        <div class="col-lg-4">
+            <div style="position:sticky;top:20px;">
+
+                <div style="background:white;border-radius:16px;padding:24px;border:1px solid #f1f5f9;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+                        <span style="font-size:14px;color:#94a3b8;">À partir de</span>
+                        <span style="background:#dc2626;color:white;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:600;">Disponible</span>
+                    </div>
+                    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:32px;font-weight:700;color:#dc2626;" id="total-price-display">{{ destination.avg_cost or 0 }}</span>
+                        <span style="font-size:16px;color:#94a3b8;">FCFA</span>
+                        <span style="font-size:14px;color:#94a3b8;text-decoration:line-through;">
+                            {% if destination.avg_cost %}
+                                {{ (destination.avg_cost * 1.25)|int }} FCFA
+                            {% endif %}
+                        </span>
+                    </div>
+                    <p style="font-size:13px;color:#64748b;margin-bottom:16px;">par personne</p>
+<!-- BOUTON AJOUTER À MON ITINÉRAIRE -->
+<button onclick="addToItinerary()" style="
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:inherit;
+">
+    <i class="fas fa-plus-circle"></i> Ajouter à mon itinéraire
+</button>
+
+                    <!-- PASSAGERS -->
+                    <div style="position:relative;margin-bottom:10px;">
+                        <div id="passenger-toggle" style="background:#f8fafc;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid #e2e8f0;transition:0.2s;">
+                            <i class="fas fa-user" style="color:#475569;"></i>
+                            <span style="flex:1;font-weight:500;color:#0f172a;">Passagers</span>
+                            <span id="passenger-summary" style="font-weight:600;color:#0f172a;font-size:14px;">1 Adulte</span>
+                            <i id="passenger-chevron" class="fas fa-chevron-down" style="color:#94a3b8;transition:0.3s;"></i>
                         </div>
-                        <div id="passenger-menu" style="display: none; position: absolute; top: 110%; left: 0; right: 0; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 20px; z-index: 100; border: 1px solid #e0e0e0;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-                                <div><strong>Adulte</strong><div style="font-size: 12px; color: #666;">(Âge 18-64)</div></div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <button onclick="updatePassenger('adult', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
-                                    <span id="adult-count" style="font-weight: 600; width: 20px; text-align: center;">1</span>
-                                    <button onclick="updatePassenger('adult', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                        <div id="passenger-menu" style="display:none;position:absolute;top:110%;left:0;right:0;background:white;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);padding:16px 20px;z-index:100;border:1px solid #f1f5f9;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                                <div><strong style="font-size:14px;">Adulte</strong><div style="font-size:11px;color:#94a3b8;">(18-64 ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('adult', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="adult-count" style="font-weight:600;width:20px;text-align:center;">1</span>
+                                    <button onclick="updatePassenger('adult', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
                                 </div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-                                <div><strong>Jeune</strong><div style="font-size: 12px; color: #666;">(Âge 11-17)</div></div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <button onclick="updatePassenger('youth', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
-                                    <span id="youth-count" style="font-weight: 600; width: 20px; text-align: center;">0</span>
-                                    <button onclick="updatePassenger('youth', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                                <div><strong style="font-size:14px;">Jeune</strong><div style="font-size:11px;color:#94a3b8;">(11-17 ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('youth', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="youth-count" style="font-weight:600;width:20px;text-align:center;">0</span>
+                                    <button onclick="updatePassenger('youth', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
                                 </div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #f0f0f0;">
-                                <div><strong>Enfant</strong><div style="font-size: 12px; color: #666;">(10 ans et moins)</div></div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <button onclick="updatePassenger('child', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
-                                    <span id="child-count" style="font-weight: 600; width: 20px; text-align: center;">0</span>
-                                    <button onclick="updatePassenger('child', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                                <div><strong style="font-size:14px;">Enfant</strong><div style="font-size:11px;color:#94a3b8;">(-10 ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('child', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="child-count" style="font-weight:600;width:20px;text-align:center;">0</span>
+                                    <button onclick="updatePassenger('child', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
                                 </div>
                             </div>
-                            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
-                                <div><strong>Senior</strong><div style="font-size: 12px; color: #666;">(Âge 65-99)</div></div>
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <button onclick="updatePassenger('senior', -1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">−</button>
-                                    <span id="senior-count" style="font-weight: 600; width: 20px; text-align: center;">0</span>
-                                    <button onclick="updatePassenger('senior', 1)" style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid #0056b3; background: transparent; color: #0056b3; font-size: 16px; cursor: pointer;">+</button>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;">
+                                <div><strong style="font-size:14px;">Senior</strong><div style="font-size:11px;color:#94a3b8;">(65+ ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('senior', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="senior-count" style="font-weight:600;width:20px;text-align:center;">0</span>
+                                    <button onclick="updatePassenger('senior', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
                                 </div>
                             </div>
-                            <button onclick="closePassengerMenu()" style="width: 100%; margin-top: 15px; padding: 10px; background: #0056b3; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer;">Continuer</button>
+                            <button onclick="closePassengerMenu()" style="width:100%;margin-top:12px;padding:10px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;">Continuer</button>
                         </div>
                     </div>
 
                     <!-- DATE -->
-                    <div style="background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                        <i class="fa-regular fa-calendar" style="color: #333;"></i>
-                        <span style="flex: 1; font-weight: 500;">Date</span>
-                        <input type="date" id="selected-date" style="background: transparent; border: none; outline: none; font-weight: 600; font-family: inherit; text-align: right; width: 140px; color: #333;">
+                    <div style="background:#f8fafc;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;">
+                        <i class="far fa-calendar" style="color:#475569;"></i>
+                        <span style="flex:1;font-weight:500;color:#0f172a;">Date</span>
+                        <input type="date" id="selected-date" style="background:transparent;border:none;outline:none;font-weight:600;font-family:inherit;text-align:right;width:140px;color:#0f172a;">
                     </div>
 
                     <!-- LANGUE -->
-                    <div style="background: #f3f4f6; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px; cursor: pointer;">
-                        <i class="fa-solid fa-globe" style="color: #333;"></i>
-                        <span style="flex: 1; font-weight: 500;">Langue</span>
-                        <select id="language-select" style="background: transparent; border: none; outline: none; font-weight: 600; font-family: inherit; text-align: right; color: #333; width: 110px;">
+                    <div style="background:#f8fafc;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;">
+                        <i class="fas fa-globe" style="color:#475569;"></i>
+                        <span style="flex:1;font-weight:500;color:#0f172a;">Langue</span>
+                        <select id="language-select" style="background:transparent;border:none;outline:none;font-weight:600;font-family:inherit;text-align:right;color:#0f172a;width:110px;">
                             <option value="Français">Français</option>
                             <option value="Anglais">Anglais</option>
                         </select>
                     </div>
 
-                    <!-- BOUTON VOIR LES DISPONIBILITÉS -->
-                    <button onclick="bookNow()" style="width: 100%; padding: 16px; background: #0056b3; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                    <button onclick="window.location.href='https://yango.com/cm'" 
+                            style="width:100%;padding:14px;background:#2563eb;color:white;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:0.3s;font-family:inherit;">
                         Voir les disponibilités
                     </button>
 
-                    <!-- BOUTON AJOUTER À L'ITINÉRAIRE -->
-                    <button onclick="addToItinerary()" style="width: 100%; margin-top: 15px; padding: 16px; background: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;">
-                        <i class="fa-solid fa-plus-circle"></i> Ajouter ce lieu à mon itinéraire
-                    </button>
-
-                    <!-- ============================================================== -->
-                    <!-- ANNULATION GRATUITE (RESTAURÉE) -->
-                    <!-- ============================================================== -->
-                    <div style="margin-top: 20px; display: flex; align-items: center; gap: 10px; font-size: 14px; color: #2d8f5c; font-weight: 500;">
-                        <i class="fa-regular fa-circle-check" style="font-size: 18px;"></i> Annulation gratuite
-                        <span style="font-weight: 400; color: #666; font-size: 12px;">Annulez jusqu'à 24 heures avant pour un remboursement intégral</span>
+                    <div style="margin-top:14px;display:flex;align-items:center;gap:10px;font-size:13px;color:#22c55e;font-weight:500;">
+                        <i class="far fa-circle-check" style="font-size:16px;"></i> Annulation gratuite
+                        <span style="font-weight:400;color:#94a3b8;font-size:11px;">-24h pour remboursement</span>
                     </div>
-                    <!-- ============================================================== -->
-
                 </div>
 
-                <!-- BANDEAU CONTACT -->
-                <div style="margin-top: 20px; background: white; border-radius: 16px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
-                    <p style="font-weight: 600; font-size: 15px; color: #1a1a1a; margin-bottom: 12px;">Vous avez des questions concernant votre réservation ?</p>
-                    <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                        <div style="display: flex; align-items: center; gap: 8px; color: #0056b3; font-weight: 500; font-size: 14px;">
-                            <i class="fa-solid fa-phone" style="font-size: 16px;"></i>
-                            <span>+237 693 32 93 83</span>
-                        </div>
-                        <button onclick="openChatModal()" style="display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid #0056b3; padding: 8px 18px; border-radius: 20px; color: #0056b3; font-weight: 500; font-size: 14px; cursor: pointer; transition: 0.3s;">
-                            <i class="fa-regular fa-comment-dots" style="font-size: 16px;"></i>
-                            Discutez maintenant
-                        </button>
+                <!-- CONTACT -->
+                <div style="margin-top:16px;background:white;border-radius:16px;padding:16px 20px;border:1px solid #f1f5f9;">
+                    <p style="font-weight:600;font-size:14px;color:#0f172a;margin:0 0 8px 0;">❓ Une question ?</p>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <a href="tel:+237693329383" style="display:flex;align-items:center;gap:6px;color:#2563eb;font-size:14px;text-decoration:none;">
+                            <i class="fas fa-phone"></i> +237 693 32 93 83
+                        </a>
+                        <a href="https://wa.me/237693329383" target="_blank" style="background:transparent;border:1px solid #25D366;padding:6px 16px;border-radius:20px;color:#25D366;font-weight:500;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
                     </div>
                 </div>
 
             </div>
         </div>
-
     </div>
 </div>
 
-<!-- MODALE DE CHAT (POP-UP) -->
-<div id="chatModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;">
-    <div style="background: white; width: 100%; max-width: 480px; border-radius: 16px; padding: 25px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; font-size: 20px; font-weight: 700;">Chat</h3>
-            <button onclick="closeChatModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">✕</button>
+<!-- ============================================================ -->
+<!-- LIGHTBOX - AGRANDISSEMENT DES IMAGES -->
+<!-- ============================================================ -->
+<div id="lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;cursor:pointer;">
+    <img id="lightbox-img" src="" style="max-width:90%;max-height:90%;object-fit:contain;border-radius:8px;">
+    <button onclick="closeLightbox()" style="position:absolute;top:20px;right:30px;background:none;border:none;color:white;font-size:40px;cursor:pointer;z-index:10000;">✕</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALE DE PARTAGE -->
+<!-- ============================================================ -->
+<div id="shareModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;align-items:center;justify-content:center;">
+    <div style="background:white;width:100%;max-width:420px;border-radius:20px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="margin:0;font-size:20px;font-weight:700;color:#0f172a;">Partager</h3>
+            <button onclick="closeShareModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">✕</button>
         </div>
-        <form onsubmit="startChat(event)" style="display: flex; flex-direction: column; gap: 15px;">
-            <div>
-                <label style="font-size: 14px; font-weight: 500; color: #dc3545;">* First Name</label>
-                <input type="text" id="chat-firstname" required placeholder="Votre prénom" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none;">
-                <div style="font-size: 12px; color: #dc3545; display: none;" id="firstname-error">Complete this field.</div>
-            </div>
-            <div>
-                <label style="font-size: 14px; font-weight: 500; color: #dc3545;">* Last Name</label>
-                <input type="text" id="chat-lastname" required placeholder="Votre nom" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none;">
-                <div style="font-size: 12px; color: #dc3545; display: none;" id="lastname-error">Complete this field.</div>
-            </div>
-            <div>
-                <label style="font-size: 14px; font-weight: 500; color: #dc3545;">* Email</label>
-                <input type="email" id="chat-email" required placeholder="votre@email.com" style="width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 14px; outline: none;">
-                <div style="font-size: 12px; color: #dc3545; display: none;" id="email-error">Complete this field.</div>
-            </div>
-            <div>
-                <label style="font-size: 14px; font-weight: 500; color: #333;">* How can we help?</label>
-                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 5px;">
-                    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; cursor: pointer;">
-                        <input type="radio" name="help-type" value="existing" checked> I have a question about an existing booking
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 10px; font-size: 14px; color: #555; cursor: pointer;">
-                        <input type="radio" name="help-type" value="new"> I want to book and I have a question
-                    </label>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div onclick="copyLink()" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#475569;">
+                    <i class="fas fa-link"></i>
                 </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Copier le lien</span>
             </div>
-            <div style="font-size: 12px; color: #999; text-align: center; margin-top: 5px;">
-                This conversation may be recorded for training and quality purposes.
-            </div>
-            <button type="submit" style="width: 100%; padding: 14px; background: #000; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 5px;">
-                Start Conversation
-            </button>
-        </form>
+
+            <a href="mailto:?subject=Découvrez {{ destination.name }}&body=Je vous recommande ce lieu à Douala : {{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#ea4335;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Email</span>
+            </a>
+
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Facebook</span>
+            </a>
+
+            <a href="https://api.whatsapp.com/send?text=Découvrez {{ destination.name }} à Douala : {{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">WhatsApp</span>
+            </a>
+
+            <a href="https://twitter.com/intent/tweet?text=Découvrez {{ destination.name }} à Douala !&url={{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#000000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-x-twitter"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Twitter</span>
+            </a>
+
+            <a href="instagram://" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:radial-gradient(circle at 30% 30%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-instagram"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Instagram</span>
+            </a>
+        </div>
+
+        <div style="padding-top:12px;border-top:1px solid #f1f5f9;text-align:center;">
+            <p style="font-size:12px;color:#94a3b8;margin:0;">
+                {{ destination.name }} • {{ destination.quartier or 'Douala' }}
+            </p>
+        </div>
     </div>
 </div>
 
+<!-- ============================================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================================ -->
 <script>
-const destId = new URLSearchParams(window.location.search).get('id');
+// ============================================================
+// AJOUTER À L'ITINÉRAIRE - VERSION AMÉLIORÉE
+// ============================================================
+function addToItinerary() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour ajouter à vos itinéraires.');
+        window.location.href = '/login';
+        return;
+    }
+
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const destCost = {{ destination.avg_cost or 0 }};
+    
+    // Charger les itinéraires existants
+    fetch('/api/itineraries', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(r => r.json())
+    .then(itineraries => {
+        let choix = 'nouveau';
+        
+        if (itineraries.length > 0) {
+            // Proposer d'ajouter à un itinéraire existant ou d'en créer un nouveau
+            const options = itineraries.map((it, i) => `${i+1}. ${it.title} (${it.destinations.length} lieux, ${it.total_cost || 0} FCFA)`).join('\n');
+            choix = prompt(
+                `📍 Ajouter "${destName}" à :\n\n` +
+                `0. Créer un nouvel itinéraire\n` +
+                options + '\n\n' +
+                `Entrez le numéro de votre choix :`
+            );
+            if (choix === null) return;
+        }
+        
+        if (choix === '0' || itineraries.length === 0) {
+            // Créer un nouvel itinéraire
+            const title = prompt('📝 Titre du nouvel itinéraire :', 'Découverte de ' + destName);
+            if (title === null) return;
+            
+            const budget = prompt('💰 Budget total (FCFA) :', '10000');
+            if (budget === null) return;
+            
+            const time = prompt('⏱️ Temps disponible (heures) :', '4');
+            if (time === null) return;
+            
+            createItinerary(token, title, [destId], parseInt(budget) || 0, parseInt(time) || 0, 'Ajouté depuis ' + destName);
+        } else {
+            // Ajouter à un itinéraire existant
+            const idx = parseInt(choix) - 1;
+            if (idx < 0 || idx >= itineraries.length) {
+                alert('❌ Choix invalide.');
+                return;
+            }
+            
+            const itinerary = itineraries[idx];
+            const destinations = [...itinerary.destinations, destId];
+            const newTotal = (itinerary.total_cost || 0) + destCost;
+            const budget = itinerary.budget || 0;
+            
+            if (budget > 0 && newTotal > budget) {
+                if (!confirm(`⚠️ Le coût total (${newTotal} FCFA) dépassera votre budget (${budget} FCFA).\nContinuer quand même ?`)) {
+                    return;
+                }
+            }
+            
+            // Mettre à jour l'itinéraire (on supprime et recrée)
+            updateItinerary(token, itinerary.id, {
+                title: itinerary.title,
+                destinations: destinations,
+                budget: itinerary.budget || 0,
+                time_available: itinerary.time_available || 0,
+                notes: itinerary.notes ? itinerary.notes + ', ' + destName : destName
+            });
+        }
+    })
+    .catch(error => {
+        alert('❌ Erreur : ' + error.message);
+    });
+}
+
+function createItinerary(token, title, destinations, budget, time, notes) {
+    fetch('/api/itineraries', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            title: title,
+            destinations: destinations,
+            budget: budget,
+            time_available: time,
+            notes: notes
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (r.ok) {
+            alert('✅ Itinéraire créé avec succès !');
+        } else {
+            alert('❌ ' + (data.error || 'Erreur'));
+        }
+    })
+    .catch(() => alert('❌ Erreur réseau'));
+}
+
+function updateItinerary(token, itineraryId, data) {
+    // Note: Cette fonction nécessite une route PUT que nous allons ajouter
+    // Pour l'instant, on supprime et on recrée
+    fetch('/api/itineraries/' + itineraryId, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(() => {
+        fetch('/api/itineraries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (r.ok) {
+                alert('✅ Destinations ajoutées à l\'itinéraire !');
+            } else {
+                alert('❌ ' + (data.error || 'Erreur'));
+            }
+        });
+    })
+    .catch(() => alert('❌ Erreur'));
+}
+// ============================================================
+// VARIABLES
+// ============================================================
+const destId = "{{ destination.id }}";
+const basePrice = {{ destination.avg_cost or 0 }};
 let selectedRating = 0;
-let basePrice = {{ destination.avg_cost or 0 }};
 let counts = { adult: 1, youth: 0, child: 0, senior: 0 };
 
-document.addEventListener('DOMContentLoaded', function() {
-    if (destId) {
-        loadReviews();
-        loadSuggestions();
-        updateTotalPrice();
-        updatePassengerSummary();
-        
-        document.getElementById('selected-date').addEventListener('change', updateTotalPrice);
-        document.getElementById('language-select').addEventListener('change', updateTotalPrice);
-    }
+// ============================================================
+// LIGHTBOX - AGRANDISSEMENT DES IMAGES
+// ============================================================
+function openLightbox(imageUrl) {
+    document.getElementById('lightbox-img').src = imageUrl;
+    document.getElementById('lightbox').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
 });
 
-// ============================================
-// ACCORDÉONS
-// ============================================
-
-function toggleAccordion(id) {
-    const content = document.getElementById(id);
-    const icon = document.getElementById('icon-' + id);
-    if (content.style.display === 'none') {
-        content.style.display = 'block';
-        icon.classList.remove('fa-chevron-down');
-        icon.classList.add('fa-chevron-up');
-    } else {
-        content.style.display = 'none';
-        icon.classList.remove('fa-chevron-up');
-        icon.classList.add('fa-chevron-down');
-    }
+// ============================================================
+// MODALE DE PARTAGE
+// ============================================================
+function openShareModal() {
+    document.getElementById('shareModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
 }
 
-// ============================================
-// DESCRIPTION "EN SAVOIR PLUS"
-// ============================================
-
-function toggleDescription() {
-    const short = document.getElementById('description-short');
-    const full = document.getElementById('description-full');
-    const btn = document.getElementById('desc-btn-text');
-    
-    if (full.style.display === 'none') {
-        full.style.display = 'block';
-        short.style.display = 'none';
-        btn.innerText = 'Lire moins';
-    } else {
-        full.style.display = 'none';
-        short.style.display = 'block';
-        btn.innerText = 'En savoir plus';
-    }
+function closeShareModal() {
+    document.getElementById('shareModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
 }
 
-// ============================================
-// GESTION PASSAGERS
-// ============================================
+function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('✅ Lien copié !');
+        closeShareModal();
+    }).catch(() => {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('✅ Lien copié !');
+        closeShareModal();
+    });
+}
 
+document.getElementById('shareModal').addEventListener('click', function(e) {
+    if (e.target === this) closeShareModal();
+});
+
+// ============================================================
+// PASSAGERS
+// ============================================================
 document.getElementById('passenger-toggle').addEventListener('click', function() {
     const menu = document.getElementById('passenger-menu');
     const chevron = document.getElementById('passenger-chevron');
     if (menu.style.display === 'none') {
         menu.style.display = 'block';
-        chevron.classList.remove('fa-chevron-down');
-        chevron.classList.add('fa-chevron-up');
-        this.style.border = '1px solid #0056b3';
+        chevron.className = 'fas fa-chevron-up';
+        this.style.borderColor = '#2563eb';
     } else {
         closePassengerMenu();
     }
 });
 
 function closePassengerMenu() {
-    const menu = document.getElementById('passenger-menu');
-    const chevron = document.getElementById('passenger-chevron');
-    menu.style.display = 'none';
-    chevron.classList.remove('fa-chevron-up');
-    chevron.classList.add('fa-chevron-down');
-    document.getElementById('passenger-toggle').style.border = '1px solid transparent';
+    document.getElementById('passenger-menu').style.display = 'none';
+    document.getElementById('passenger-chevron').className = 'fas fa-chevron-down';
+    document.getElementById('passenger-toggle').style.borderColor = '#e2e8f0';
 }
 
 function updatePassenger(type, delta) {
     const newVal = counts[type] + delta;
     if (newVal < 0) return;
     if (type === 'adult' && newVal === 0) return;
-    
     counts[type] = newVal;
-    document.getElementById(`${type}-count`).innerText = newVal;
+    document.getElementById(type + '-count').innerText = newVal;
     updatePassengerSummary();
     updateTotalPrice();
 }
 
 function updatePassengerSummary() {
-    const total = counts.adult + counts.youth + counts.child + counts.senior;
     let parts = [];
-    if (counts.adult > 0) parts.push(`${counts.adult} Adulte${counts.adult > 1 ? 's' : ''}`);
-    if (counts.youth > 0) parts.push(`${counts.youth} Jeune${counts.youth > 1 ? 's' : ''}`);
-    if (counts.child > 0) parts.push(`${counts.child} Enfant${counts.child > 1 ? 's' : ''}`);
-    if (counts.senior > 0) parts.push(`${counts.senior} Senior${counts.senior > 1 ? 's' : ''}`);
+    if (counts.adult > 0) parts.push(counts.adult + ' Adulte' + (counts.adult > 1 ? 's' : ''));
+    if (counts.youth > 0) parts.push(counts.youth + ' Jeune' + (counts.youth > 1 ? 's' : ''));
+    if (counts.child > 0) parts.push(counts.child + ' Enfant' + (counts.child > 1 ? 's' : ''));
+    if (counts.senior > 0) parts.push(counts.senior + ' Senior' + (counts.senior > 1 ? 's' : ''));
     document.getElementById('passenger-summary').innerText = parts.join(', ') || '0 Passager';
 }
 
@@ -533,296 +710,163 @@ function updateTotalPrice() {
     document.getElementById('total-price-display').innerText = total * basePrice;
 }
 
-// ============================================
-// ÉTOILES INTERACTIVES
-// ============================================
+// ============================================================
+// FAVORIS
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    if (favorites.includes(destId)) {
+        document.getElementById('detail-heart').style.color = '#dc3545';
+    }
+});
 
+function toggleFavoriteDetail(destId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour ajouter aux favoris.');
+        window.location.href = '/login';
+        return;
+    }
+
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const index = favorites.indexOf(destId);
+    const heart = document.getElementById('detail-heart');
+    
+    if (index > -1) {
+        favorites.splice(index, 1);
+        heart.style.color = '#94a3b8';
+        alert('❤️ Retiré des favoris');
+    } else {
+        favorites.push(destId);
+        heart.style.color = '#dc3545';
+        alert('❤️ Ajouté aux favoris !');
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+// ============================================================
+// SYSTÈME D'AVIS
+// ============================================================
 document.querySelectorAll('.star').forEach(star => {
     star.addEventListener('click', function() {
         selectedRating = parseInt(this.dataset.value);
         updateStars(selectedRating);
-        document.getElementById('selected-rating-text').innerText = `(${selectedRating} étoile${selectedRating > 1 ? 's' : ''})`;
+        document.getElementById('selected-rating-text').textContent = selectedRating + ' étoile' + (selectedRating > 1 ? 's' : '');
     });
     star.addEventListener('mouseover', function() {
-        updateStars(parseInt(this.dataset.value), true);
+        updateStars(parseInt(this.dataset.value));
     });
     star.addEventListener('mouseout', function() {
-        if (selectedRating === 0) updateStars(0, true);
-        else updateStars(selectedRating, true);
+        if (selectedRating > 0) updateStars(selectedRating);
+        else updateStars(0);
     });
 });
 
-function updateStars(count, isHover = false) {
+function updateStars(count) {
     document.querySelectorAll('.star').forEach(s => {
-        const val = parseInt(s.dataset.value);
-        if (val <= count) {
+        if (parseInt(s.dataset.value) <= count) {
             s.style.color = '#f5a623';
         } else {
-            s.style.color = '#ccc';
+            s.style.color = '#e2e8f0';
         }
     });
 }
 
-// ============================================
-// CHARGEMENT DES DONNÉES
-// ============================================
-
 function loadReviews() {
-    fetch(`/api/reviews?destination_id=${destId}`)
+    const container = document.getElementById('reviews-container');
+    const countSpan = document.getElementById('review-count');
+    
+    fetch('/api/reviews?destination_id=' + destId)
         .then(r => r.json())
         .then(reviews => {
-            const container = document.getElementById('reviews-container');
-            const countDisplay = document.getElementById('review-count-display');
-            const avgDisplay = document.getElementById('avg-rating-display');
-            const countFooter = document.getElementById('review-count-footer');
-            
-            countDisplay.innerText = reviews.length;
-            countFooter.innerText = `${reviews.length} avis`;
-            
-            if (reviews.length > 0) {
-                const avg = (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1);
-                avgDisplay.innerText = avg;
-            } else {
-                avgDisplay.innerText = "0.0";
-            }
-
-            container.innerHTML = '';
+            countSpan.textContent = reviews.length + ' avis';
             if (reviews.length === 0) {
-                container.innerHTML = '<p style="color: #777; text-align: center;">Soyez le premier à laisser un avis !</p>';
-            } else {
-                reviews.forEach(rev => {
-                    const stars = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
-                    const div = document.createElement('div');
-                    div.style.cssText = 'border-bottom: 1px solid #f0f0f0; padding-bottom: 15px;';
-                    div.innerHTML = `
-                        <div style="display: flex; justify-content: space-between;">
-                            <strong>${rev.author}</strong> 
-                            <span style="color: #f5a623;">${stars}</span>
-                        </div>
-                        <p style="font-size: 14px; color: #666; margin-top: 5px;">"${rev.comment}"</p>
-                        <small style="color: #999;">${rev.date}</small>
-                    `;
-                    container.appendChild(div);
-                });
+                container.innerHTML = `<div style="text-align:center;padding:30px;color:#94a3b8;"><p>Soyez le premier à laisser un avis !</p></div>`;
+                return;
             }
-        })
-        .catch(err => console.error(err));
-}
-
-function loadSuggestions() {
-    fetch('/destinations')
-        .then(r => r.json())
-        .then(all => {
-            const current = all.find(d => d.id == destId);
-            if (!current) return;
-            const suggestions = all.filter(d => 
-                d.id != destId && 
-                (d.quartier === current.quartier || (d.tags && current.tags && d.tags.some(tag => current.tags.includes(tag))))
-            ).slice(0, 4);
-            const grid = document.getElementById('suggestions-grid');
-            grid.innerHTML = '';
-            if (suggestions.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: #777;">Aucune autre suggestion.</p>';
-            } else {
-                suggestions.forEach(dest => {
-                    const card = document.createElement('div');
-                    card.style.cssText = `background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;`;
-                    card.onmouseover = function() { this.style.transform = 'translateY(-5px)'; };
-                    card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
-                    card.onclick = function() { window.location.href = `/destination?id=${dest.id}`; };
-                    const img = dest.image_url || 'https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=500&auto=format&fit=crop';
-                    card.innerHTML = `
-                        <div style="height: 140px; background: url('${img}') center/cover;"></div>
-                        <div style="padding: 15px;">
-                            <h4 style="margin: 0 0 5px 0; font-size: 16px; font-weight: 600;">${dest.name}</h4>
-                            <span style="font-size: 13px; color: #666;">${dest.quartier}</span>
+            container.innerHTML = reviews.map(rev => {
+                const stars = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+                return `
+                    <div style="border-bottom:1px solid #f1f5f9;padding-bottom:14px;margin-bottom:14px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <strong style="color:#0f172a;">${rev.author_name || rev.username || 'Anonyme'}</strong>
+                                <span style="color:#f5a623;margin-left:10px;">${stars}</span>
+                            </div>
+                            <small style="color:#94a3b8;">${rev.created_at || 'Récemment'}</small>
                         </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            }
+                        <p style="font-size:14px;color:#475569;margin:6px 0 0 0;">"${rev.comment}"</p>
+                    </div>
+                `;
+            }).join('');
         })
-        .catch(err => console.error(err));
+        .catch(() => {
+            container.innerHTML = '<div class="text-center text-danger py-3">Erreur de chargement des avis.</div>';
+        });
 }
-
-// ============================================
-// PUBLICATION AVIS
-// ============================================
 
 function submitReview() {
     const token = localStorage.getItem('token');
-    if (!token) { alert("Connectez-vous pour publier un avis."); return; }
-    if (selectedRating === 0) { alert("Veuillez sélectionner une note."); return; }
-    
+    if (!token) {
+        alert('Connectez-vous pour publier un avis.');
+        window.location.href = '/login';
+        return;
+    }
+    if (selectedRating === 0) {
+        alert('Veuillez sélectionner une note.');
+        return;
+    }
     const comment = document.getElementById('review-comment').value.trim();
-    
-    fetch('/api/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ destination_id: destId, rating: selectedRating, comment: comment })
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (r.ok) {
-            alert("Avis publié avec succès !");
-            document.getElementById('review-comment').value = '';
-            selectedRating = 0;
-            updateStars(0);
-            document.getElementById('selected-rating-text').innerText = '(Cliquez pour noter)';
-            loadReviews();
-        } else {
-            alert("Erreur : " + (data.error || "Impossible de publier l'avis."));
-        }
-    })
-    .catch(err => console.error(err));
-}
-
-// ============================================
-// RÉSERVATION SIMULÉE
-// ============================================
-
-function bookNow() {
-    const date = document.getElementById('selected-date').value;
-    const lang = document.getElementById('language-select').value;
-    const total = (counts.adult + counts.youth + counts.child + counts.senior) * basePrice;
-    
-    alert(`📅 Réservation simulée pour ${destination.name} :
-    
-🗓️ Date : ${date || 'Non sélectionnée'}
-👤 Adultes : ${counts.adult}
-🧑 Jeunes : ${counts.youth}
-👶 Enfants : ${counts.child}
-👴 Seniors : ${counts.senior}
-🌍 Langue : ${lang}
-💰 Total : ${total} FCFA
-
-➡️ Pour réserver en réel, intégrez une API de paiement ici !`);
-}
-
-// ============================================
-// FAVORIS
-// ============================================
-
-function toggleFavorite(destId) {
-    const token = localStorage.getItem('token');
-    if (!token) { alert("Connectez-vous."); return; }
-    const icon = document.getElementById('detail-heart');
-    const isFavorite = icon.classList.contains('fa-solid');
-    
-    if (isFavorite) {
-        fetch(`/api/favorites?destination_id=${destId}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } })
-            .then(r => r.json())
-            .then(() => {
-                icon.classList.remove('fa-solid');
-                icon.classList.add('fa-regular');
-            })
-            .catch(err => console.error(err));
-    } else {
-        fetch('/api/favorites', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify({ destination_id: destId }) })
-            .then(r => r.json())
-            .then(() => {
-                icon.classList.remove('fa-regular');
-                icon.classList.add('fa-solid');
-            })
-            .catch(err => console.error(err));
-    }
-}
-
-// ============================================
-// CHAT MODAL
-// ============================================
-
-function openChatModal() {
-    document.getElementById('chatModal').style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-}
-
-function closeChatModal() {
-    document.getElementById('chatModal').style.display = 'none';
-    document.body.style.overflow = 'auto';
-}
-
-function startChat(event) {
-    event.preventDefault();
-    
-    const firstName = document.getElementById('chat-firstname').value.trim();
-    const lastName = document.getElementById('chat-lastname').value.trim();
-    const email = document.getElementById('chat-email').value.trim();
-    const helpType = document.querySelector('input[name="help-type"]:checked').value;
-
-    let valid = true;
-    if (!firstName) {
-        document.getElementById('firstname-error').style.display = 'block';
-        valid = false;
-    } else {
-        document.getElementById('firstname-error').style.display = 'none';
-    }
-    if (!lastName) {
-        document.getElementById('lastname-error').style.display = 'block';
-        valid = false;
-    } else {
-        document.getElementById('lastname-error').style.display = 'none';
-    }
-    if (!email) {
-        document.getElementById('email-error').style.display = 'block';
-        valid = false;
-    } else {
-        document.getElementById('email-error').style.display = 'none';
-    }
-
-    if (!valid) return;
-
-    alert(`✅ Demande de chat envoyée !\n\nNom : ${firstName} ${lastName}\nEmail : ${email}\nSujet : ${helpType === 'existing' ? 'Question sur une réservation existante' : 'Nouvelle réservation avec question'}\n\nUn agent vous répondra sous peu.`);
-    
-    closeChatModal();
-}
-
-// ============================================
-// AJOUTER À L'ITINÉRAIRE
-// ============================================
-
-function addToItinerary() {
-    const token = localStorage.getItem('token');
-    if (!token) { 
-        alert("Vous devez être connecté pour ajouter un lieu."); 
-        window.location.href = "/login";
-        return; 
-    }
-
-    const date = document.getElementById('selected-date').value;
-    if (!date) {
-        alert("Veuillez sélectionner une date de visite.");
+    if (!comment) {
+        alert('Veuillez écrire un commentaire.');
         return;
     }
 
-    fetch('/api/itineraries', {
+    const status = document.getElementById('review-status');
+    status.style.display = 'inline';
+    status.textContent = '⏳ Publication...';
+    status.style.color = '#2563eb';
+
+    fetch('/api/reviews', {
         method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json', 
-            'Authorization': `Bearer ${token}` 
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
         },
-        body: JSON.stringify({ 
-            destinations: [destId], 
-            start_date: date,
-            end_date: date,
-            notes: "Ajouté depuis la page de détails" 
+        body: JSON.stringify({
+            destination_id: destId,
+            rating: selectedRating,
+            comment: comment
         })
     })
-    .then(response => {
-        if (!response.ok) {
-            return response.text().then(text => {
-                throw new Error(`Erreur serveur (${response.status}) : ${text}`);
-            });
-        }
-        return response.json();
+    .then(r => {
+        if (!r.ok) throw new Error('Erreur serveur');
+        return r.json();
     })
     .then(data => {
-        alert("Lieu ajouté à votre itinéraire ! Retrouvez-le dans Mes itinéraires.");
+        status.textContent = '✅ Avis publié !';
+        status.style.color = '#22c55e';
+        document.getElementById('review-comment').value = '';
+        selectedRating = 0;
+        updateStars(0);
+        document.getElementById('selected-rating-text').textContent = 'Cliquez pour noter';
+        loadReviews();
+        setTimeout(() => { status.style.display = 'none'; }, 3000);
     })
-    .catch(error => {
-        console.error("Erreur complète :", error);
-        alert("Erreur : " + error.message + "\n\nVérifiez que le service des itinéraires est bien lancé.");
+    .catch((error) => {
+        status.textContent = '❌ ' + error.message;
+        status.style.color = '#ef4444';
+        console.error('Erreur:', error);
     });
 }
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    loadReviews();
+});
 </script>
+
 {% endblock %}

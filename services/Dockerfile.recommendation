@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY services/recommendation_service.py /app/
+COPY data /app/data
+
+RUN pip install flask jwt pyjwt werkzeug requests
+
+EXPOSE 5003
+
+CMD ["python", "recommendation_service.py"]

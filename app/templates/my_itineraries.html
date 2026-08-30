@@ -1,212 +1,367 @@
 {% extends "base.html" %}
 
-{% block title %}Mes itinéraires - Ô'MBOA{% endblock %}
+{% block title %}Mes Itinéraires - Ô'MBOA{% endblock %}
 
 {% block content %}
 
-{% include "navbar.html" %}
-
-<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
-    <div style="max-width: 1100px; margin: 0 auto;">
-        
-        <h2 style="font-weight: 700; margin-bottom: 10px; color: #1a1a1a;">Mes itinéraires</h2>
-        <p style="color: #777; margin-bottom: 30px;">Cliquez sur un itinéraire pour voir le détail complet.</p>
-
-        <div id="itineraries-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px;">
-            
-            <div style="text-align: center; padding: 40px; color: #999; grid-column: 1/-1;">
-                <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i> Chargement...
-            </div>
-
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">🗺️ Mes Itinéraires</h1>
+            <p class="text-muted">Planifiez vos sorties et gérez votre budget</p>
         </div>
+        <button onclick="openCreateModal()" class="btn btn-primary" style="padding:10px 24px;border-radius:12px;background:#2563eb;border:none;color:white;font-weight:600;cursor:pointer;">
+            <i class="fas fa-plus"></i> Nouvel itinéraire
+        </button>
+    </div>
 
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="p-3 bg-white rounded-3 border" style="text-align:center;">
+                <strong id="itinerary-count" style="font-size:24px;">0</strong>
+                <p class="text-muted mb-0">Itinéraires</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 bg-white rounded-3 border" style="text-align:center;">
+                <strong id="total-destinations" style="font-size:24px;">0</strong>
+                <p class="text-muted mb-0">Destinations</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 bg-white rounded-3 border" style="text-align:center;">
+                <strong id="total-budget" style="font-size:24px;">0</strong>
+                <p class="text-muted mb-0">Budget total (FCFA)</p>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="p-3 bg-white rounded-3 border" style="text-align:center;">
+                <strong id="avg-rating" style="font-size:24px;">0</strong>
+                <p class="text-muted mb-0">Note moyenne</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="itineraries-list" class="row g-4">
+        <div class="col-12 text-center py-5 text-muted">
+            <i class="fas fa-spinner fa-spin"></i> Chargement...
+        </div>
     </div>
 </div>
 
+<!-- MODALE DE CRÉATION -->
+<div id="createModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;">
+    <div style="background:white;width:100%;max-width:600px;border-radius:20px;padding:30px;position:relative;max-height:90vh;overflow-y:auto;margin:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+            <h3 style="margin:0;font-size:22px;font-weight:700;color:#0f172a;">Créer un itinéraire</h3>
+            <button onclick="closeCreateModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">✕</button>
+        </div>
+
+        <form id="itineraryForm">
+            <div class="mb-3">
+                <label style="font-weight:600;font-size:14px;color:#0f172a;">Titre de l'itinéraire</label>
+                <input type="text" id="itinerary-title" class="form-control" placeholder="Ex: Week-end à Douala" style="padding:12px;border-radius:10px;border:1px solid #e2e8f0;width:100%;">
+            </div>
+
+            <div class="mb-3">
+                <label style="font-weight:600;font-size:14px;color:#0f172a;">Destinations</label>
+                <div id="destination-selector" style="max-height:200px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:10px;padding:10px;">
+                    <div class="text-muted text-center py-3"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+                </div>
+                <small class="text-muted">Cochez plusieurs destinations pour un même itinéraire</small>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label style="font-weight:600;font-size:14px;color:#0f172a;">💰 Budget (FCFA)</label>
+                    <input type="number" id="itinerary-budget" class="form-control" placeholder="0" style="padding:12px;border-radius:10px;border:1px solid #e2e8f0;width:100%;">
+                </div>
+                <div class="col-md-6">
+                    <label style="font-weight:600;font-size:14px;color:#0f172a;">⏱️ Temps disponible (heures)</label>
+                    <input type="number" id="itinerary-time" class="form-control" placeholder="0" style="padding:12px;border-radius:10px;border:1px solid #e2e8f0;width:100%;">
+                </div>
+            </div>
+
+            <div class="mb-3 mt-3">
+                <label style="font-weight:600;font-size:14px;color:#0f172a;">📝 Notes</label>
+                <textarea id="itinerary-notes" class="form-control" rows="2" placeholder="Ajoutez des notes..." style="padding:12px;border-radius:10px;border:1px solid #e2e8f0;width:100%;"></textarea>
+            </div>
+
+            <div id="cost-preview" style="background:#f8fafc;border-radius:10px;padding:12px;margin-bottom:16px;display:none;">
+                <div class="d-flex justify-content-between">
+                    <span style="color:#475569;">💰 Coût total estimé :</span>
+                    <span id="estimated-cost" style="font-weight:700;color:#2563eb;">0 FCFA</span>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                    <span style="color:#475569;">📊 Budget restant :</span>
+                    <span id="remaining-budget" style="font-weight:700;color:#22c55e;">0 FCFA</span>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width:100%;padding:14px;background:#2563eb;border:none;border-radius:12px;color:white;font-weight:600;font-size:16px;cursor:pointer;">
+                <i class="fas fa-save"></i> Créer l'itinéraire
+            </button>
+        </form>
+    </div>
+</div>
+
+<style>
+.itinerary-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    padding: 20px;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+.itinerary-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+}
+.itinerary-card .dest-tag {
+    display: inline-block;
+    background: #e8f4fd;
+    color: #0056b3;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    margin: 2px;
+}
+.itinerary-card .cost-badge {
+    background: #dcfce7;
+    color: #166534;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+}
+</style>
+
 <script>
+let allDestinations = [];
+
 document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
-    if (!token) { window.location.href = "/login"; return; }
-
-    // 1. Charger les destinations pour les noms
-    fetch('/destinations')
-        .then(response => response.json())
-        .then(allDestinations => {
-            
-            // 2. Charger les itinéraires
-            fetch('/api/itineraries', { 
-                headers: { 'Authorization': `Bearer ${token}` }
-            })
-            .then(response => {
-                if (!response.ok) throw new Error(`Erreur HTTP ${response.status}`);
-                return response.json();
-            })
-            .then(itineraries => {
-                const grid = document.getElementById('itineraries-grid');
-                grid.innerHTML = '';
-
-                if (itineraries.length === 0) {
-                    grid.innerHTML = `
-                        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">
-                            <i class="fa-solid fa-suitcase-rolling" style="font-size: 50px; color: #ccc; margin-bottom: 15px; display: block;"></i>
-                            Vous n'avez pas encore d'itinéraire.<br>
-                            <a href="/dashboard" style="color: #0056b3; text-decoration: none; font-weight: 600;">Explorer les destinations</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                itineraries.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-
-                itineraries.forEach(itinerary => {
-                    const destinationNames = itinerary.destinations.map(destId => {
-                        const foundDest = allDestinations.find(d => d.id == destId);
-                        return foundDest ? foundDest.name : destId;
-                    });
-
-                    const card = document.createElement('div');
-                    card.style.cssText = `
-                        background: white; border-radius: 16px; padding: 25px;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-                        transition: transform 0.3s;
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: space-between;
-                    `;
-                    card.onmouseover = function() { this.style.transform = 'translateY(-3px)'; };
-                    card.onmouseout = function() { this.style.transform = 'translateY(0)'; };
-                    
-                    // Redirection vers la page de détails
-                    card.onclick = function() { 
-                        window.location.href = `/itinerary/${itinerary.id}?token=${token}`; 
-                    };
-
-                    // Contenu de la carte
-                    const infoDiv = document.createElement('div');
-                    infoDiv.innerHTML = `
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
-                            <h4 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">${itinerary.title}</h4>
-                            <span style="background: #e8f4fd; color: #0056b3; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 500;">${new Date(itinerary.created_at).toLocaleDateString('fr-FR')}</span>
-                        </div>
-                        <div style="margin-top: 15px; font-size: 14px; color: #555; line-height: 1.6;">
-                            <strong style="color: #333;">Destinations :</strong> 
-                            <span style="display: block; margin-top: 5px;">${destinationNames.length > 0 ? destinationNames.join(' → ') : 'Aucune destination'}</span>
-                        </div>
-                        <div style="margin-top: 10px; font-size: 14px; color: #555;">
-                            <strong style="color: #333;">Dates :</strong>
-                            <span style="display: block; margin-top: 5px;">
-                                ${itinerary.start_date && itinerary.end_date ? 
-                                    `Du ${itinerary.start_date} au ${itinerary.end_date}` : 
-                                    'Dates non définies'}
-                            </span>
-                        </div>
-                        ${itinerary.notes ? `<div style="margin-top: 10px; font-size: 14px; color: #555; font-style: italic; border-top: 1px solid #f0f0f0; padding-top: 10px;">📝 ${itinerary.notes}</div>` : ''}
-                    `;
-                    card.appendChild(infoDiv);
-
-                    // Boutons Modifier / Supprimer
-                    const actionsDiv = document.createElement('div');
-                    actionsDiv.style.cssText = `
-                        border-top: 1px solid #f0f0f0; padding-top: 15px; margin-top: 15px;
-                        display: flex; justify-content: flex-end; gap: 10px;
-                    `;
-                    actionsDiv.innerHTML = `
-                        <button onclick="event.stopPropagation(); editItinerary('${itinerary.id}')" style="background: transparent; border: 1px solid #0056b3; padding: 8px 20px; border-radius: 20px; color: #0056b3; font-weight: 500; cursor: pointer; transition: 0.3s;">
-                            <i class="fa-regular fa-pen-to-square"></i> Modifier
-                        </button>
-                        <button onclick="event.stopPropagation(); deleteItinerary('${itinerary.id}')" style="background: transparent; border: 1px solid #dc3545; padding: 8px 20px; border-radius: 20px; color: #dc3545; font-weight: 500; cursor: pointer; transition: 0.3s;">
-                            <i class="fa-regular fa-trash-can"></i> Supprimer
-                        </button>
-                    `;
-                    card.appendChild(actionsDiv);
-
-                    grid.appendChild(card);
-                });
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                document.getElementById('itineraries-grid').innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: red;">
-                        <p>Erreur de chargement : ${error.message}</p>
-                    </div>
-                `;
-            });
-        })
-        .catch(error => {
-            console.error('Erreur destinations:', error);
-        });
+    if (!token) { window.location.href = '/login'; return; }
+    loadDestinations();
+    loadItineraries();
 });
 
-// ============================================
-// FONCTIONS DE GESTION (Modifier / Supprimer)
-// ============================================
-
-function deleteItinerary(itineraryId) {
+function loadItineraries() {
     const token = localStorage.getItem('token');
-    if (!token) { alert("Session expirée. Veuillez vous reconnecter."); return; }
-
-    if (!confirm("Voulez-vous vraiment supprimer cet itinéraire ? Cette action est irréversible.")) return;
-
-    fetch(`/api/itineraries/${itineraryId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
+    fetch('/api/itineraries', {
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }
     })
     .then(response => {
-        if (response.ok) {
-            alert("Itinéraire supprimé avec succès !");
-            location.reload(); // Recharge la page
-        } else {
-            return response.json().then(errData => {
-                throw new Error(errData.error || "Erreur lors de la suppression.");
-            });
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+            throw new Error('Session expirée');
         }
+        if (!response.ok) throw new Error('Erreur ' + response.status);
+        return response.json();
+    })
+    .then(itineraries => {
+        const container = document.getElementById('itineraries-list');
+        
+        document.getElementById('itinerary-count').textContent = itineraries.length;
+        let totalDest = 0, totalBudget = 0, totalRating = 0;
+        itineraries.forEach(it => {
+            totalDest += (it.destinations || []).length;
+            totalBudget += it.total_cost || 0;
+        });
+        document.getElementById('total-destinations').textContent = totalDest;
+        document.getElementById('total-budget').textContent = totalBudget.toLocaleString();
+        document.getElementById('avg-rating').textContent = itineraries.length > 0 ? (totalRating / itineraries.length).toFixed(1) : 0;
+
+        if (itineraries.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <p class="text-muted">Vous n'avez pas encore d'itinéraire.</p>
+                    <button onclick="openCreateModal()" class="btn btn-primary" style="padding:10px 24px;background:#2563eb;border:none;border-radius:12px;color:white;font-weight:600;cursor:pointer;">
+                        <i class="fas fa-plus"></i> Créer mon premier itinéraire
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = itineraries.map((it, index) => `
+            <div class="col-md-6 col-lg-4">
+                <div class="itinerary-card">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 style="font-weight:700;color:#0f172a;margin:0;">${it.title}</h5>
+                        <span class="cost-badge">${it.total_cost || 0} FCFA</span>
+                    </div>
+                    <p style="font-size:13px;color:#64748b;margin-bottom:8px;">
+                        <i class="far fa-calendar-alt"></i> ${it.created_at || 'Récemment'}
+                    </p>
+                    <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px;">
+                        ${(it.destinations || []).map(id => `<span class="dest-tag">📍 ${getDestName(id)}</span>`).join('')}
+                    </div>
+                    ${it.notes ? `<p style="font-size:13px;color:#475569;margin-bottom:10px;">📝 ${it.notes}</p>` : ''}
+                    ${it.budget ? `<p style="font-size:13px;color:#475569;margin-bottom:10px;">💰 Budget: ${it.budget} FCFA</p>` : ''}
+                    ${it.time_available ? `<p style="font-size:13px;color:#475569;margin-bottom:10px;">⏱️ ${it.time_available}h disponible</p>` : ''}
+                    <div class="d-flex gap-2 mt-2">
+                        <button onclick="deleteItinerary('${it.id}')" class="btn btn-outline-danger btn-sm" style="padding:4px 12px;border-radius:8px;font-size:12px;border:1px solid #ef4444;color:#ef4444;background:transparent;cursor:pointer;">
+                            <i class="fas fa-trash"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
     })
     .catch(error => {
-        alert("Erreur : " + error.message);
+        document.getElementById('itineraries-list').innerHTML = `
+            <div class="col-12 text-center py-5 text-danger">
+                <p>❌ ${error.message}</p>
+            </div>
+        `;
     });
 }
 
-function editItinerary(itineraryId) {
+function getDestName(id) {
+    const dest = allDestinations.find(d => d.id == id);
+    return dest ? dest.name : id;
+}
+
+function loadDestinations() {
+    fetch('/api/destinations')
+        .then(r => r.json())
+        .then(dests => {
+            allDestinations = dests;
+            populateDestinationSelector(dests);
+        });
+}
+
+function populateDestinationSelector(dests) {
+    const container = document.getElementById('destination-selector');
+    if (!dests || dests.length === 0) {
+        container.innerHTML = '<div class="text-muted text-center py-3">Aucune destination disponible</div>';
+        return;
+    }
+    container.innerHTML = dests.map(d => `
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+            <input type="checkbox" id="dest-${d.id}" value="${d.id}" onchange="updateCost()" style="width:18px;height:18px;">
+            <label for="dest-${d.id}" style="margin:0;font-size:14px;cursor:pointer;flex:1;">
+                <strong>${d.name}</strong>
+                <span style="color:#94a3b8;font-size:12px;margin-left:8px;">${d.avg_cost || 0} FCFA</span>
+                <span style="color:#94a3b8;font-size:12px;margin-left:8px;">⭐ ${d.rating || 0}</span>
+            </label>
+        </div>
+    `).join('');
+}
+
+function openCreateModal() {
+    document.getElementById('createModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.getElementById('itinerary-title').value = '';
+    document.getElementById('itinerary-budget').value = '';
+    document.getElementById('itinerary-time').value = '';
+    document.getElementById('itinerary-notes').value = '';
+    document.getElementById('cost-preview').style.display = 'none';
+    document.querySelectorAll('#destination-selector input[type="checkbox"]').forEach(cb => cb.checked = false);
+}
+
+function closeCreateModal() {
+    document.getElementById('createModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+document.getElementById('createModal').addEventListener('click', function(e) {
+    if (e.target === this) closeCreateModal();
+});
+
+function updateCost() {
+    const checkboxes = document.querySelectorAll('#destination-selector input[type="checkbox"]:checked');
+    const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+    
+    const total = selectedIds.reduce((sum, id) => {
+        const dest = allDestinations.find(d => d.id == id);
+        return sum + (dest ? dest.avg_cost || 0 : 0);
+    }, 0);
+    
+    const budget = parseInt(document.getElementById('itinerary-budget').value) || 0;
+    const preview = document.getElementById('cost-preview');
+    preview.style.display = 'block';
+    document.getElementById('estimated-cost').textContent = total + ' FCFA';
+    
+    const remaining = budget - total;
+    const remainingEl = document.getElementById('remaining-budget');
+    remainingEl.textContent = remaining + ' FCFA';
+    remainingEl.style.color = remaining < 0 ? '#ef4444' : '#22c55e';
+}
+
+document.getElementById('itinerary-budget').addEventListener('input', updateCost);
+
+document.getElementById('itineraryForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
     const token = localStorage.getItem('token');
-    if (!token) { alert("Session expirée. Veuillez vous reconnecter."); return; }
-
-    const newTitle = prompt("Nouveau titre de l'itinéraire :");
-    if (newTitle === null) return;
-
-    const newStart = prompt("Nouvelle date de début (AAAA-MM-JJ) :");
-    if (newStart === null) return;
-
-    const newEnd = prompt("Nouvelle date de fin (AAAA-MM-JJ) :");
-    if (newEnd === null) return;
-
-    const newNotes = prompt("Nouvelles notes (optionnel) :") || "";
-
-    fetch(`/api/itineraries/${itineraryId}`, {
-        method: 'PUT',
-        headers: { 
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            title: newTitle,
-            start_date: newStart,
-            end_date: newEnd,
-            notes: newNotes
-        })
-    })
-    .then(response => {
+    if (!token) { alert('Connectez-vous.'); window.location.href = '/login'; return; }
+    
+    const title = document.getElementById('itinerary-title').value.trim() || 'Mon itinéraire';
+    const budget = parseInt(document.getElementById('itinerary-budget').value) || 0;
+    const time_available = parseInt(document.getElementById('itinerary-time').value) || 0;
+    const notes = document.getElementById('itinerary-notes').value.trim();
+    
+    const checkboxes = document.querySelectorAll('#destination-selector input[type="checkbox"]:checked');
+    const destinations = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (destinations.length === 0) {
+        alert('Veuillez sélectionner au moins une destination.');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/itineraries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                title: title,
+                destinations: destinations,
+                budget: budget,
+                time_available: time_available,
+                notes: notes
+            })
+        });
+        
+        const data = await response.json();
+        
         if (response.ok) {
-            alert("Itinéraire modifié avec succès !");
-            location.reload();
+            alert('✅ Itinéraire créé avec succès !');
+            closeCreateModal();
+            loadItineraries();
         } else {
-            return response.json().then(errData => {
-                throw new Error(errData.error || "Erreur lors de la modification.");
-            });
+            alert('❌ ' + (data.error || 'Erreur'));
         }
+    } catch (error) {
+        alert('❌ Erreur réseau');
+        console.error(error);
+    }
+});
+
+function deleteItinerary(id) {
+    if (!confirm('Supprimer cet itinéraire ?')) return;
+    const token = localStorage.getItem('token');
+    fetch('/api/itineraries/' + id, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
     })
-    .catch(error => {
-        alert("Erreur : " + error.message);
-    });
+    .then(r => {
+        if (!r.ok) throw new Error('Erreur');
+        return r.json();
+    })
+    .then(() => {
+        alert('✅ Itinéraire supprimé');
+        loadItineraries();
+    })
+    .catch(() => alert('❌ Erreur'));
 }
 </script>
+
 {% endblock %}

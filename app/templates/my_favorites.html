@@ -4,50 +4,101 @@
 
 {% block content %}
 
-{% include "navbar.html" %}
+<div class="container py-4">
+    <h1 class="mb-2">❤️ Mes Favoris</h1>
+    <p class="text-muted mb-4">Retrouvez tous les lieux que vous avez aimés.</p>
 
-<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
-    <div style="max-width: 1100px; margin: 0 auto;">
-        
-        <h2 style="font-weight: 700; margin-bottom: 20px; color: #1a1a1a;">Mes Favoris</h2>
-        <p style="color: #777; margin-bottom: 30px;">Retrouvez tous les lieux que vous avez aimés.</p>
-
-        <div id="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;">
-            
-            {% for fav in favorites %}
-            <div onclick="window.location.href='/destination?id={{ fav.destination.id }}'" 
-                 style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;">
-                <div style="height: 180px; background: url('/static/images/{{ fav.destination.id }}/01.jpg') center/cover; position: relative; background-size: cover;">
-                    <div style="position: absolute; top: 12px; right: 12px; background: white; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">
-                        <i class="fa-solid fa-heart" style="color: #dc3545;"></i>
-                    </div>
-                </div>
-                <div style="padding: 20px;">
-                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 8px;">
-                        <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a1a;">{{ fav.destination.name }}</h3>
-                        <span style="background: #f0f0f0; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; color: #555;">{{ fav.destination.quartier or 'Douala' }}</span>
-                    </div>
-                    <p style="color: #666; font-size: 14px; margin: 0 0 15px 0; line-height: 1.4;">{{ fav.destination.description[:80] ~ '...' if fav.destination.description else 'Un lieu emblématique de Douala.' }}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f0f0f0; padding-top: 12px;">
-                        <div style="display: flex; gap: 5px; color: #f5a623;">
-                            {% for i in range(4) %}
-                            <i class="fa-solid fa-star"></i>
-                            {% endfor %}
-                        </div>
-                        <span style="font-weight: 600; color: #0056b3;">{{ fav.destination.avg_cost or 0 }} FCFA</span>
-                    </div>
-                </div>
-            </div>
-            {% else %}
-            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #777;">
-                <i class="fa-solid fa-heart" style="font-size: 50px; color: #ccc; margin-bottom: 15px; display: block;"></i>
-                Vous n'avez pas encore de favoris.<br>
-                <a href="/dashboard" style="color: #0056b3; text-decoration: none; font-weight: 600;">Explorer et aimer des lieux</a>
-            </div>
-            {% endfor %}
-
-        </div>
-
+    <div id="favorites-grid" class="row g-4">
+        <div class="col-12 text-center py-5 text-muted"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
     </div>
 </div>
+
+<style>
+.fav-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+.fav-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+}
+.fav-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        window.location.href = '/login';
+        return;
+    }
+
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const grid = document.getElementById('favorites-grid');
+
+    if (favorites.length === 0) {
+        grid.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Vous n'avez pas encore de favoris.</p>
+                <a href="/destinations" class="btn btn-primary">Découvrir des lieux</a>
+            </div>
+        `;
+        return;
+    }
+
+    fetch('/api/destinations')
+        .then(r => r.json())
+        .then(dests => {
+            const favDests = dests.filter(d => favorites.includes(d.id));
+            if (favDests.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <p class="text-muted">Aucun favori trouvé.</p>
+                        <a href="/destinations" class="btn btn-primary">Découvrir des lieux</a>
+                    </div>
+                `;
+                return;
+            }
+            grid.innerHTML = favDests.map(d => `
+                <div class="col-md-3 col-sm-6">
+                    <div class="fav-card" onclick="window.location.href='/destination?id=${d.id}'">
+                        <img src="/static/images/${d.id}/01.jpg" onerror="this.style.display='none'" alt="${d.name}">
+                        <div class="p-3">
+                            <h6 class="mb-0">${d.name}</h6>
+                            <small class="text-muted">${d.quartier || 'Douala'}</small>
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>⭐ ${d.rating || 0} (${d.reviews || 0})</span>
+                                <span class="fw-bold text-primary">${d.avg_cost || 0} FCFA</span>
+                            </div>
+                            <button class="btn btn-outline-danger btn-sm mt-2" 
+                                    onclick="event.stopPropagation(); removeFavorite('${d.id}')">
+                                <i class="fas fa-trash"></i> Retirer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        })
+        .catch(() => {
+            grid.innerHTML = '<div class="col-12 text-center text-danger">Erreur de chargement</div>';
+        });
+});
+
+function removeFavorite(destId) {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    favorites = favorites.filter(id => id !== destId);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    location.reload();
+}
+</script>
+
 {% endblock %}
