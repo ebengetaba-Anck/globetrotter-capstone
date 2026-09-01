@@ -1,0 +1,12 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY services/itinerary_service.py /app/
+COPY data /app/data
+
+RUN pip install flask jwt pyjwt werkzeug requests
+
+EXPOSE 5002
+
+CMD ["python", "itinerary_service.py"]

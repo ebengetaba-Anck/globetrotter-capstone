@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Galerie - {{ destination.name }} - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+
+        <a href="/destination?id={{ destination.id }}" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; margin-bottom: 25px; font-weight: 500;">
+            <i class="fa-solid fa-arrow-left"></i> Retour aux détails
+        </a>
+
+        <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px;">Galerie - {{ destination.name }}</h1>
+        <p style="color: #666; font-size: 16px; margin-bottom: 30px;">Découvrez toutes les photos et vidéos de ce lieu emblématique de Douala.</p>
+
+        <!-- Grille des médias -->
+        <div id="gallery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+            <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Chargement des images...
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; color: #999; font-size: 14px;">
+            <i class="fa-regular fa-circle-info"></i> Toutes les images sont stockées localement.
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const destId = "{{ destination.id }}";
+    
+    // Charger les images depuis l'API
+    fetch(`/api/gallery/${destId}`)
+        .then(r => r.json())
+        .then(urls => {
+            const grid = document.getElementById('gallery-grid');
+            grid.innerHTML = '';
+
+            if (urls.length === 0) {
+                grid.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: #777;">Aucune image trouvée pour ce lieu.</p>`;
+                return;
+            }
+
+            // Afficher les images
+            urls.forEach((url, index) => {
+                const isVideo = url.endsWith('.mp4') || url.endsWith('.mov') || url.endsWith('.avi');
+                const div = document.createElement('div');
+                
+                // La première image prend 2 colonnes
+                if (index === 0) {
+                    div.style.gridColumn = 'span 2';
+                    div.style.height = '400px';
+                } else {
+                    div.style.height = '250px';
+                }
+
+                div.style.borderRadius = '16px';
+                div.style.overflow = 'hidden';
+                div.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)';
+                div.style.position = 'relative';
+
+                if (isVideo) {
+                    div.innerHTML = `
+                        <video src="${url}" width="100%" height="100%" style="object-fit: cover; border: 0;" controls></video>
+                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            <i class="fa-solid fa-video"></i> Vidéo
+                        </div>
+                    `;
+                } else {
+                    div.innerHTML = `
+                        <img src="${url}" width="100%" height="100%" style="object-fit: cover;">
+                        <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.5); color: white; padding: 4px 12px; border-radius: 15px; font-size: 12px;">
+                            <i class="fa-solid fa-image"></i> Photo
+                        </div>
+                    `;
+                }
+
+                grid.appendChild(div);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById('gallery-grid').innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: red;">Erreur de chargement des images.</p>`;
+        });
+});
+</script>
+{% endblock %}

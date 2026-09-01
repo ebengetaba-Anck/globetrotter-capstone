@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Ô'MBOA{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <h1 class="mb-1">👋 Bonjour, <span style="color:#2563eb;" id="greeting">Explorateur</span></h1>
+    <p class="text-muted mb-4">Qu'est-ce qui te ferait plaisir aujourd'hui ?</p>
+
+    <div class="d-flex flex-wrap gap-2 mb-4">
+        <button class="mood-btn active" onclick="selectMood(this)">😌 Me détendre</button>
+        <button class="mood-btn" onclick="selectMood(this)">❤️ À deux</button>
+        <button class="mood-btn" onclick="selectMood(this)">🍽️ Bien manger</button>
+        <button class="mood-btn" onclick="selectMood(this)">🎉 Sortir</button>
+        <button class="mood-btn" onclick="selectMood(this)">👨‍👩‍👧 En famille</button>
+        <button class="mood-btn" onclick="selectMood(this)">🗺️ Découvrir</button>
+        <button class="mood-btn" onclick="selectMood(this)">🎨 Culture</button>
+        <button class="mood-btn" onclick="selectMood(this)">⚽ Sport</button>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-6 col-md-3"><div class="p-3 bg-white rounded-3 border"><strong>3</strong><br><small>Itinéraires</small></div></div>
+        <div class="col-6 col-md-3"><div class="p-3 bg-white rounded-3 border"><strong>12</strong><br><small>Favoris</small></div></div>
+        <div class="col-6 col-md-3"><div class="p-3 bg-white rounded-3 border"><strong>2</strong><br><small>Courses</small></div></div>
+        <div class="col-6 col-md-3"><div class="p-3 bg-white rounded-3 border"><strong>100+</strong><br><small>Lieux</small></div></div>
+    </div>
+
+    <h3 class="mb-3">🔥 Recommandé pour toi</h3>
+    <div id="destinationsGrid" class="row g-4">
+        <div class="col-12 text-center py-5 text-muted"><i class="fas fa-spinner fa-spin"></i> Chargement...</div>
+    </div>
+</div>
+
+<style>
+.mood-btn{padding:10px 22px;border-radius:40px;border:1.5px solid #e2e8f0;background:white;font-weight:500;transition:0.2s}
+.mood-btn:hover{border-color:#2563eb;background:#eff6ff}
+.mood-btn.active{border-color:#2563eb;background:#eff6ff;color:#2563eb}
+.card-dest{background:white;border-radius:16px;border:1px solid #f1f5f9;overflow:hidden;cursor:pointer;transition:0.3s;height:100%}
+.card-dest:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(0,0,0,0.06)}
+.card-dest img{width:100%;height:160px;object-fit:cover}
+</style>
+
+<script>
+const token = localStorage.getItem('token');
+if(!token) window.location.href='/login';
+
+fetch('/api/me', {headers:{'Authorization':'Bearer '+token}})
+.then(r=>r.json())
+.then(d=>{if(d.username){document.getElementById('greeting').textContent=d.username;}})
+.catch(()=>{});
+
+fetch('/api/destinations')
+.then(r=>r.json())
+.then(dests=>{
+    const grid=document.getElementById('destinationsGrid');
+    if(!dests||dests.length===0){grid.innerHTML='<div class="col-12 text-center text-muted">Aucune destination</div>';return;}
+    const html=dests.slice(0,4).map(d=>`
+        <div class="col-md-3 col-sm-6">
+            <div class="card-dest" onclick="window.location.href='/destination?id=${d.id}'">
+                <img src="/static/images/${d.id}/01.jpg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22150%22%3E%3Crect fill=%22%23f1f5f9%22 width=%22200%22 height=%22150%22/%3E%3Ctext x=%2250%22 y=%2275%22 font-family=%22Arial%22 font-size=%2230%22 fill=%22%2394a3b8%22%3E📸%3C/text%3E%3C/svg%3E'" alt="${d.name}">
+                <div class="p-3">
+                    <h6 class="mb-0">${d.name}</h6>
+                    <small class="text-muted">${d.quartier||'Douala'}</small>
+                    <div class="d-flex justify-content-between mt-2">
+                        <span>⭐ ${d.rating||0} (${d.reviews||0})</span>
+                        <span class="fw-bold text-primary">${d.avg_cost||0} FCFA</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    grid.innerHTML=html;
+})
+.catch(()=>{document.getElementById('destinationsGrid').innerHTML='<div class="col-12 text-center text-danger">Erreur de chargement</div>';});
+
+function selectMood(btn){
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+}
+</script>
+{% endblock %}

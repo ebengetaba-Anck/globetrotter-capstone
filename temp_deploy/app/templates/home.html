@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Ô'MBOA - Votre assistant de voyage à Douala{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+
+        <!-- SALUTATION -->
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 34px; font-weight: 800; color: #1a1a1a; margin-bottom: 5px;">👋 Bonjour <span id="user-name" style="color: #0056b3;">Explorateur</span> !</h1>
+            <p style="color: #666; font-size: 18px;">Qu’est-ce qui te ferait plaisir aujourd’hui ?</p>
+        </div>
+
+        <!-- FILTRES SOCIAUX & CHIPS -->
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px; align-items: center;">
+            <span style="font-weight: 500; color: #333; margin-right: 5px;">Tu sors avec qui ?</span>
+            <button class="social-btn" data-value="solo" onclick="selectSocial('solo')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 8px 20px; font-size: 14px; cursor: pointer; transition: 0.3s;">🧍 Solo</button>
+            <button class="social-btn" data-value="couple" onclick="selectSocial('couple')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 8px 20px; font-size: 14px; cursor: pointer; transition: 0.3s;">❤️ À deux</button>
+            <button class="social-btn" data-value="amis" onclick="selectSocial('amis')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 8px 20px; font-size: 14px; cursor: pointer; transition: 0.3s;">👯 Entre amis</button>
+            <button class="social-btn" data-value="famille" onclick="selectSocial('famille')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 8px 20px; font-size: 14px; cursor: pointer; transition: 0.3s;">👨‍👩‍👧 En famille</button>
+        </div>
+
+        <!-- CHIPS DE MOOD -->
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px;">
+            <a href="/itinerary-builder" class="chip-modern">🔥 Mettre l’ambiance</a>
+            <a href="/itinerary-builder" class="chip-modern">❤️ Sortir à deux</a>
+            <a href="/itinerary-builder" class="chip-modern">🌿 Me détendre</a>
+            <a href="/itinerary-builder" class="chip-modern">📸 Faire de belles photos</a>
+            <a href="/itinerary-builder" class="chip-modern">🍽️ Bien manger</a>
+            <a href="/itinerary-builder" class="chip-modern">👨‍👩‍👧 Sortir en famille</a>
+            <a href="/itinerary-builder" class="chip-modern">🗺️ Découvrir Douala</a>
+        </div>
+
+        <!-- TON MOMENT À DOUALA -->
+        <div id="moment-section" class="moment-card" style="display: none; margin-bottom: 40px;">
+            <h3 style="font-weight: 700; color: #1a1a1a; margin-bottom: 5px;">✨ Ton moment à Douala</h3>
+            <div id="moment-content" style="color: #555; font-size: 16px;"></div>
+            <button onclick="window.location.href='/itinerary-builder'" style="margin-top: 15px; padding: 12px 30px; background: #0056b3; color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                ✨ Préparer ma sortie
+            </button>
+        </div>
+
+        <!-- PRÈS DE TOI -->
+        <div style="margin-bottom: 40px;">
+            <h3 class="section-title">📍 Près de toi</h3>
+            <div id="nearby-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px;">
+                <div style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Chargement...
+                </div>
+            </div>
+        </div>
+
+        <!-- RECOMMANDÉ -->
+        <div style="margin-bottom: 40px;">
+            <h3 class="section-title">❤️ Pour toi</h3>
+            <p class="section-subtitle" id="recommendation-reason">Parce que nous savons ce que tu aimes...</p>
+            <div id="recommended-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px;">
+                <div style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Chargement...
+                </div>
+            </div>
+        </div>
+
+        <!-- POPULAIRE -->
+        <div>
+            <h3 class="section-title">🔥 Ça bouge à Douala</h3>
+            <p class="section-subtitle">Les endroits qui attirent du monde en ce moment.</p>
+            <div id="popular-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px;">
+                <div style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Chargement...
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+let selectedSocial = 'solo';
+let allDestinations = [];
+
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    if (!token) { window.location.href = "/login"; return; }
+    
+    fetch('/api/me', {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.username) {
+            document.getElementById('user-name').innerText = data.username;
+        }
+    })
+    .catch(error => console.error('Erreur:', error));
+
+    fetch('/destinations')
+        .then(response => response.json())
+        .then(dest => {
+            allDestinations = dest;
+            loadNearby();
+            loadRecommended();
+            loadPopular();
+        });
+
+    displayMoment();
+});
+
+function displayMoment() {
+    const now = new Date();
+    const hour = now.getHours();
+    const section = document.getElementById('moment-section');
+    const content = document.getElementById('moment-content');
+
+    let message = '', emoji = '';
+    if (hour >= 6 && hour < 12) { emoji = '☀️'; message = 'Douala se réveille. C\'est un bon moment pour découvrir quelque chose de nouveau.'; }
+    else if (hour >= 12 && hour < 16) { emoji = '🌤️'; message = 'L\'après-midi commence à tomber. Envie d\'une petite sortie ?'; }
+    else if (hour >= 16 && hour < 19) { emoji = '🌆'; message = 'La ville change d\'ambiance. Tu veux que je te trouve un endroit sympa pour ce soir ?'; }
+    else if (hour >= 19 && hour < 22) { emoji = '🌙'; message = 'La nuit commence vraiment. Tu veux continuer la soirée ? 👀'; }
+    else { emoji = '🌃'; message = 'Douala ne dort jamais. Tu as envie de sortir ?'; }
+
+    section.style.display = 'block';
+    content.innerHTML = `
+        <p style="font-size: 18px; margin-bottom: 5px;">${emoji} Il est ${now.getHours()}h${String(now.getMinutes()).padStart(2, '0')}.</p>
+        <p>${message}</p>
+    `;
+}
+
+function selectSocial(value) {
+    selectedSocial = value;
+    document.querySelectorAll('.social-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.social-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+    loadRecommended();
+}
+
+function loadNearby() {
+    const nearby = allDestinations.slice(0, 3);
+    const grid = document.getElementById('nearby-grid');
+    grid.innerHTML = '';
+    if (nearby.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Aucun lieu trouvé.</p>';
+        return;
+    }
+    nearby.forEach(d => {
+        const card = document.createElement('div');
+        card.className = 'card-modern';
+        card.onclick = () => window.location.href = `/destination?id=${d.id}`;
+        const img = `/static/images/${d.id}/01.jpg`;
+        card.innerHTML = `
+            <div class="card-image" style="background-image: url('${img}');"></div>
+            <div class="card-body">
+                <h4 class="card-title">${d.name}</h4>
+                <div class="card-subtitle">${d.quartier}</div>
+                <div class="card-footer">
+                    <span>⭐ ${d.rating || 0}</span>
+                    <span style="font-weight: 600; color: #0056b3;">${d.avg_cost ? d.avg_cost + ' FCFA' : 'Gratuit'}</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+function loadRecommended() {
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    fetch('/api/recommendations', { headers: { 'Authorization': `Bearer ${token}` } })
+    .then(r => r.json())
+    .then(dests => {
+        const grid = document.getElementById('recommended-grid');
+        grid.innerHTML = '';
+        if (dests.length === 0) {
+            grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #777;">Aucune recommandation.</p>';
+            return;
+        }
+        document.getElementById('recommendation-reason').innerText = 'Parce que tu aimes les sorties tranquilles... voici 3 endroits qui pourraient te plaire.';
+        dests.slice(0, 3).forEach(d => {
+            const card = document.createElement('div');
+            card.className = 'card-modern';
+            card.onclick = () => window.location.href = `/destination?id=${d.id}`;
+            const img = `/static/images/${d.id}/01.jpg`;
+            card.innerHTML = `
+                <div class="card-image" style="background-image: url('${img}');"></div>
+                <div class="card-body">
+                    <h4 class="card-title">${d.name}</h4>
+                    <div class="card-subtitle">${d.quartier}</div>
+                    <div class="card-footer">
+                        <span>⭐ ${d.rating || 0}</span>
+                        <span style="font-weight: 600; color: #0056b3;">${d.avg_cost ? d.avg_cost + ' FCFA' : 'Gratuit'}</span>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    })
+    .catch(err => console.error(err));
+}
+
+function loadPopular() {
+    fetch('/destinations')
+        .then(r => r.json())
+        .then(dests => {
+            const sorted = dests.sort((a, b) => (b.reviews || 0) - (a.reviews || 0)).slice(0, 3);
+            const grid = document.getElementById('popular-grid');
+            grid.innerHTML = '';
+            sorted.forEach(d => {
+                const card = document.createElement('div');
+                card.className = 'card-modern';
+                card.onclick = () => window.location.href = `/destination?id=${d.id}`;
+                const img = `/static/images/${d.id}/01.jpg`;
+                card.innerHTML = `
+                    <div class="card-image" style="background-image: url('${img}');"></div>
+                    <div class="card-body">
+                        <h4 class="card-title">${d.name}</h4>
+                        <div class="card-subtitle">${d.quartier}</div>
+                        <div class="card-footer">
+                            <span>⭐ ${d.rating || 0}</span>
+                            <span style="font-weight: 600; color: #0056b3;">${d.avg_cost ? d.avg_cost + ' FCFA' : 'Gratuit'}</span>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+}
+</script>
+{% endblock %}

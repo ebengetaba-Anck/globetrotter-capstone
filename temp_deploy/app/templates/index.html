@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ô'MBOA - Découvrez Douala autrement</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #0f172a; }
+        a { text-decoration: none; }
+        
+        /* ============================================================ */
+        /* NAVBAR */
+        /* ============================================================ */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            padding: 0 48px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar .logo {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 22px; font-weight: 800; color: #0f172a;
+            cursor: pointer;
+        }
+        .navbar .logo-icon {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, #0056b3, #2563eb);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 800; font-size: 18px;
+        }
+        .navbar .nav-links { display: flex; gap: 6px; align-items: center; }
+        .navbar .nav-links a {
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+        .navbar .nav-links a:hover { background: #f1f5f9; color: #0f172a; }
+        .navbar .nav-links a.active { background: #f1f5f9; color: #0f172a; font-weight: 600; }
+        .navbar .btn-login {
+            padding: 10px 28px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #0056b3, #2563eb);
+            color: white !important;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(37,99,235,0.25);
+            transition: all 0.3s ease;
+        }
+        .navbar .btn-login:hover { 
+            background: #004494 !important;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 25px rgba(37,99,235,0.35);
+        }
+        
+        /* ============================================================ */
+        /* HERO - IMAGE A DROITE */
+        /* ============================================================ */
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            padding-top: 72px;
+        }
+        .hero-left {
+            padding: 80px 48px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #ffffff;
+        }
+        .hero-left .badge {
+            display: inline-block;
+            background: #e8f4fd;
+            color: #0056b3;
+            padding: 6px 18px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            width: fit-content;
+        }
+        .hero-left h1 {
+            font-size: 52px;
+            font-weight: 900;
+            color: #0f172a;
+            line-height: 1.08;
+            margin: 0 0 16px 0;
+            letter-spacing: -2px;
+        }
+        .hero-left h1 span { 
+            background: linear-gradient(135deg, #0056b3, #2563eb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-left p {
+            font-size: 18px;
+            color: #64748b;
+            line-height: 1.7;
+            margin: 0 0 32px 0;
+            max-width: 480px;
+        }
+        .hero-left .btn-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        .hero-left .btn-primary {
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #0056b3, #2563eb);
+            color: white;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
+            transition: all 0.3s ease;
+        }
+        .hero-left .btn-primary:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 12px 40px rgba(37,99,235,0.4);
+        }
+        .hero-left .btn-secondary {
+            padding: 14px 36px;
+            background: transparent;
+            color: #0f172a;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+        .hero-left .btn-secondary:hover { 
+            background: #f1f5f9;
+            border-color: #94a3b8;
+        }
+        .hero-left .stats {
+            display: flex;
+            gap: 48px;
+            padding-top: 32px;
+            border-top: 1px solid #f1f5f9;
+        }
+        .hero-left .stats div { 
+            text-align: left;
+        }
+        .hero-left .stats strong { 
+            display: block;
+            font-size: 24px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .hero-left .stats span { 
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        
+        /* IMAGE DROITE */
+        .hero-right {
+            background: url('https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=1200&auto=format&fit=crop') center/cover;
+            min-height: 100vh;
+            position: relative;
+        }
+        .hero-right .credit {
+            position: absolute;
+            bottom: 20px;
+            right: 24px;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            color: rgba(255,255,255,0.7);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 400;
+        }
+        
+        /* ============================================================ */
+        /* SECTION "TOUT CE DONT VOUS AVEZ BESOIN" */
+        /* ============================================================ */
+        .features {
+            padding: 80px 48px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .features-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+        .features-header .label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #0056b3;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .features-header h2 {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 8px 0 12px 0;
+        }
+        .features-header p {
+            font-size: 18px;
+            color: #64748b;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 32px 28px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .feature-card:hover { 
+            transform: translateY(-6px); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
+            border-color: #0056b3;
+        }
+        .feature-card .icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+        .feature-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f172a;
+            margin: 0 0 8px 0;
+        }
+        .feature-card p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.6;
+            margin: 0 0 16px 0;
+        }
+        .feature-card a {
+            color: #0056b3;
+            font-weight: 600;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .feature-card a:hover { gap: 10px; }
+        
+        /* ============================================================ */
+        /* CTA FINAL */
+        /* ============================================================ */
+        .cta {
+            padding: 72px 48px;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            text-align: center;
+        }
+        .cta h2 { 
+            font-size: 36px; 
+            font-weight: 700; 
+            color: white; 
+            margin: 0 0 12px 0;
+        }
+        .cta p { 
+            font-size: 18px; 
+            color: #94a3b8; 
+            margin: 0 0 32px 0; 
+            line-height: 1.6; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+        .cta .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+        .cta .btn-primary {
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #0056b3, #2563eb);
+            color: white;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cta .btn-primary:hover { transform: translateY(-2px); }
+        .cta .btn-secondary {
+            padding: 16px 40px;
+            background: rgba(255,255,255,0.08);
+            color: white;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 16px;
+            border: 1px solid rgba(255,255,255,0.12);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .cta .btn-secondary:hover { background: rgba(255,255,255,0.16); }
+        
+        /* ============================================================ */
+        /* FOOTER */
+        /* ============================================================ */
+        footer {
+            background: #0f172a;
+            padding: 40px 48px;
+            text-align: center;
+            color: #94a3b8;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        footer .links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 20px; }
+        footer .links a { color: #94a3b8; font-size: 14px; transition: 0.2s; }
+        footer .links a:hover { color: white; }
+        footer p { font-size: 13px; margin: 0; }
+        
+        /* ============================================================ */
+        /* RESPONSIVE */
+        /* ============================================================ */
+        @media (max-width: 1024px) {
+            .hero { grid-template-columns: 1fr; }
+            .hero-right { min-height: 400px; }
+            .hero-left { padding: 100px 32px 40px; }
+            .hero-left h1 { font-size: 40px; }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .navbar { padding: 0 16px; height: 64px; }
+            .navbar .logo { font-size: 18px; }
+            .navbar .nav-links a { font-size: 12px; padding: 6px 12px; }
+            .navbar .btn-login { padding: 6px 16px; font-size: 12px; }
+            .navbar .hide-mobile { display: none; }
+            .hero-left { padding: 80px 16px 32px; }
+            .hero-left h1 { font-size: 32px; }
+            .hero-left .stats { gap: 24px; flex-wrap: wrap; }
+            .hero-right { min-height: 280px; }
+            .features { padding: 40px 16px; }
+            .features-grid { grid-template-columns: 1fr; }
+            .features-header h2 { font-size: 28px; }
+            .cta { padding: 40px 16px; }
+            .cta h2 { font-size: 24px; }
+            footer { padding: 24px 16px; }
+            footer .links { gap: 16px; }
+        }
+        @media (max-width: 480px) {
+            .hero-left h1 { font-size: 28px; }
+            .hero-left .btn-primary, .hero-left .btn-secondary { 
+                width: 100%; 
+                justify-content: center; 
+            }
+            .features-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================================ -->
+    <nav class="navbar">
+        <div class="logo" onclick="window.location.href='/'">
+            <div class="logo-icon">Ô</div>
+            <span>Ô'MBOA</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="active">Accueil</a>
+            <a href="/destinations">Découvrir</a>
+            <a href="/transport">🚕 Transport</a>
+            <a href="#" class="hide-mobile">À propos</a>
+            <a href="/login" class="btn-login"><i class="fas fa-user"></i> Connexion</a>
+        </div>
+    </nav>
+
+    <!-- ============================================================ -->
+    <!-- HERO - IMAGE A DROITE -->
+    <!-- ============================================================ -->
+    <section class="hero">
+        <div class="hero-left">
+            <span class="badge">🚀 Explorez Douala autrement</span>
+            <h1>Explorez.<br>Découvrez.<br><span>Vivez Douala.</span></h1>
+            <p>Des lieux uniques, des expériences inoubliables, une ville qui ne dort jamais.</p>
+            <div class="btn-group">
+                <a href="/destinations" class="btn-primary">
+                    Découvrir maintenant <i class="fas fa-arrow-right"></i>
+                </a>
+                <a href="#video" class="btn-secondary">
+                    <i class="fas fa-play-circle"></i> Regarder la vidéo
+                </a>
+            </div>
+            <div class="stats">
+                <div>
+                    <strong>100+</strong>
+                    <span>Lieux à découvrir</span>
+                </div>
+                <div>
+                    <strong>4.8/5</strong>
+                    <span>Appréciation globale</span>
+                </div>
+                <div>
+                    <strong>10K+</strong>
+                    <span>Explorateurs</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-right">
+            <span class="credit">📸 Balade au bord du Wouri • Douala, Cameroun</span>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SECTION "TOUT CE DONT VOUS AVEZ BESOIN" -->
+    <!-- ============================================================ -->
+    <section class="features">
+        <div class="features-header">
+            <div class="label">Tout ce dont vous avez besoin</div>
+            <h2>Découvrez Ô'MBOA</h2>
+            <p>Votre compagnon idéal pour explorer Douala autrement. Tourisme, loisirs, transport... tout est réuni ici.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card" onclick="window.location.href='/destinations?category=culture'">
+                <div class="icon">🏛️</div>
+                <h3>Sites touristiques</h3>
+                <p>Découvrez les lieux incontournables de Douala.</p>
+                <a href="/destinations?category=culture">Explorer <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/destinations?category=gastronomie'">
+                <div class="icon">🍽️</div>
+                <h3>Restaurants</h3>
+                <p>Les meilleures tables pour tous les goûts.</p>
+                <a href="/destinations?category=gastronomie">Explorer <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/destinations?category=hotel'">
+                <div class="icon">🏨</div>
+                <h3>Hôtels</h3>
+                <p>Trouvez l'hébergement qui vous convient.</p>
+                <a href="/destinations?category=hotel">Explorer <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/destinations?category=detente'">
+                <div class="icon">🎭</div>
+                <h3>Activités</h3>
+                <p>Vivez des expériences uniques à Douala.</p>
+                <a href="/destinations?category=detente">Explorer <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/transport'">
+                <div class="icon">🚕</div>
+                <h3>Transport</h3>
+                <p>Déplacements faciles et sécurisés.</p>
+                <a href="/transport">Explorer <i class="fas fa-arrow-right"></i></a>
+            </div>
+            <div class="feature-card" onclick="window.location.href='/destinations'">
+                <div class="icon">🗺️</div>
+                <h3>Découverte</h3>
+                <p>Créez votre expérience à Douala.</p>
+                <a href="/destinations">Explorer <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- CTA FINAL -->
+    <!-- ============================================================ -->
+    <section class="cta">
+        <h2>Prêt à explorer Douala ?</h2>
+        <p>Créez votre compte et accédez à des recommandations personnalisées, des itinéraires sur mesure et bien plus encore.</p>
+        <div class="btn-group">
+            <a href="/register" class="btn-primary">🚀 Créer un compte</a>
+            <a href="/login" class="btn-secondary"><i class="fas fa-sign-in-alt"></i> Se connecter</a>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- FOOTER -->
+    <!-- ============================================================ -->
+    <footer>
+        <div class="links">
+            <a href="/">Accueil</a>
+            <a href="/destinations">Découvrir</a>
+            <a href="/transport">Transport</a>
+            <a href="/login">Connexion</a>
+            <a href="/register">S'inscrire</a>
+        </div>
+        <p>© 2026 Ô'MBOA — Découvrez Douala autrement</p>
+    </footer>
+
+</body>
+</html>

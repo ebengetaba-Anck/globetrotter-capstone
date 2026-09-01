@@ -1,0 +1,45 @@
+[
+  {
+    "id": "user-001",
+    "username": "test",
+    "password_hash": "pbkdf2:sha256:600000$v7jUe8Vg$7e2f8c9d4a1b3e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6A7B8C",
+    "email": "test@test.com",
+    "preferences": [
+      "culture",
+      "food"
+    ],
+    "created_at": "2026-08-27T06:00:00"
+  },
+  {
+    "id": "8f464af2-0d3d-44de-af35-8b9e417c098d",
+    "username": "bobo",
+    "password_hash": "pbkdf2:sha256:600000$k8ZJxzfeP7xME4Gv$60fe0f533bc80e142e7af6c80defdd18f4bb67c8f8619c5e31f6595e2f4d5bcb",
+    "email": "bobo@gmail.com",
+    "preferences": [],
+    "created_at": "2026-08-27T08:02:41.122065"
+  },
+  {
+    "id": "1d3683a2-2a20-4f70-b96f-f525475b5a1b",
+    "username": "mimi",
+    "password_hash": "pbkdf2:sha256:600000$IqGprPWqAj9AwGJf$fa576351d3920dc62bdd7110950873a6d3642cd3f25c321bd9ba48c188dd608b",
+    "email": "mimi@gmail.com",
+    "preferences": [],
+    "created_at": "2026-08-28T05:12:59.998536"
+  },
+  {
+    "id": "0a48590e-e637-44ba-ac88-5928cac76037",
+    "username": "boba",
+    "password_hash": "pbkdf2:sha256:600000$zrUAmqv1J3rMVIVM$142f686e486be21f37baf9f7904a6307d44f08857ac3209bf25a1e474997605e",
+    "email": "bobo@gmail.com",
+    "preferences": [],
+    "created_at": "2026-08-28T06:46:33.768228"
+  },
+  {
+    "id": "72be5668-f042-43d5-8d35-619c1118ebf9",
+    "username": "b2oba",
+    "password_hash": "pbkdf2:sha256:600000$oKxii0B5MwhctKgj$d86f993a29c08f728a503ae5be08ce176152297e99240b37dce9e1bffc416a40",
+    "email": "bobo@gmail.com",
+    "preferences": [],
+    "created_at": "2026-08-28T06:50:38.714598"
+  }
+]

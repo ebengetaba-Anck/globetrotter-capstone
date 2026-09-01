@@ -1,0 +1,872 @@
+{% extends "base.html" %}
+
+{% block title %}{{ destination.name }} - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+<div class="container py-4" style="max-width:1200px;">
+
+    <!-- Fil d'Ariane -->
+    <nav style="font-size:14px;color:#64748b;margin-bottom:20px;">
+        <a href="/" style="color:#64748b;text-decoration:none;">Accueil</a> › 
+        <a href="/destinations" style="color:#64748b;text-decoration:none;">Découvrir</a> › 
+        <span style="color:#0f172a;font-weight:500;">{{ destination.name }}</span>
+    </nav>
+
+    <div class="row g-4">
+
+        <!-- ============================================================ -->
+        <!-- COLONNE GAUCHE -->
+        <!-- ============================================================ -->
+        <div class="col-lg-8">
+
+            <!-- GRILLE IMAGES + VIDEO -->
+            <div class="row g-2 mb-4">
+                <!-- VIDEO -->
+                <div class="col-6">
+                    <div id="video-container" style="position:relative;height:300px;background:#0f172a;border-radius:12px;overflow:hidden;">
+                        <video id="destination-video" 
+                               autoplay loop muted playsinline
+                               style="width:100%;height:100%;object-fit:cover;"
+                               poster="/static/images/{{ destination.id }}/01.jpg">
+                            <source src="/static/videos/{{ destination.id }}.mp4" type="video/mp4">
+                            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+                        </video>
+                        <span style="position:absolute;top:12px;left:12px;background:rgba(0,0,0,0.7);color:white;font-size:11px;padding:4px 14px;border-radius:20px;font-weight:600;z-index:2;">
+                            <i class="fas fa-play-circle"></i> Vidéo
+                        </span>
+                        <span style="position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,0.6);color:rgba(255,255,255,0.7);font-size:10px;padding:4px 12px;border-radius:20px;z-index:2;">
+                            <i class="fas fa-volume-mute"></i> En boucle
+                        </span>
+                    </div>
+                </div>
+
+                <!-- IMAGE PRINCIPALE -->
+                <div class="col-3">
+                    <img src="/static/images/{{ destination.id }}/01.jpg" 
+                         onerror="this.src='https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop'"
+                         class="img-fluid rounded-3" 
+                         style="height:300px;width:100%;object-fit:cover;cursor:pointer;"
+                         onclick="openLightbox('/static/images/{{ destination.id }}/01.jpg')"
+                         alt="{{ destination.name }}">
+                </div>
+
+                <!-- IMAGE SECONDAIRE HAUT -->
+                <div class="col-3">
+                    <img src="/static/images/{{ destination.id }}/02.jpg" 
+                         onerror="this.style.display='none'"
+                         class="img-fluid rounded-3" 
+                         style="height:145px;width:100%;object-fit:cover;cursor:pointer;"
+                         onclick="openLightbox('/static/images/{{ destination.id }}/02.jpg')"
+                         alt="{{ destination.name }}">
+                </div>
+
+                <!-- IMAGE SECONDAIRE BAS + BOUTON VOIR TOUT -->
+                <div class="col-3" style="position:relative;">
+                    <img src="/static/images/{{ destination.id }}/03.jpg" 
+                         onerror="this.style.display='none'"
+                         class="img-fluid rounded-3" 
+                         style="height:145px;width:100%;object-fit:cover;cursor:pointer;"
+                         onclick="openLightbox('/static/images/{{ destination.id }}/03.jpg')"
+                         alt="{{ destination.name }}">
+                    
+                    <a href="/gallery/{{ destination.id }}" style="
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                        background: white;
+                        padding: 6px 16px;
+                        border-radius: 20px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        color: #0f172a;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                    ">
+                        <i class="fas fa-images"></i> Voir tout
+                    </a>
+                </div>
+            </div>
+
+            <!-- BADGES -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="badge" style="background:#0f172a;color:white;padding:6px 14px;">Très bien noté</span>
+                    <span style="display:flex;align-items:center;gap:6px;font-weight:600;">
+                        <i class="fas fa-star" style="color:#f5a623;"></i> {{ destination.rating or 0 }}
+                        <span style="color:#94a3b8;font-weight:400;">({{ destination.reviews or 0 }} avis)</span>
+                    </span>
+                    <span style="color:#94a3b8;">•</span>
+                    <span style="color:#64748b;font-size:14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <button onclick="toggleFavoriteDetail('{{ destination.id }}')" 
+                            class="btn btn-outline-danger btn-sm rounded-pill" 
+                            style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
+                        <i class="fas fa-heart" id="detail-heart" style="color:#94a3b8;"></i> Favoris
+                    </button>
+                    <button onclick="openShareModal()" 
+                            class="btn btn-outline-secondary btn-sm rounded-pill" 
+                            style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
+                        <i class="fas fa-share-alt"></i> Partager
+                    </button>
+                </div>
+            </div>
+
+            <!-- TITRE -->
+            <h1 style="font-size:28px;font-weight:700;color:#0f172a;margin-bottom:12px;">
+                {{ destination.name }}
+            </h1>
+
+            <!-- DESCRIPTION -->
+            <p style="color:#475569;line-height:1.7;font-size:15px;margin-bottom:20px;">
+                {{ destination.description or destination.description_courte or "Découvrez ce lieu emblématique de Douala." }}
+            </p>
+
+            <!-- HORAIRES -->
+            {% if destination.horaires %}
+            <div style="background:#f8fafc;border-radius:12px;padding:12px 16px;margin-bottom:16px;">
+                <h6 style="font-weight:600;color:#0f172a;margin:0 0 4px 0;"><i class="far fa-clock"></i> Horaires</h6>
+                <p style="font-size:14px;color:#475569;margin:0;">{{ destination.horaires }}</p>
+            </div>
+            {% endif %}
+
+            <!-- ACTIVITÉS -->
+            {% if destination.activities %}
+            <div style="margin-bottom:16px;">
+                <h5 style="font-weight:600;font-size:16px;color:#0f172a;">🎯 Activités</h5>
+                <ul style="list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px;">
+                    {% for act in destination.activities %}
+                    <li style="background:#f1f5f9;padding:4px 14px;border-radius:20px;font-size:13px;color:#475569;">
+                        <i class="fas fa-check text-success me-1"></i> {{ act }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            <!-- INCLUS / NON INCLUS -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;">
+                        <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">✅ Ce qui est inclus</h6>
+                        <ul style="list-style:none;padding:0;margin:0;font-size:14px;color:#475569;">
+                            {% for item in destination.included %}
+                            <li style="padding:4px 0;"><i class="fas fa-check text-success me-2"></i> {{ item }}</li>
+                            {% else %}
+                            <li style="padding:4px 0;"><i class="fas fa-check text-success me-2"></i> Guide touristique</li>
+                            <li style="padding:4px 0;"><i class="fas fa-check text-success me-2"></i> Billets d'entrée</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div style="background:#f8fafc;border-radius:12px;padding:16px;">
+                        <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">❌ Non inclus</h6>
+                        <ul style="list-style:none;padding:0;margin:0;font-size:14px;color:#475569;">
+                            {% for item in destination.not_included %}
+                            <li style="padding:4px 0;"><i class="fas fa-times text-danger me-2"></i> {{ item }}</li>
+                            {% else %}
+                            <li style="padding:4px 0;"><i class="fas fa-times text-danger me-2"></i> Prise en charge hôtel</li>
+                            <li style="padding:4px 0;"><i class="fas fa-times text-danger me-2"></i> Repas</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LIEUX À PROXIMITÉ -->
+            {% if destination.proximite %}
+            <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px;">
+                <h6 style="font-weight:600;color:#0f172a;margin-bottom:10px;">📍 À proximité</h6>
+                <div class="row g-2">
+                    {% if destination.proximite.hopital %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-hospital text-danger"></i> Hôpital: {{ destination.proximite.hopital }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.police %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Police: {{ destination.proximite.police }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.gendarmerie %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Gendarmerie: {{ destination.proximite.gendarmerie }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.hotels %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-hotel text-warning"></i> Hôtels: {{ destination.proximite.hotels|join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                    {% if destination.proximite.restaurants %}
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-utensils text-success"></i> Restaurants: {{ destination.proximite.restaurants|join(', ') }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- CARTE -->
+            {% if destination.latitude and destination.longitude %}
+            <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px;">
+                <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">📍 Localisation</h6>
+                <p style="font-size:14px;color:#475569;margin-bottom:8px;">
+                    {{ destination.adresse or destination.quartier or 'Douala' }}
+                </p>
+                <a href="https://www.google.com/maps?q={{ destination.latitude }},{{ destination.longitude }}" 
+                   target="_blank" 
+                   class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-route"></i> Ouvrir dans Google Maps
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- AVIS -->
+            <div style="margin-top:30px;padding-top:20px;border-top:1px solid #f1f5f9;">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 style="font-weight:600;color:#0f172a;margin:0;">💬 Avis des explorateurs</h5>
+                    <span id="review-count" style="color:#94a3b8;font-size:14px;">0 avis</span>
+                </div>
+
+                <div id="review-form" style="background:#f8fafc;border-radius:12px;padding:20px;margin-bottom:20px;">
+                    <p style="font-weight:600;color:#0f172a;margin-bottom:12px;">Partagez votre expérience</p>
+                    
+                    <div class="mb-3">
+                        <label style="font-size:14px;font-weight:500;color:#475569;display:block;margin-bottom:6px;">Votre note</label>
+                        <div id="star-rating" style="display:flex;gap:6px;cursor:pointer;">
+                            <span class="star" data-value="1" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="2" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="3" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="4" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                            <span class="star" data-value="5" style="font-size:32px;color:#e2e8f0;transition:0.2s;">★</span>
+                        </div>
+                        <span id="selected-rating-text" style="font-size:14px;color:#94a3b8;margin-left:10px;">Cliquez pour noter</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <textarea id="review-comment" rows="3" style="width:100%;padding:12px;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:14px;resize:vertical;" placeholder="Racontez votre expérience..."></textarea>
+                    </div>
+
+                    <button onclick="submitReview()" class="btn btn-primary" style="padding:10px 28px;border:none;border-radius:10px;background:#2563eb;color:white;font-weight:600;cursor:pointer;">
+                        <i class="fas fa-paper-plane"></i> Publier mon avis
+                    </button>
+                    <span id="review-status" style="display:none;margin-left:12px;font-size:14px;"></span>
+                </div>
+
+                <div id="reviews-container">
+                    <div class="text-center text-muted py-3"><i class="fas fa-spinner fa-spin"></i> Chargement des avis...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- COLONNE DROITE : RÉSERVATION -->
+        <!-- ============================================================ -->
+        <div class="col-lg-4">
+            <div style="position:sticky;top:20px;">
+
+                <div style="background:white;border-radius:16px;padding:24px;border:1px solid #f1f5f9;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+
+                    <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px;">
+                        <span style="font-size:14px;color:#94a3b8;">À partir de</span>
+                        <span style="background:#dc2626;color:white;padding:2px 10px;border-radius:4px;font-size:11px;font-weight:600;">Disponible</span>
+                    </div>
+                    <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+                        <span style="font-size:32px;font-weight:700;color:#dc2626;" id="total-price-display">{{ destination.avg_cost or 0 }}</span>
+                        <span style="font-size:16px;color:#94a3b8;">FCFA</span>
+                        <span style="font-size:14px;color:#94a3b8;text-decoration:line-through;">
+                            {% if destination.avg_cost %}
+                                {{ (destination.avg_cost * 1.25)|int }} FCFA
+                            {% endif %}
+                        </span>
+                    </div>
+                    <p style="font-size:13px;color:#64748b;margin-bottom:16px;">par personne</p>
+<!-- BOUTON AJOUTER À MON ITINÉRAIRE -->
+<button onclick="addToItinerary()" style="
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:inherit;
+">
+    <i class="fas fa-plus-circle"></i> Ajouter à mon itinéraire
+</button>
+
+                    <!-- PASSAGERS -->
+                    <div style="position:relative;margin-bottom:10px;">
+                        <div id="passenger-toggle" style="background:#f8fafc;border-radius:10px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border:1px solid #e2e8f0;transition:0.2s;">
+                            <i class="fas fa-user" style="color:#475569;"></i>
+                            <span style="flex:1;font-weight:500;color:#0f172a;">Passagers</span>
+                            <span id="passenger-summary" style="font-weight:600;color:#0f172a;font-size:14px;">1 Adulte</span>
+                            <i id="passenger-chevron" class="fas fa-chevron-down" style="color:#94a3b8;transition:0.3s;"></i>
+                        </div>
+                        <div id="passenger-menu" style="display:none;position:absolute;top:110%;left:0;right:0;background:white;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.12);padding:16px 20px;z-index:100;border:1px solid #f1f5f9;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                                <div><strong style="font-size:14px;">Adulte</strong><div style="font-size:11px;color:#94a3b8;">(18-64 ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('adult', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="adult-count" style="font-weight:600;width:20px;text-align:center;">1</span>
+                                    <button onclick="updatePassenger('adult', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
+                                </div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                                <div><strong style="font-size:14px;">Jeune</strong><div style="font-size:11px;color:#94a3b8;">(11-17 ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('youth', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="youth-count" style="font-weight:600;width:20px;text-align:center;">0</span>
+                                    <button onclick="updatePassenger('youth', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
+                                </div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #f1f5f9;">
+                                <div><strong style="font-size:14px;">Enfant</strong><div style="font-size:11px;color:#94a3b8;">(-10 ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('child', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="child-count" style="font-weight:600;width:20px;text-align:center;">0</span>
+                                    <button onclick="updatePassenger('child', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
+                                </div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;">
+                                <div><strong style="font-size:14px;">Senior</strong><div style="font-size:11px;color:#94a3b8;">(65+ ans)</div></div>
+                                <div style="display:flex;align-items:center;gap:12px;">
+                                    <button onclick="updatePassenger('senior', -1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">−</button>
+                                    <span id="senior-count" style="font-weight:600;width:20px;text-align:center;">0</span>
+                                    <button onclick="updatePassenger('senior', 1)" style="width:28px;height:28px;border-radius:50%;border:1px solid #2563eb;background:transparent;color:#2563eb;font-size:16px;cursor:pointer;">+</button>
+                                </div>
+                            </div>
+                            <button onclick="closePassengerMenu()" style="width:100%;margin-top:12px;padding:10px;background:#2563eb;color:white;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;">Continuer</button>
+                        </div>
+                    </div>
+
+                    <!-- DATE -->
+                    <div style="background:#f8fafc;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;">
+                        <i class="far fa-calendar" style="color:#475569;"></i>
+                        <span style="flex:1;font-weight:500;color:#0f172a;">Date</span>
+                        <input type="date" id="selected-date" style="background:transparent;border:none;outline:none;font-weight:600;font-family:inherit;text-align:right;width:140px;color:#0f172a;">
+                    </div>
+
+                    <!-- LANGUE -->
+                    <div style="background:#f8fafc;border-radius:10px;padding:12px 16px;margin-bottom:20px;display:flex;align-items:center;gap:12px;border:1px solid #e2e8f0;">
+                        <i class="fas fa-globe" style="color:#475569;"></i>
+                        <span style="flex:1;font-weight:500;color:#0f172a;">Langue</span>
+                        <select id="language-select" style="background:transparent;border:none;outline:none;font-weight:600;font-family:inherit;text-align:right;color:#0f172a;width:110px;">
+                            <option value="Français">Français</option>
+                            <option value="Anglais">Anglais</option>
+                        </select>
+                    </div>
+
+                    <button onclick="window.location.href='https://yango.com/cm'" 
+                            style="width:100%;padding:14px;background:#2563eb;color:white;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:0.3s;font-family:inherit;">
+                        Voir les disponibilités
+                    </button>
+
+                    <div style="margin-top:14px;display:flex;align-items:center;gap:10px;font-size:13px;color:#22c55e;font-weight:500;">
+                        <i class="far fa-circle-check" style="font-size:16px;"></i> Annulation gratuite
+                        <span style="font-weight:400;color:#94a3b8;font-size:11px;">-24h pour remboursement</span>
+                    </div>
+                </div>
+
+                <!-- CONTACT -->
+                <div style="margin-top:16px;background:white;border-radius:16px;padding:16px 20px;border:1px solid #f1f5f9;">
+                    <p style="font-weight:600;font-size:14px;color:#0f172a;margin:0 0 8px 0;">❓ Une question ?</p>
+                    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                        <a href="tel:+237693329383" style="display:flex;align-items:center;gap:6px;color:#2563eb;font-size:14px;text-decoration:none;">
+                            <i class="fas fa-phone"></i> +237 693 32 93 83
+                        </a>
+                        <a href="https://wa.me/237693329383" target="_blank" style="background:transparent;border:1px solid #25D366;padding:6px 16px;border-radius:20px;color:#25D366;font-weight:500;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:6px;">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- LIGHTBOX - AGRANDISSEMENT DES IMAGES -->
+<!-- ============================================================ -->
+<div id="lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;cursor:pointer;">
+    <img id="lightbox-img" src="" style="max-width:90%;max-height:90%;object-fit:contain;border-radius:8px;">
+    <button onclick="closeLightbox()" style="position:absolute;top:20px;right:30px;background:none;border:none;color:white;font-size:40px;cursor:pointer;z-index:10000;">✕</button>
+</div>
+
+<!-- ============================================================ -->
+<!-- MODALE DE PARTAGE -->
+<!-- ============================================================ -->
+<div id="shareModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;align-items:center;justify-content:center;">
+    <div style="background:white;width:100%;max-width:420px;border-radius:20px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="margin:0;font-size:20px;font-weight:700;color:#0f172a;">Partager</h3>
+            <button onclick="closeShareModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#94a3b8;">✕</button>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
+            <div onclick="copyLink()" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#475569;">
+                    <i class="fas fa-link"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Copier le lien</span>
+            </div>
+
+            <a href="mailto:?subject=Découvrez {{ destination.name }}&body=Je vous recommande ce lieu à Douala : {{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#ea4335;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Email</span>
+            </a>
+
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Facebook</span>
+            </a>
+
+            <a href="https://api.whatsapp.com/send?text=Découvrez {{ destination.name }} à Douala : {{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">WhatsApp</span>
+            </a>
+
+            <a href="https://twitter.com/intent/tweet?text=Découvrez {{ destination.name }} à Douala !&url={{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:#000000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-x-twitter"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Twitter</span>
+            </a>
+
+            <a href="instagram://" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
+                <div style="width:48px;height:48px;background:radial-gradient(circle at 30% 30%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-instagram"></i>
+                </div>
+                <span style="font-size:11px;margin-top:6px;color:#475569;">Instagram</span>
+            </a>
+        </div>
+
+        <div style="padding-top:12px;border-top:1px solid #f1f5f9;text-align:center;">
+            <p style="font-size:12px;color:#94a3b8;margin:0;">
+                {{ destination.name }} • {{ destination.quartier or 'Douala' }}
+            </p>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SCRIPTS -->
+<!-- ============================================================ -->
+<script>
+// ============================================================
+// AJOUTER À L'ITINÉRAIRE - VERSION AMÉLIORÉE
+// ============================================================
+function addToItinerary() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour ajouter à vos itinéraires.');
+        window.location.href = '/login';
+        return;
+    }
+
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const destCost = {{ destination.avg_cost or 0 }};
+    
+    // Charger les itinéraires existants
+    fetch('/api/itineraries', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(r => r.json())
+    .then(itineraries => {
+        let choix = 'nouveau';
+        
+        if (itineraries.length > 0) {
+            // Proposer d'ajouter à un itinéraire existant ou d'en créer un nouveau
+            const options = itineraries.map((it, i) => `${i+1}. ${it.title} (${it.destinations.length} lieux, ${it.total_cost || 0} FCFA)`).join('\n');
+            choix = prompt(
+                `📍 Ajouter "${destName}" à :\n\n` +
+                `0. Créer un nouvel itinéraire\n` +
+                options + '\n\n' +
+                `Entrez le numéro de votre choix :`
+            );
+            if (choix === null) return;
+        }
+        
+        if (choix === '0' || itineraries.length === 0) {
+            // Créer un nouvel itinéraire
+            const title = prompt('📝 Titre du nouvel itinéraire :', 'Découverte de ' + destName);
+            if (title === null) return;
+            
+            const budget = prompt('💰 Budget total (FCFA) :', '10000');
+            if (budget === null) return;
+            
+            const time = prompt('⏱️ Temps disponible (heures) :', '4');
+            if (time === null) return;
+            
+            createItinerary(token, title, [destId], parseInt(budget) || 0, parseInt(time) || 0, 'Ajouté depuis ' + destName);
+        } else {
+            // Ajouter à un itinéraire existant
+            const idx = parseInt(choix) - 1;
+            if (idx < 0 || idx >= itineraries.length) {
+                alert('❌ Choix invalide.');
+                return;
+            }
+            
+            const itinerary = itineraries[idx];
+            const destinations = [...itinerary.destinations, destId];
+            const newTotal = (itinerary.total_cost || 0) + destCost;
+            const budget = itinerary.budget || 0;
+            
+            if (budget > 0 && newTotal > budget) {
+                if (!confirm(`⚠️ Le coût total (${newTotal} FCFA) dépassera votre budget (${budget} FCFA).\nContinuer quand même ?`)) {
+                    return;
+                }
+            }
+            
+            // Mettre à jour l'itinéraire (on supprime et recrée)
+            updateItinerary(token, itinerary.id, {
+                title: itinerary.title,
+                destinations: destinations,
+                budget: itinerary.budget || 0,
+                time_available: itinerary.time_available || 0,
+                notes: itinerary.notes ? itinerary.notes + ', ' + destName : destName
+            });
+        }
+    })
+    .catch(error => {
+        alert('❌ Erreur : ' + error.message);
+    });
+}
+
+function createItinerary(token, title, destinations, budget, time, notes) {
+    fetch('/api/itineraries', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            title: title,
+            destinations: destinations,
+            budget: budget,
+            time_available: time,
+            notes: notes
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (r.ok) {
+            alert('✅ Itinéraire créé avec succès !');
+        } else {
+            alert('❌ ' + (data.error || 'Erreur'));
+        }
+    })
+    .catch(() => alert('❌ Erreur réseau'));
+}
+
+function updateItinerary(token, itineraryId, data) {
+    // Note: Cette fonction nécessite une route PUT que nous allons ajouter
+    // Pour l'instant, on supprime et on recrée
+    fetch('/api/itineraries/' + itineraryId, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(() => {
+        fetch('/api/itineraries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (r.ok) {
+                alert('✅ Destinations ajoutées à l\'itinéraire !');
+            } else {
+                alert('❌ ' + (data.error || 'Erreur'));
+            }
+        });
+    })
+    .catch(() => alert('❌ Erreur'));
+}
+// ============================================================
+// VARIABLES
+// ============================================================
+const destId = "{{ destination.id }}";
+const basePrice = {{ destination.avg_cost or 0 }};
+let selectedRating = 0;
+let counts = { adult: 1, youth: 0, child: 0, senior: 0 };
+
+// ============================================================
+// LIGHTBOX - AGRANDISSEMENT DES IMAGES
+// ============================================================
+function openLightbox(imageUrl) {
+    document.getElementById('lightbox-img').src = imageUrl;
+    document.getElementById('lightbox').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+    document.getElementById('lightbox').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+});
+
+// ============================================================
+// MODALE DE PARTAGE
+// ============================================================
+function openShareModal() {
+    document.getElementById('shareModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeShareModal() {
+    document.getElementById('shareModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function copyLink() {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url).then(() => {
+        alert('✅ Lien copié !');
+        closeShareModal();
+    }).catch(() => {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert('✅ Lien copié !');
+        closeShareModal();
+    });
+}
+
+document.getElementById('shareModal').addEventListener('click', function(e) {
+    if (e.target === this) closeShareModal();
+});
+
+// ============================================================
+// PASSAGERS
+// ============================================================
+document.getElementById('passenger-toggle').addEventListener('click', function() {
+    const menu = document.getElementById('passenger-menu');
+    const chevron = document.getElementById('passenger-chevron');
+    if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        chevron.className = 'fas fa-chevron-up';
+        this.style.borderColor = '#2563eb';
+    } else {
+        closePassengerMenu();
+    }
+});
+
+function closePassengerMenu() {
+    document.getElementById('passenger-menu').style.display = 'none';
+    document.getElementById('passenger-chevron').className = 'fas fa-chevron-down';
+    document.getElementById('passenger-toggle').style.borderColor = '#e2e8f0';
+}
+
+function updatePassenger(type, delta) {
+    const newVal = counts[type] + delta;
+    if (newVal < 0) return;
+    if (type === 'adult' && newVal === 0) return;
+    counts[type] = newVal;
+    document.getElementById(type + '-count').innerText = newVal;
+    updatePassengerSummary();
+    updateTotalPrice();
+}
+
+function updatePassengerSummary() {
+    let parts = [];
+    if (counts.adult > 0) parts.push(counts.adult + ' Adulte' + (counts.adult > 1 ? 's' : ''));
+    if (counts.youth > 0) parts.push(counts.youth + ' Jeune' + (counts.youth > 1 ? 's' : ''));
+    if (counts.child > 0) parts.push(counts.child + ' Enfant' + (counts.child > 1 ? 's' : ''));
+    if (counts.senior > 0) parts.push(counts.senior + ' Senior' + (counts.senior > 1 ? 's' : ''));
+    document.getElementById('passenger-summary').innerText = parts.join(', ') || '0 Passager';
+}
+
+function updateTotalPrice() {
+    const total = counts.adult + counts.youth + counts.child + counts.senior;
+    document.getElementById('total-price-display').innerText = total * basePrice;
+}
+
+// ============================================================
+// FAVORIS
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    if (favorites.includes(destId)) {
+        document.getElementById('detail-heart').style.color = '#dc3545';
+    }
+});
+
+function toggleFavoriteDetail(destId) {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour ajouter aux favoris.');
+        window.location.href = '/login';
+        return;
+    }
+
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const index = favorites.indexOf(destId);
+    const heart = document.getElementById('detail-heart');
+    
+    if (index > -1) {
+        favorites.splice(index, 1);
+        heart.style.color = '#94a3b8';
+        alert('❤️ Retiré des favoris');
+    } else {
+        favorites.push(destId);
+        heart.style.color = '#dc3545';
+        alert('❤️ Ajouté aux favoris !');
+    }
+    
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+// ============================================================
+// SYSTÈME D'AVIS
+// ============================================================
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', function() {
+        selectedRating = parseInt(this.dataset.value);
+        updateStars(selectedRating);
+        document.getElementById('selected-rating-text').textContent = selectedRating + ' étoile' + (selectedRating > 1 ? 's' : '');
+    });
+    star.addEventListener('mouseover', function() {
+        updateStars(parseInt(this.dataset.value));
+    });
+    star.addEventListener('mouseout', function() {
+        if (selectedRating > 0) updateStars(selectedRating);
+        else updateStars(0);
+    });
+});
+
+function updateStars(count) {
+    document.querySelectorAll('.star').forEach(s => {
+        if (parseInt(s.dataset.value) <= count) {
+            s.style.color = '#f5a623';
+        } else {
+            s.style.color = '#e2e8f0';
+        }
+    });
+}
+
+function loadReviews() {
+    const container = document.getElementById('reviews-container');
+    const countSpan = document.getElementById('review-count');
+    
+    fetch('/api/reviews?destination_id=' + destId)
+        .then(r => r.json())
+        .then(reviews => {
+            countSpan.textContent = reviews.length + ' avis';
+            if (reviews.length === 0) {
+                container.innerHTML = `<div style="text-align:center;padding:30px;color:#94a3b8;"><p>Soyez le premier à laisser un avis !</p></div>`;
+                return;
+            }
+            container.innerHTML = reviews.map(rev => {
+                const stars = '★'.repeat(rev.rating) + '☆'.repeat(5 - rev.rating);
+                return `
+                    <div style="border-bottom:1px solid #f1f5f9;padding-bottom:14px;margin-bottom:14px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <strong style="color:#0f172a;">${rev.author_name || rev.username || 'Anonyme'}</strong>
+                                <span style="color:#f5a623;margin-left:10px;">${stars}</span>
+                            </div>
+                            <small style="color:#94a3b8;">${rev.created_at || 'Récemment'}</small>
+                        </div>
+                        <p style="font-size:14px;color:#475569;margin:6px 0 0 0;">"${rev.comment}"</p>
+                    </div>
+                `;
+            }).join('');
+        })
+        .catch(() => {
+            container.innerHTML = '<div class="text-center text-danger py-3">Erreur de chargement des avis.</div>';
+        });
+}
+
+function submitReview() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour publier un avis.');
+        window.location.href = '/login';
+        return;
+    }
+    if (selectedRating === 0) {
+        alert('Veuillez sélectionner une note.');
+        return;
+    }
+    const comment = document.getElementById('review-comment').value.trim();
+    if (!comment) {
+        alert('Veuillez écrire un commentaire.');
+        return;
+    }
+
+    const status = document.getElementById('review-status');
+    status.style.display = 'inline';
+    status.textContent = '⏳ Publication...';
+    status.style.color = '#2563eb';
+
+    fetch('/api/reviews', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            destination_id: destId,
+            rating: selectedRating,
+            comment: comment
+        })
+    })
+    .then(r => {
+        if (!r.ok) throw new Error('Erreur serveur');
+        return r.json();
+    })
+    .then(data => {
+        status.textContent = '✅ Avis publié !';
+        status.style.color = '#22c55e';
+        document.getElementById('review-comment').value = '';
+        selectedRating = 0;
+        updateStars(0);
+        document.getElementById('selected-rating-text').textContent = 'Cliquez pour noter';
+        loadReviews();
+        setTimeout(() => { status.style.display = 'none'; }, 3000);
+    })
+    .catch((error) => {
+        status.textContent = '❌ ' + error.message;
+        status.style.color = '#ef4444';
+        console.error('Erreur:', error);
+    });
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    loadReviews();
+});
+</script>
+
+{% endblock %}

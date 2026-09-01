@@ -1,0 +1,20 @@
+[
+  {
+    "id": "9941c2db-4d23-4acc-9dd1-b260ae55328c",
+    "username": "bobo",
+    "destination_id": "dla-007",
+    "created_at": "2026-08-06T21:00:30.619865+00:00"
+  },
+  {
+    "id": "10400152-e09b-4367-bcf3-39baf476270e",
+    "username": "mimi",
+    "destination_id": "dla-004",
+    "created_at": "2026-08-09T10:54:41.848659+00:00"
+  },
+  {
+    "id": "favori-marouane-001",
+    "username": "marouane",
+    "destination_id": "dla-100",
+    "created_at": "2026-08-10T02:30:00.000Z"
+  }
+]

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ô'MBOA{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:#f8fafc;color:#0f172a}
+        .navbar-glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.05);padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between}
+        .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:20px;font-weight:700;color:#0f172a}
+        .nav-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#0056b3,#38bdf8);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
+        .nav-links{display:flex;gap:4px}
+        .nav-link{padding:8px 18px;border-radius:30px;font-size:14px;font-weight:500;color:#475569;transition:all 0.2s ease}
+        .nav-link:hover{background:#f1f5f9;color:#0f172a}
+        .nav-link.active{background:linear-gradient(135deg,#0056b3,#2563eb);color:white;box-shadow:0 4px 15px rgba(37,99,235,0.3)}
+        .nav-profile{display:flex;align-items:center;gap:16px}
+        .nav-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;color:white;font-weight:600;font-size:14px}
+        .btn-logout{padding:8px 20px;border:1px solid #e2e8f0;border-radius:30px;background:transparent;font-size:13px;font-weight:500;color:#475569;cursor:pointer;transition:all 0.2s ease;font-family:inherit}
+        .btn-logout:hover{background:#fee2e2;border-color:#ef4444;color:#ef4444}
+        @media(max-width:768px){.navbar-glass{padding:0 16px;flex-wrap:wrap;height:auto;padding:12px 16px;gap:12px}.nav-links{flex-wrap:wrap;gap:4px}.nav-link{font-size:12px;padding:6px 12px}.nav-profile{gap:8px}}
+    </style>
+</head>
+<body>
+    <nav class="navbar-glass">
+        <div class="nav-logo" onclick="window.location.href='/dashboard'">
+            <div class="nav-logo-icon">Ô</div>
+            <span>Ô'MBOA</span>
+            <span style="background:#e8f4fd;color:#0056b3;font-size:10px;font-weight:600;padding:2px 8px;border-radius:12px;">BETA</span>
+        </div>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-link active">Accueil</a>
+            <a href="/destinations" class="nav-link">Découvrir</a>
+            <a href="/transport" class="nav-link">🚗 Transport</a>
+            <a href="/my-itineraries" class="nav-link">Itinéraires</a>
+            <a href="/recommendations" class="nav-link">🌟 Recommandations</a>
+        </div>
+        <div class="nav-profile">
+            <div class="nav-avatar" id="nav-avatar">?</div>
+            <span style="font-size:14px;font-weight:500;color:#0f172a;" id="nav-username">Chargement...</span>
+            <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+        </div>
+    </nav>
+    {% block content %}{% endblock %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = localStorage.getItem('token');
+            if (token) {
+                fetch('/api/me', { headers: { 'Authorization': 'Bearer ' + token } })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.username) {
+                        document.getElementById('nav-username').textContent = data.username;
+                        document.getElementById('nav-avatar').textContent = data.username.charAt(0).toUpperCase();
+                    }
+                })
+                .catch(() => {});
+            }
+        });
+        function logoutUser() {
+            if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
+                localStorage.removeItem('token');
+                window.location.href = '/';
+            }
+        }
+    </script>
+</body>
+</html>

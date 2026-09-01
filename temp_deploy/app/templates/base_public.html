@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ô'MBOA - Découvrez Douala autrement{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; color: #0f172a; }
+        a { text-decoration: none; }
+        
+        /* NAVBAR PUBLIQUE */
+        .navbar-public {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            padding: 0 40px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-public .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .navbar-public .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 16px;
+        }
+        .navbar-public .nav-links {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .navbar-public .nav-links a {
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            transition: all 0.2s ease;
+        }
+        .navbar-public .nav-links a:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        .navbar-public .nav-links a.active {
+            background: #2563eb;
+            color: white;
+            box-shadow: 0 4px 15px rgba(37,99,235,0.25);
+        }
+        .navbar-public .btn-login {
+            padding: 8px 24px;
+            border-radius: 30px;
+            background: #2563eb;
+            color: white !important;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(37,99,235,0.25);
+        }
+        .navbar-public .btn-login:hover {
+            background: #1d4ed8 !important;
+            transform: translateY(-1px);
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-public { padding: 0 16px; height: 64px; }
+            .navbar-public .logo { font-size: 18px; }
+            .navbar-public .nav-links a { font-size: 12px; padding: 6px 12px; }
+            .navbar-public .btn-login { padding: 6px 16px; font-size: 12px; }
+            .navbar-public .nav-links .hide-mobile { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR PUBLIQUE -->
+    <nav class="navbar-public">
+        <div class="logo" onclick="window.location.href='/'">
+            <div class="logo-icon">Ô</div>
+            <span>Ô'MBOA</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="{% if request.path == '/' %}active{% endif %}">Accueil</a>
+            <a href="/destinations" class="{% if request.path == '/destinations' %}active{% endif %}">Découvrir</a>
+            <a href="/transport" class="{% if request.path == '/transport' %}active{% endif %}">🚕 Transport</a>
+            <a href="/about" class="hide-mobile">À propos</a>
+            <a href="/login" class="btn-login"><i class="fas fa-user"></i> Connexion</a>
+        </div>
+    </nav>
+
+    <!-- CONTENU (avec padding pour la navbar) -->
+    <div style="padding-top: 72px;">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="
+        background: #0f172a;
+        padding: 40px;
+        text-align: center;
+        color: #94a3b8;
+        border-top: 1px solid rgba(255,255,255,0.06);
+    ">
+        <div style="max-width: 1280px; margin: 0 auto;">
+            <div style="display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 20px;">
+                <a href="/" style="color: #94a3b8; font-size: 14px;">Accueil</a>
+                <a href="/destinations" style="color: #94a3b8; font-size: 14px;">Découvrir</a>
+                <a href="/transport" style="color: #94a3b8; font-size: 14px;">Transport</a>
+                <a href="/login" style="color: #94a3b8; font-size: 14px;">Connexion</a>
+                <a href="/register" style="color: #94a3b8; font-size: 14px;">S'inscrire</a>
+            </div>
+            <p style="font-size: 13px; margin: 0;">© 2026 Ô'MBOA — Découvrez Douala autrement</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

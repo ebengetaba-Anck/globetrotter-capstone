@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Redirection Itinéraires</title>
+</head>
+<body>
+    <script>
+        const token = localStorage.getItem('token');
+        if (token) {
+            // On redirige simplement vers /my-itineraries avec le token dans l'URL
+            window.location.href = `/my-itineraries?token=${token}`;
+        } else {
+            window.location.href = "/login";
+        }
+    </script>
+</body>
+</html>

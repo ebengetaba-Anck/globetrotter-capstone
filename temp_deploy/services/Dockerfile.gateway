@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+COPY services/gateway_service.py /app/
+COPY app/templates /app/app/templates
+COPY app/static /app/app/static
+COPY data /app/data
+
+RUN pip install flask jwt pyjwt werkzeug requests
+
+EXPOSE 5000
+
+CMD ["python", "gateway_service.py"]

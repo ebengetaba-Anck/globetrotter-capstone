@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category_name }} - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+
+        <a href="/dashboard" style="display: inline-flex; align-items: center; gap: 8px; color: #666; text-decoration: none; margin-bottom: 25px; font-weight: 500;">
+            <i class="fa-solid fa-arrow-left"></i> Retour à l'exploration
+        </a>
+
+        <div style="margin-bottom: 30px;">
+            <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 5px;">
+                {% if category == 'destination' %}🏛 Destinations
+                {% elif category == 'sortie' %}🎉 Sorties & Détente
+                {% elif category == 'nature' %}🌴 Nature & Excursions
+                {% elif category == 'infrastructure' %}⚽ Infrastructures pratiques
+                {% else %}{{ category_name }}
+                {% endif %}
+            </h1>
+            <p style="color: #666; font-size: 18px;">Découvrez tous les lieux de cette catégorie à Douala.</p>
+        </div>
+
+        <div id="category-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;">
+            {% for d in destinations %}
+            <div onclick="window.location.href='/destination?id={{ d.id }}'" 
+                 style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.3s;">
+                <div style="height: 160px; background: url('/static/images/{{ d.id }}/01.jpg') center/cover; background-size: cover;"></div>
+                <div style="padding: 15px;">
+                    <h4 style="margin: 0; font-size: 16px; font-weight: 600;">{{ d.name }}</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+                        <span style="font-size: 13px; color: #666;">{{ d.quartier }}</span>
+                        <span style="font-size: 13px; font-weight: 600; color: #0056b3;">⭐ {{ d.rating or 0 }}</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if destinations|length == 0 %}
+        <div style="text-align: center; padding: 40px; color: #777;">
+            <p>Aucun lieu trouvé pour cette catégorie.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+{% endblock %}

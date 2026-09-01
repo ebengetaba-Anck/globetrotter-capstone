@@ -1,0 +1,529 @@
+{% extends "base.html" %}
+
+{% block title %}Mon programme idéal - Ô'MBOA{% endblock %}
+
+{% block content %}
+
+{% include "navbar.html" %}
+
+<div style="padding: 40px; background: #f8f9fa; min-height: 80vh;">
+    <div style="max-width: 800px; margin: 0 auto;">
+
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="font-size: 32px; font-weight: 700; color: #1a1a1a; margin-bottom: 10px;">🌴 Alors, on fait quoi aujourd'hui ? 😎</h1>
+            <p style="color: #666; font-size: 18px; font-style: italic;">Dis-moi ton mood, ton temps et ton budget. Je m'occupe du reste 😉</p>
+        </div>
+
+        <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+
+            <!-- MOOD -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">💭 C'est quoi ton mood aujourd'hui ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="mood-btn" data-value="relax" onclick="selectMood('relax')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">😌 J'ai besoin de souffler</button>
+                    <button class="mood-btn" data-value="ambiance" onclick="selectMood('ambiance')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🔥 Je veux mettre l'ambiance</button>
+                    <button class="mood-btn" data-value="decouverte" onclick="selectMood('decouverte')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">📸 Je veux découvrir Douala</button>
+                    <button class="mood-btn" data-value="romantique" onclick="selectMood('romantique')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">❤️ Petit moment à deux</button>
+                    <button class="mood-btn" data-value="famille" onclick="selectMood('famille')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">👨‍👩‍👧 Sortie en famille</button>
+                    <button class="mood-btn" data-value="amis" onclick="selectMood('amis')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">👯 On sort entre potes</button>
+                    <button class="mood-btn" data-value="food" onclick="selectMood('food')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🍽️ J'ai faim !</button>
+                    <button class="mood-btn" data-value="evasion" onclick="selectMood('evasion')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🌿 Je veux m'évader</button>
+                </div>
+            </div>
+
+            <!-- SEARCH -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">👀 Et aujourd'hui, tu recherches plutôt... ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="search-btn" data-value="calme" onclick="selectSearch('calme')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🤫 Un coin tranquille</button>
+                    <button class="search-btn" data-value="instagram" onclick="selectSearch('instagram')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">📸 Un endroit Instagrammable</button>
+                    <button class="search-btn" data-value="bon_plat" onclick="selectSearch('bon_plat')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🍽️ Un bon petit plat</button>
+                    <button class="search-btn" data-value="ambiance" onclick="selectSearch('ambiance')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🎶 De l'ambiance</button>
+                    <button class="search-btn" data-value="bord_eau" onclick="selectSearch('bord_eau')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🌊 Un endroit au bord de l'eau</button>
+                    <button class="search-btn" data-value="culture" onclick="selectSearch('culture')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🏛️ Un peu de culture</button>
+                    <button class="search-btn" data-value="romantique" onclick="selectSearch('romantique')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🥰 Un endroit romantique</button>
+                    <button class="search-btn" data-value="qui_bouge" onclick="selectSearch('qui_bouge')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🎉 Un endroit qui bouge</button>
+                </div>
+            </div>
+
+            <!-- TEMPS -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">⏰ Combien de temps avez-vous ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="time-btn" data-value="2h" onclick="selectTime('2h')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ 2 heures</button>
+                    <button class="time-btn" data-value="demi" onclick="selectTime('demi')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ Une demi-journée</button>
+                    <button class="time-btn" data-value="journee" onclick="selectTime('journee')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ Une journée</button>
+                    <button class="time-btn" data-value="weekend" onclick="selectTime('weekend')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">⏱ Weekend</button>
+                </div>
+            </div>
+
+            <!-- BUDGET -->
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 15px;">💸 On dépense combien aujourd'hui ?</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <button class="budget-btn" data-value="petit" onclick="selectBudget('petit')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">🪙 Je veux économiser</button>
+                    <button class="budget-btn" data-value="moyen" onclick="selectBudget('moyen')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">💵 Je me fais plaisir</button>
+                    <button class="budget-btn" data-value="premium" onclick="selectBudget('premium')" style="background: #f0f0f0; border: 2px solid transparent; border-radius: 30px; padding: 12px 24px; font-size: 16px; font-weight: 500; cursor: pointer; transition: 0.3s;">💎 Aujourd'hui, je me lâche</button>
+                </div>
+            </div>
+
+            <!-- SURPRISE -->
+            <div style="margin-bottom: 30px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px;">
+                <div>
+                    <label style="font-weight: 600; font-size: 18px; color: #1a1a1a; display: block; margin-bottom: 5px;">🎁 Et si je te faisais une petite surprise ?</label>
+                    <div style="display: flex; gap: 15px; margin-top: 5px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="surprise" value="oui" checked> Oui, surprends-moi !
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                            <input type="radio" name="surprise" value="non"> Je préfère choisir
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BOUTON GÉNÉRER -->
+            <div style="text-align: center; margin-top: 10px;">
+                <button onclick="generateProgram()" style="padding: 15px 40px; background: #0056b3; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                    ✨ Prépare-moi ma sortie
+                </button>
+            </div>
+
+            <!-- RÉSULTAT -->
+            <div id="program-result" style="margin-top: 40px; display: none;">
+                <div id="program-content"></div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+let selectedMood = null;
+let selectedSearch = null;
+let selectedTime = null;
+let selectedBudget = null;
+let generatedDestinations = [];
+let generatedToken = null;
+
+function selectMood(value) {
+    selectedMood = value;
+    document.querySelectorAll('.mood-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.mood-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function selectSearch(value) {
+    selectedSearch = value;
+    document.querySelectorAll('.search-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.search-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function selectTime(value) {
+    selectedTime = value;
+    document.querySelectorAll('.time-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.time-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function selectBudget(value) {
+    selectedBudget = value;
+    document.querySelectorAll('.budget-btn').forEach(b => b.style.borderColor = 'transparent');
+    document.querySelector(`.budget-btn[data-value="${value}"]`).style.borderColor = '#0056b3';
+}
+
+function generateProgram() {
+    if (!selectedMood || !selectedTime || !selectedBudget) {
+        alert("Veuillez sélectionner un mood, un temps et un budget.");
+        return;
+    }
+
+    generatedToken = localStorage.getItem('token');
+    if (!generatedToken) {
+        alert("Vous devez être connecté pour générer un programme.");
+        return;
+    }
+
+    const resultDiv = document.getElementById('program-result');
+    const container = document.getElementById('program-content');
+    resultDiv.style.display = 'block';
+    container.innerHTML = '<p style="color: #666; text-align: center;"><i class="fa-solid fa-spinner fa-spin"></i> Ô\'MBOA prépare votre sortie...</p>';
+
+    const surprise = document.querySelector('input[name="surprise"]:checked').value;
+
+    fetch('/api/build-itinerary', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            mood: selectedMood,
+            search: selectedSearch,
+            time: selectedTime,
+            budget: selectedBudget,
+            surprise: surprise
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        generatedDestinations = data.plan || [];
+        const planType = data.type || 'classic';
+        const selectedTime = data.time || 'journee';
+
+        const moodMap = {
+            'relax': '😌 Besoin de souffler',
+            'ambiance': '🔥 Mettre l\'ambiance',
+            'decouverte': '📸 Découvrir Douala',
+            'romantique': '❤️ Moment à deux',
+            'famille': '👨‍👩‍👧 Sortie en famille',
+            'amis': '👯 Sortie entre potes',
+            'food': '🍽️ J\'ai faim',
+            'evasion': '🌿 S\'évader'
+        };
+        const budgetMap = {
+            'petit': '🪙 Économique',
+            'moyen': '💵 Plaisir',
+            'premium': '💎 Premium'
+        };
+        const timeMap = {
+            '2h': '⏱ 2h',
+            'demi': '⏱ Demi-journée',
+            'journee': '⏱ Journée',
+            'weekend': '⏱ Weekend'
+        };
+
+        // TITRE DYNAMIQUE
+        let title = "✨ J'ai préparé ta journée !";
+        if (selectedTime === '2h') {
+            title = "✨ J'ai préparé ta sortie !";
+        } else if (selectedTime === 'demi') {
+            title = "✨ J'ai préparé ton après-midi !";
+        } else if (selectedTime === 'weekend') {
+            title = "✨ J'ai préparé ton weekend !";
+        }
+
+        let html = `
+            <div style="background: white; border-radius: 16px; padding: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); border: 1px solid #e0e0e0;">
+                <h4 style="font-weight: 600; margin-bottom: 5px; color: #1a1a1a;">${title}</h4>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; color: #666; font-size: 14px;">
+                    <span>${moodMap[selectedMood] || selectedMood}</span>
+                    <span>•</span>
+                    <span>${timeMap[selectedTime] || selectedTime}</span>
+                    <span>•</span>
+                    <span>${budgetMap[selectedBudget] || selectedBudget}</span>
+                    ${selectedSearch ? `<span>•</span><span>👀 ${selectedSearch}</span>` : ''}
+                    ${surprise === 'oui' ? `<span>•</span><span>🎁 Avec surprise</span>` : ''}
+                </div>
+                <div style="border-top: 1px solid #f0f0f0; padding-top: 20px;">
+        `;
+
+        if (generatedDestinations.length === 0) {
+            html += `
+                    <div style="text-align: center; padding: 20px; color: #666;">
+                        <i class="fa-solid fa-compass" style="font-size: 40px; color: #ccc; margin-bottom: 15px; display: block;"></i>
+                        <p style="font-size: 16px; font-weight: 500;">Aucune expérience ne correspond exactement à vos critères.</p>
+                        <p style="font-size: 14px; margin-top: 5px;">Essayez de modifier votre <strong>Mood</strong> ou votre <strong>Budget</strong> pour découvrir d'autres possibilités.</p>
+                    </div>
+                `;
+            container.innerHTML = html + '</div></div>';
+            return;
+        }
+
+        // DÉTERMINER LE TITRE DU PROGRAMME
+        let programTitle = "Ta journée à Douala";
+        if (planType === 'romantic_plan') {
+            programTitle = "❤️ Douala à deux";
+        }
+
+        function getHumanPhrase(dest, index) {
+            if (planType === 'romantic_plan') {
+                const phrases = [
+                    "🌅 On commence doucement…",
+                    "🌿 Le moment cosy",
+                    "🍽️ Le vrai dîner à deux",
+                    "🥂 On rentre ?… Pas forcément 😏"
+                ];
+                return phrases[index % phrases.length] || "📍 Une petite pause sympa.";
+            } else {
+                if (dest.tags && dest.tags.some(t => ['food', 'restaurant'].includes(t))) {
+                    return '🍽️ Petit creux ? Je connais un endroit.';
+                } else if (dest.tags && dest.tags.some(t => ['musee', 'culture', 'patrimoine'].includes(t))) {
+                    return '👀 Ça, tu ne veux probablement pas le rater.';
+                } else if (dest.tags && dest.tags.some(t => ['nature', 'mangrove', 'calme'].includes(t))) {
+                    return '🌿 Un peu de nature pour souffler.';
+                } else if (dest.tags && dest.tags.some(t => ['romantique'].includes(t))) {
+                    return '❤️ J\'ai une petite idée pour vous deux…';
+                } else if (dest.tags && dest.tags.some(t => ['famille'].includes(t))) {
+                    return '👨‍👩‍👧 Les petits vont aimer celle-là.';
+                } else {
+                    return '📍 Une petite pause sympa.';
+                }
+            }
+        }
+
+        function getRandomTravelTime() {
+            const mins = Math.floor(Math.random() * 15) + 5;
+            return `🚕 ${mins} min`;
+        }
+
+        let displayCount = 0;
+
+        // =============================================================
+        // LOGIQUE D'AFFICHAGE : SI 2h, ON COMMENCE DIRECTEMENT LE SOIR
+        // =============================================================
+
+        let morning = [];
+        let afternoon = [];
+        let evening = [];
+
+        if (selectedTime === '2h') {
+            // Si c'est une courte durée, tout va dans le soir
+            evening = generatedDestinations.slice(0, 4);
+        } else {
+            // Répartition classique
+            morning = generatedDestinations.slice(0, 2);
+            afternoon = generatedDestinations.slice(2, 4);
+            evening = generatedDestinations.slice(4, 6);
+        }
+
+        // MATIN (seulement si ce n'est pas 2h)
+        if (morning.length > 0) {
+            const title = planType === 'romantic_plan' ? "🌅 On commence doucement" : "🌅 Matin";
+            html += `
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-size: 24px;">🌅</span>
+                            <span style="font-weight: 600; font-size: 18px;">${title}</span>
+                        </div>
+            `;
+            morning.forEach((d, idx) => {
+                displayCount++;
+                let activitiesHtml = '';
+                if (d.activities && d.activities.length > 0) {
+                    const maxActs = d.activities.slice(0, 3);
+                    activitiesHtml = maxActs.map(a => `• ${a}`).join('<br>');
+                }
+                html += `
+                        <div style="margin-left: 20px; margin-bottom: 15px; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <strong style="font-size: 16px;">📍 ${d.name}</strong>
+                                    <p style="font-size: 14px; color: #666; margin: 3px 0;">${d.quartier || ''}</p>
+                                    <p style="font-size: 14px; color: #555; font-style: italic; margin: 5px 0 10px 0;">${getHumanPhrase(d, idx)}</p>
+                                    ${activitiesHtml ? `<div style="font-size: 13px; color: #0056b3; margin-bottom: 5px;">${activitiesHtml}</div>` : ''}
+                                </div>
+                                <button onclick="replaceSuggestion('${d.id}', ${displayCount})" style="background: transparent; border: 1px solid #e0e0e0; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: 0.3s; color: #555;">
+                                    🔄 Autre suggestion
+                                </button>
+                            </div>
+                            ${morning.indexOf(d) < morning.length - 1 ? `<div style="font-size: 13px; color: #999; margin-left: 20px;">${getRandomTravelTime()}</div>` : ''}
+                        </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        // APRÈS-MIDI (seulement si ce n'est pas 2h)
+        if (afternoon.length > 0) {
+            const title = planType === 'romantic_plan' ? "☀️ Le cœur de la journée" : "☀️ Après-midi";
+            html += `
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-size: 24px;">☀️</span>
+                            <span style="font-weight: 600; font-size: 18px;">${title}</span>
+                        </div>
+            `;
+            afternoon.forEach((d, idx) => {
+                displayCount++;
+                let activitiesHtml = '';
+                if (d.activities && d.activities.length > 0) {
+                    const maxActs = d.activities.slice(0, 3);
+                    activitiesHtml = maxActs.map(a => `• ${a}`).join('<br>');
+                }
+                html += `
+                        <div style="margin-left: 20px; margin-bottom: 15px; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <strong style="font-size: 16px;">📍 ${d.name}</strong>
+                                    <p style="font-size: 14px; color: #666; margin: 3px 0;">${d.quartier || ''}</p>
+                                    <p style="font-size: 14px; color: #555; font-style: italic; margin: 5px 0 10px 0;">${getHumanPhrase(d, idx)}</p>
+                                    ${activitiesHtml ? `<div style="font-size: 13px; color: #0056b3; margin-bottom: 5px;">${activitiesHtml}</div>` : ''}
+                                </div>
+                                <button onclick="replaceSuggestion('${d.id}', ${displayCount})" style="background: transparent; border: 1px solid #e0e0e0; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: 0.3s; color: #555;">
+                                    🔄 Autre suggestion
+                                </button>
+                            </div>
+                            ${afternoon.indexOf(d) < afternoon.length - 1 ? `<div style="font-size: 13px; color: #999; margin-left: 20px;">${getRandomTravelTime()}</div>` : ''}
+                        </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        // SOIR (toujours affiché)
+        if (evening.length > 0) {
+            let title = planType === 'romantic_plan' ? "🌙 La touche finale" : "🌙 Soir";
+            // Si c'est 2h, on change le titre pour "🔥 La soirée"
+            if (selectedTime === '2h') {
+                title = "🔥 La soirée";
+            }
+            html += `
+                    <div style="margin-bottom: 25px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+                            <span style="font-size: 24px;">🌙</span>
+                            <span style="font-weight: 600; font-size: 18px;">${title}</span>
+                        </div>
+            `;
+            evening.forEach((d, idx) => {
+                displayCount++;
+                let activitiesHtml = '';
+                if (d.activities && d.activities.length > 0) {
+                    const maxActs = d.activities.slice(0, 3);
+                    activitiesHtml = maxActs.map(a => `• ${a}`).join('<br>');
+                }
+                html += `
+                        <div style="margin-left: 20px; margin-bottom: 15px; position: relative;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <div>
+                                    <strong style="font-size: 16px;">📍 ${d.name}</strong>
+                                    <p style="font-size: 14px; color: #666; margin: 3px 0;">${d.quartier || ''}</p>
+                                    <p style="font-size: 14px; color: #555; font-style: italic; margin: 5px 0 10px 0;">${getHumanPhrase(d, idx)}</p>
+                                    ${activitiesHtml ? `<div style="font-size: 13px; color: #0056b3; margin-bottom: 5px;">${activitiesHtml}</div>` : ''}
+                                </div>
+                                <button onclick="replaceSuggestion('${d.id}', ${displayCount})" style="background: transparent; border: 1px solid #e0e0e0; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; transition: 0.3s; color: #555;">
+                                    🔄 Autre suggestion
+                                </button>
+                            </div>
+                            ${evening.indexOf(d) < evening.length - 1 ? `<div style="font-size: 13px; color: #999; margin-left: 20px;">${getRandomTravelTime()}</div>` : ''}
+                        </div>
+                `;
+            });
+            html += `</div>`;
+        }
+
+        // SIGNATURE Ô'MBOA
+        const tips = [
+            "Si tu es encore à Bonanjo vers 17h, prends quelques minutes pour te poser. Douala ne se visite pas toujours en courant. 😉",
+            "N'oublie pas de goûter aux brochettes de poisson, c'est le trésor caché des marchés de Douala.",
+            "Les pirogues du Wouri sont une expérience à ne pas manquer.",
+            "La lumière dorée de Douala en fin d'après-midi est parfaite pour tes photos 📸"
+        ];
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+
+        let romanticEnding = '';
+        if (planType === 'romantic_plan') {
+            romanticEnding = `
+                <div style="border-top: 1px solid #f0f0f0; padding-top: 20px; margin-top: 20px;">
+                    <p style="font-style: italic; color: #555; text-align: center; font-size: 15px;">
+                        💌 Vous avez encore 30 minutes devant vous ?<br>
+                        Alors voici mon petit conseil : éteignez vos téléphones, commandez quelque chose à boire et profitez simplement l'un de l'autre. ❤️
+                    </p>
+                    <p style="text-align: center; color: #0056b3; font-weight: 600; margin-top: 10px;">
+                        « On remet ça bientôt ? 😉 »
+                    </p>
+                </div>
+            `;
+        }
+
+        html += `
+                    <div style="border-top: 1px solid #f0f0f0; padding-top: 20px; margin-top: 10px;">
+                        <div style="background: #e8f4fd; padding: 15px; border-radius: 12px;">
+                            <p style="font-weight: 600; color: #0056b3; margin-bottom: 5px;">💙 Le petit conseil d'Ô'MBOA</p>
+                            <p style="font-size: 14px; color: #555; margin: 0; font-style: italic;">« ${randomTip} »</p>
+                        </div>
+                    </div>
+                    ${romanticEnding}
+                    <button onclick="addAllToItinerary()" style="width: 100%; margin-top: 20px; padding: 14px; background: #28a745; color: white; border: none; border-radius: 12px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                        <i class="fa-solid fa-plus-circle"></i> Ajouter tout à mon itinéraire
+                    </button>
+                </div>
+            </div>
+        `;
+
+        container.innerHTML = html;
+    })
+    .catch(err => {
+        console.error(err);
+        container.innerHTML = `<p style="color: #dc3545; text-align: center;">Une erreur est survenue. Veuillez réessayer.</p>`;
+    });
+}
+
+function addAllToItinerary() {
+    const token = localStorage.getItem('token');
+    if (!token) { 
+        alert("Vous devez être connecté pour ajouter à votre itinéraire."); 
+        window.location.href = "/login";
+        return; 
+    }
+
+    if (generatedDestinations.length === 0) {
+        alert("Aucune destination à ajouter. Générez d'abord un programme.");
+        return;
+    }
+
+    const destIds = generatedDestinations.map(d => d.id);
+
+    const date = new Date();
+    const startDate = date.toISOString().split('T')[0];
+    const endDate = new Date(date.setDate(date.getDate() + 1)).toISOString().split('T')[0];
+
+    fetch('/api/itineraries', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            'Authorization': `Bearer ${token}` 
+        },
+        body: JSON.stringify({ 
+            title: `Programme Ô'MBOA du ${startDate}`,
+            destinations: destIds,
+            start_date: startDate,
+            end_date: endDate,
+            notes: `Généré via Mon programme avec mood: ${selectedMood}, budget: ${selectedBudget}`
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(`Erreur serveur (${response.status}) : ${text}`);
+            });
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert("✅ Programme ajouté à vos itinéraires ! Retrouvez-le dans Mes itinéraires.");
+        window.location.href = "/my-itineraries?token=" + token;
+    })
+    .catch(error => {
+        console.error("Erreur complète :", error);
+        alert("Erreur : " + error.message);
+    });
+}
+
+function replaceSuggestion(destId, position) {
+    const token = localStorage.getItem('token');
+    if (!token) { alert("Connectez-vous."); return; }
+
+    fetch('/api/replace-suggestion', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+            current_id: destId,
+            mood: selectedMood,
+            search: selectedSearch,
+            budget: selectedBudget
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data && data.id) {
+            location.reload();
+        } else {
+            alert("Aucune autre suggestion trouvée.");
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Erreur lors du remplacement.");
+    });
+}
+</script>
+{% endblock %}
