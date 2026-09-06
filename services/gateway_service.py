@@ -403,6 +403,29 @@ def chat_delete_message(message_id):
     
     return jsonify({'error': 'Message non trouvé'}), 404
 
+# ============================================================
+# ROUTES CHAT - FONCTIONNALITÉS SUPPLÉMENTAIRES
+# ============================================================
+
+@app.route('/api/chat/messages/<message_id>/read', methods=['POST'])
+@chat_login_required
+def chat_mark_read(message_id):
+    user_id = request.chat_user
+    from app.chat_models import mark_message_read
+    if mark_message_read(message_id, user_id):
+        return jsonify({'message': 'Marqué comme lu'}), 200
+    return jsonify({'error': 'Erreur'}), 500
+
+
+@app.route('/api/chat/conversations/<conv_id>/read', methods=['POST'])
+@chat_login_required
+def chat_mark_all_read(conv_id):
+    user_id = request.chat_user
+    from app.chat_models import mark_all_read
+    if mark_all_read(conv_id, user_id):
+        return jsonify({'message': 'Tous les messages sont lus'}), 200
+    return jsonify({'error': 'Erreur'}), 500
+
 if __name__ == '__main__':
     print("="*60)
     print("🚀 API GATEWAY - Port 5000")
