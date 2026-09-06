@@ -745,6 +745,31 @@ function toggleFavoriteDetail(destId) {
     localStorage.setItem('favorites', JSON.stringify(favorites));
 }
 
+<!-- Bouton Partager la destination -->
+<button onclick="shareDestination()" style="
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    background:transparent;
+    border:1px solid #2563eb;
+    border-radius:12px;
+    color:#2563eb;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:inherit;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+">
+    <i class="fas fa-share-alt"></i> Partager cette destination
+</button>
+<button onclick="shareDestination()" class="btn btn-outline-success btn-sm rounded-pill" style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
+    <i class="fas fa-share"></i> Partager dans le chat
+</button>
+
+
 // ============================================================
 // SYSTÈME D'AVIS
 // ============================================================

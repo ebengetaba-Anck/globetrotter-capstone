@@ -5,103 +5,16 @@
 {% block content %}
 
 <div class="container py-4">
-    <h1 class="mb-2">🌟 Recommandations personnalisées</h1>
-    <p class="text-muted mb-4">Des suggestions basées sur vos préférences et votre historique</p>
-
-    <div id="recommendations-grid" class="row g-4">
-        <div class="col-12 text-center py-5 text-muted">
-            <i class="fas fa-spinner fa-spin"></i> Chargement des recommandations...
-        </div>
+    <h1 class="mb-3">🌟 Recommandations</h1>
+    <p class="text-muted">Des suggestions personnalisées pour vous.</p>
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> Les recommandations sont en cours de chargement.
     </div>
+    
+    <a href="/dashboard" class="btn btn-primary">
+        <i class="fas fa-arrow-left"></i> Retour au dashboard
+    </a>
 </div>
-
-<style>
-.recommendation-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #f1f5f9;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    height: 100%;
-}
-.recommendation-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-}
-.recommendation-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-}
-.recommendation-card .score-badge {
-    background: #2563eb;
-    color: white;
-    padding: 2px 12px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-}
-</style>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const token = localStorage.getItem('token');
-    if (!token) { window.location.href = '/login'; return; }
-
-    const grid = document.getElementById('recommendations-grid');
-
-    fetch('/api/recommendations/personalized', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(r => {
-        if (r.status === 401) {
-            localStorage.removeItem('token');
-            window.location.href = '/login';
-            throw new Error('Session expirée');
-        }
-        return r.json();
-    })
-    .then(dests => {
-        if (!dests || dests.length === 0) {
-            grid.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <p class="text-muted">Aucune recommandation pour le moment.</p>
-                    <a href="/destinations" class="btn btn-primary">Explorer les destinations</a>
-                </div>
-            `;
-            return;
-        }
-
-        grid.innerHTML = dests.map(d => `
-            <div class="col-md-4 col-lg-3">
-                <div class="recommendation-card" onclick="window.location.href='/destination?id=${d.id}'">
-                    <img src="/static/images/${d.id}/01.jpg" 
-                         onerror="this.src='https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop'"
-                         alt="${d.name}">
-                    <div class="p-3">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h6 class="mb-0">${d.name}</h6>
-                            <span class="score-badge">⭐ ${d.rating || 0}</span>
-                        </div>
-                        <small class="text-muted">${d.quartier || 'Douala'}</small>
-                        <div class="d-flex justify-content-between mt-2">
-                            <span>${d.avg_cost || 0} FCFA</span>
-                            <span class="text-primary">${d.reviews || 0} avis</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-    })
-    .catch(error => {
-        grid.innerHTML = `
-            <div class="col-12 text-center py-5 text-danger">
-                <p>❌ ${error.message}</p>
-            </div>
-        `;
-    });
-});
-</script>
 
 {% endblock %}
