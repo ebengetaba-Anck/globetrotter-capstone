@@ -2,68 +2,70 @@ version: '3.8'
 
 services:
   user-service:
-    build:
-      context: .
-      dockerfile: services/Dockerfile.user
-    container_name: user-service
+    build: .
+    container_name: omboa-user
+    command: python services/user_service.py
     ports:
       - "5001:5001"
     volumes:
       - ./data:/app/data
+    environment:
+      - SECRET_KEY=microservices-secret-key-change-in-prod
+      - FLASK_ENV=development
     networks:
       - omboa-network
     restart: unless-stopped
-    environment:
-      - FLASK_ENV=production
 
   itinerary-service:
-    build:
-      context: .
-      dockerfile: services/Dockerfile.itinerary
-    container_name: itinerary-service
+    build: .
+    container_name: omboa-itinerary
+    command: python services/itinerary_service.py
     ports:
       - "5002:5002"
     volumes:
       - ./data:/app/data
+    environment:
+      - SECRET_KEY=microservices-secret-key-change-in-prod
+      - FLASK_ENV=development
     networks:
       - omboa-network
     restart: unless-stopped
     depends_on:
       - user-service
-    environment:
-      - FLASK_ENV=production
 
   recommendation-service:
-    build:
-      context: .
-      dockerfile: services/Dockerfile.recommendation
-    container_name: recommendation-service
+    build: .
+    container_name: omboa-recommendation
+    command: python services/recommendation_service.py
     ports:
       - "5003:5003"
     volumes:
       - ./data:/app/data
+    environment:
+      - SECRET_KEY=microservices-secret-key-change-in-prod
+      - FLASK_ENV=development
+      - USER_SERVICE_URL=http://user-service:5001
+      - ITINERARY_SERVICE_URL=http://itinerary-service:5002
     networks:
       - omboa-network
     restart: unless-stopped
     depends_on:
       - user-service
       - itinerary-service
-    environment:
-      - FLASK_ENV=production
-      - USER_SERVICE_URL=http://user-service:5001
-      - ITINERARY_SERVICE_URL=http://itinerary-service:5002
 
-  gateway-service:
-    build:
-      context: .
-      dockerfile: services/Dockerfile.gateway
-    container_name: gateway-service
+  chat-service:
+    build: .
+    container_name: omboa-chat
+    command: python services/chat_service.py
     ports:
-      - "5000:5000"
+      - "5004:5004"
     volumes:
       - ./data:/app/data
-      - ./app/templates:/app/app/templates
-      - ./app/static:/app/app/static
+    environment:
+      - SECRET_KEY=microservices-secret-key-change-in-prod
+      - FLASK_ENV=development
+      - USER_SERVICE_URL=http://user-service:5001
+      - ITINERARY_SERVICE_URL=http://itinerary-service:5002
     networks:
       - omboa-network
     restart: unless-stopped
@@ -71,11 +73,32 @@ services:
       - user-service
       - itinerary-service
       - recommendation-service
+
+  gateway-service:
+    build: .
+    container_name: omboa-gateway
+    command: python services/gateway_service.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/app/data
+      - ./app/templates:/app/app/templates
+      - ./app/static:/app/app/static
     environment:
-      - FLASK_ENV=production
-      - USER_SERVICE=http://user-service:5001
-      - ITINERARY_SERVICE=http://itinerary-service:5002
-      - RECOMMENDATION_SERVICE=http://recommendation-service:5003
+      - SECRET_KEY=microservices-secret-key-change-in-prod
+      - FLASK_ENV=development
+      - USER_SERVICE_URL=http://user-service:5001
+      - ITINERARY_SERVICE_URL=http://itinerary-service:5002
+      - RECOMMENDATION_SERVICE_URL=http://recommendation-service:5003
+      - CHAT_SERVICE_URL=http://chat-service:5004
+    networks:
+      - omboa-network
+    restart: unless-stopped
+    depends_on:
+      - user-service
+      - itinerary-service
+      - recommendation-service
+      - chat-service
 
 networks:
   omboa-network:
