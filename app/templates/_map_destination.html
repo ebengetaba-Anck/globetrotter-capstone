@@ -1,0 +1,212 @@
+<!-- ============================================================ -->
+<!-- CARTE INTERACTIVE - Itinéraire vers {{ destination.name }} -->
+<!-- ============================================================ -->
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+<script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+<div class="card border-0 shadow-sm rounded-4 mt-4">
+    <div class="card-body p-4">
+        <h5 class="fw-bold mb-3" style="color:#0f172a;">
+            <i class="fas fa-route me-2" style="color:#2563eb;"></i>
+            Itinéraire vers {{ destination.name }}
+        </h5>
+
+        <div class="d-flex flex-wrap gap-2 mb-3">
+            <button id="btn-locate" class="btn btn-primary btn-sm rounded-pill px-3">
+                <i class="fas fa-location-crosshairs me-1"></i> Utiliser ma position
+            </button>
+            <button id="btn-recenter" class="btn btn-outline-secondary btn-sm rounded-pill px-3" style="display:none;">
+                <i class="fas fa-crosshairs me-1"></i> Recentrer
+            </button>
+            <span id="map-status" class="align-self-center ms-2" style="font-size:13px;color:#64748b;">
+                Cliquez sur "Utiliser ma position" pour tracer l'itinéraire.
+            </span>
+        </div>
+
+        <div id="destination-map"
+             style="width:100%;height:450px;border-radius:12px;overflow:hidden;background:#e2e8f0;position:relative;z-index:0;">
+        </div>
+
+        <div id="route-info" class="mt-3" style="display:none;">
+            <div class="row g-2">
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded-3" style="background:#eff6ff;">
+                        <div style="font-size:11px;color:#64748b;">Distance</div>
+                        <div id="info-distance" class="fw-bold" style="color:#1d4ed8;">—</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded-3" style="background:#f0fdf4;">
+                        <div style="font-size:11px;color:#64748b;">Durée estimée</div>
+                        <div id="info-duration" class="fw-bold" style="color:#16a34a;">—</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded-3" style="background:#fef3c7;">
+                        <div style="font-size:11px;color:#64748b;">Destination</div>
+                        <div class="fw-bold" style="color:#b45309;">{{ destination.quartier or destination.name }}</div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="p-2 rounded-3" style="background:#fce7f3;">
+                        <div style="font-size:11px;color:#64748b;">Mode</div>
+                        <div class="fw-bold" style="color:#be185d;">Voiture</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    const DEST_LAT = {{ destination.latitude | default('null') }};
+    const DEST_LNG = {{ destination.longitude | default('null') }};
+    const DEST_NAME = "{{ destination.name | e }}";
+
+    if (DEST_LAT === null || DEST_LNG === null) {
+        document.getElementById('destination-map').innerHTML =
+            '<div class="d-flex align-items-center justify-content-center h-100 text-muted">Coordonnées indisponibles pour cette destination.</div>';
+        return;
+    }
+
+    const map = L.map('destination-map', {
+        zoomControl: true,
+        scrollWheelZoom: false
+    }).setView([DEST_LAT, DEST_LNG], 14);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const destIcon = L.divIcon({
+        className: '',
+        html: '<div style="background:#dc2626;width:34px;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"><i class="fas fa-flag" style="color:white;transform:rotate(45deg);position:absolute;top:50%;left:50%;margin:-7px 0 0 -6px;font-size:12px;"></i></div>',
+        iconSize: [34, 34],
+        iconAnchor: [17, 34]
+    });
+
+    const destMarker = L.marker([DEST_LAT, DEST_LNG], { icon: destIcon })
+        .addTo(map)
+        .bindPopup('<b>' + DEST_NAME + '</b><br>Destination');
+    destMarker.openPopup();
+
+    let userMarker = null;
+    let routingControl = null;
+    let watchId = null;
+
+    function updateStatus(msg, color) {
+        const el = document.getElementById('map-status');
+        el.textContent = msg;
+        el.style.color = color || '#64748b';
+    }
+
+    function drawRoute(userLat, userLng) {
+        if (routingControl) {
+            map.removeControl(routingControl);
+            routingControl = null;
+        }
+
+        routingControl = L.Routing.control({
+            waypoints: [
+                L.latLng(userLat, userLng),
+                L.latLng(DEST_LAT, DEST_LNG)
+            ],
+            routeWhileDragging: false,
+            addWaypoints: false,
+            show: false,
+            collapsible: true,
+            lineOptions: {
+                styles: [{ color: '#2563eb', weight: 5, opacity: 0.85 }]
+            },
+            createMarker: function() { return null; }
+        }).addTo(map);
+
+        routingControl.on('routesfound', function(e) {
+            const route = e.routes[0];
+            const distKm = (route.summary.totalDistance / 1000).toFixed(2);
+            const durMin = Math.round(route.summary.totalTime / 60);
+
+            document.getElementById('info-distance').textContent = distKm + ' km';
+            document.getElementById('info-duration').textContent =
+                durMin >= 60 ? Math.floor(durMin/60) + ' h ' + (durMin%60) + ' min' : durMin + ' min';
+            document.getElementById('route-info').style.display = 'block';
+            updateStatus('✅ Itinéraire tracé', '#16a34a');
+        });
+
+        routingControl.on('routingerror', function() {
+            updateStatus('⚠️ Impossible de tracer l\'itinéraire routier', '#dc2626');
+        });
+    }
+
+    function onPosition(pos) {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        if (!userMarker) {
+            const userIcon = L.divIcon({
+                className: '',
+                html: '<div style="background:#2563eb;width:22px;height:22px;border-radius:50%;border:4px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);"></div>',
+                iconSize: [22, 22],
+                iconAnchor: [11, 11]
+            });
+            userMarker = L.marker([lat, lng], { icon: userIcon })
+                .addTo(map)
+                .bindPopup('Vous êtes ici');
+        } else {
+            userMarker.setLatLng([lat, lng]);
+        }
+
+        drawRoute(lat, lng);
+        map.fitBounds([[lat, lng], [DEST_LAT, DEST_LNG]], { padding: [40, 40] });
+    }
+
+    function onPositionError(err) {
+        updateStatus('⚠️ Géolocalisation refusée ou indisponible', '#dc2626');
+    }
+
+    document.getElementById('btn-locate').addEventListener('click', function() {
+        if (!navigator.geolocation) {
+            updateStatus('⚠️ Géolocalisation non supportée par ce navigateur', '#dc2626');
+            return;
+        }
+        updateStatus('📍 Recherche de votre position...', '#2563eb');
+
+        navigator.geolocation.getCurrentPosition(onPosition, onPositionError, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+        });
+
+        if (watchId === null) {
+            watchId = navigator.geolocation.watchPosition(onPosition, onPositionError, {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 5000
+            });
+        }
+
+        document.getElementById('btn-recenter').style.display = 'inline-block';
+    });
+
+    document.getElementById('btn-recenter').addEventListener('click', function() {
+        if (userMarker) {
+            const ll = userMarker.getLatLng();
+            map.fitBounds([[ll.lat, ll.lng], [DEST_LAT, DEST_LNG]], { padding: [40, 40] });
+        } else {
+            map.setView([DEST_LAT, DEST_LNG], 14);
+        }
+    });
+
+    window.addEventListener('resize', function() {
+        setTimeout(function() { map.invalidateSize(); }, 200);
+    });
+
+    setTimeout(function() { map.invalidateSize(); }, 300);
+})();
+</script>

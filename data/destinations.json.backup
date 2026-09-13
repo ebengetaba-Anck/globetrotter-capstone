@@ -284,8 +284,8 @@
       "Découverte du commerce du poisson",
       "Observation des pêcheurs"
     ],
-    "latitude": 4.0089903,
-    "longitude": 9.69931841,
+    "latitude": 4.03,
+    "longitude": 9.72,
     "horaires": "07h00-18h00 tous les jours",
     "tarifs": "Variable",
     "telephone": "6 69 95 46 52",
@@ -311,8 +311,8 @@
       "Boissons",
       "Sorties entre amis"
     ],
-    "latitude": 4.04827,
-    "longitude": 9.70428,
+    "latitude": 4.048,
+    "longitude": 9.701,
     "horaires": "08h00-23h00",
     "tarifs": "Variable",
     "telephone": "6 91 86 65 58",
@@ -338,8 +338,8 @@
       "Barbecue africain",
       "Découverte de la cuisine traditionnelle"
     ],
-    "latitude": 4.0852262999999995,
-    "longitude": 9.7791007,
+    "latitude": 4.05,
+    "longitude": 9.7,
     "horaires": "12h00-00h00",
     "tarifs": "Variable",
     "telephone": "6 71 66 90 06",
@@ -364,9 +364,8 @@
       "Détente",
       "Sorties"
     ],
-    "latitude": 4.07665,
-    "longitude": 9.6852176
-,
+    "latitude": 4.04,
+    "longitude": 9.7,
     "horaires": "Lundi-samedi : 10h00-22h30, Dimanche : 11h00-23h00",
     "tarifs": "Variable",
     "telephone": "6 55 17 52 70",
@@ -378,9 +377,9 @@
     "slug": "opiom",
     "type": "sortie",
     "category": "detente",
-    "quartier": "Bonamoussadi",
+    "quartier": "Akwa",
     "name": "OPIOM",
-    "adresse": "Bonamoussadi, Douala",
+    "adresse": "Akwa, Douala",
     "description_courte": "Une adresse tournée vers la nuit et la détente.",
     "description": "OPIOM est un lounge mêlant restauration, bar et divertissement.",
     "avg_cost": 4000,
@@ -392,8 +391,8 @@
       "Bar",
       "Sorties nocturnes"
     ],
-    "latitude": 4.0922374,
-    "longitude": 9.7414291,
+    "latitude": 4.048,
+    "longitude": 9.701,
     "horaires": "Variable",
     "tarifs": "Variable",
     "telephone": "+237 6 96 65 63 26",
@@ -445,8 +444,8 @@
       "Bar",
       "Événements"
     ],
-    "latitude": 4.02749,
-    "longitude": 9.69704,
+    "latitude": 4.048,
+    "longitude": 9.701,
     "horaires": "Lundi à Dimanche 08:00-23:00",
     "tarifs": "Variable",
     "telephone": "+237656373734",
@@ -472,8 +471,8 @@
       "Basket",
       "Fitness"
     ],
-    "latitude": 4.04827,
-    "longitude": 9.70428,
+    "latitude": 4.048,
+    "longitude": 9.701,
     "horaires": "Variable",
     "tarifs": "Variable",
     "telephone": "+237673269628",
@@ -499,8 +498,8 @@
       "Observation de la biodiversité",
       "Randonnée"
     ],
-    "latitude": 3.5,
-    "longitude": 9.8333,
+    "latitude": 4.05,
+    "longitude": 9.7,
     "horaires": "Pas d'horaire urbain",
     "tarifs": "Variable",
     "telephone": "",
@@ -525,9 +524,8 @@
       "Balade fluviale",
       "Découverte de la mangrove"
     ],
-    "latitude": 4.08333
-,
-    "longitude": 9.7,
+    "latitude": 4.047,
+    "longitude": 9.693,
     "horaires": "Dépendant du prestataire",
     "tarifs": "Variable",
     "telephone": "",
@@ -578,8 +576,8 @@
       "Randonnée",
       "Découverte des villages"
     ],
-    "latitude": 4.1294,
-    "longitude": 9.7258,
+    "latitude": 4.05,
+    "longitude": 9.7,
     "horaires": "Excursion nécessaire",
     "tarifs": "Variable",
     "telephone": "",
@@ -604,8 +602,8 @@
       "Randonnée",
       "Découverte de bâtiments historiques"
     ],
-    "latitude": 3.85528,
-    "longitude": 9.61472,
+    "latitude": 4.05,
+    "longitude": 9.7,
     "horaires": "Selon excursion",
     "tarifs": "Variable",
     "telephone": "",
@@ -655,8 +653,8 @@
       "Observation extérieure",
       "Découverte de l'histoire portuaire"
     ],
-    "latitude": 4.03579,
-    "longitude":  9.68636,
+    "latitude": 4.047,
+    "longitude": 9.693,
     "horaires": "Infrastructure",
     "tarifs": "Gratuit",
     "telephone": "",
@@ -680,8 +678,8 @@
       "Arrivée/départ",
       "Accueil de voyageurs"
     ],
-    "latitude": 4.00608,
-    "longitude": 9.71948,
+    "latitude": 4.007,
+    "longitude": 9.719,
     "horaires": "Infrastructure",
     "tarifs": "Gratuit",
     "telephone": "",
@@ -704,8 +702,8 @@
     "activities": [
       "Information historique/institutionnelle uniquement"
     ],
-    "latitude": 4.02732,
-    "longitude": 9.67254,
+    "latitude": 4.047,
+    "longitude": 9.693,
     "horaires": "Infrastructure",
     "tarifs": "Gratuit",
     "telephone": "",
@@ -729,8 +727,8 @@
       "Démarches professionnelles",
       "Événements économiques"
     ],
-    "latitude": 4.0446,
-    "longitude": 9.6862,
+    "latitude": 4.047,
+    "longitude": 9.693,
     "horaires": "À confirmer",
     "tarifs": "Gratuit",
     "telephone": "",
@@ -753,8 +751,8 @@
     "activities": [
       "Découverte extérieure de l'architecture"
     ],
-    "latitude": 4.04335,
-    "longitude": 9.68648,
+    "latitude": 4.047,
+    "longitude": 9.693,
     "horaires": "Infrastructure",
     "tarifs": "Gratuit",
     "telephone": "",
@@ -779,10 +777,8 @@
       "Découverte architecturale",
       "Photographie extérieure"
     ],
-    "latitude": 4.0507651
-,
-    "longitude": 9.6920614
-,
+    "latitude": 4.067,
+    "longitude": 9.705,
     "horaires": "Selon les célébrations religieuses",
     "tarifs": "Gratuit",
     "telephone": "",
@@ -807,8 +803,8 @@
       "Athlétisme",
       "Compétitions"
     ],
-    "latitude": 4.0561,
-    "longitude": 9.7189,
+    "latitude": 4.05,
+    "longitude": 9.7,
     "horaires": "Selon les entraînements",
     "tarifs": "Variable",
     "telephone": "+237 6 77 50 02 53",
@@ -837,8 +833,8 @@
       "Tennis",
       "Natation"
     ],
-    "latitude": 4.00556,
-    "longitude": 9.82528,
+    "latitude": 4.095,
+    "longitude": 9.775,
     "horaires": "Selon les événements",
     "tarifs": "Variable",
     "telephone": "",
@@ -975,14 +971,13 @@
       "Jeux vidéo",
       "Cinéma plein air"
     ],
-    "latitude": 4.0910735,
-    "longitude": 9.7409072,
+    "latitude": null,
+    "longitude": null,
     "horaires": "10:00-20:00 tous les jours, Samedi 10:00-22:00, Dimanche 10:00-21:00",
     "tarifs": "Variable",
     "telephone": "+237 698 07 00 00",
     "included": [],
-    "not_included": [],
-    "geocoded": "photon_nom_ville"
+    "not_included": []
   },
   {
     "id": "dla-137",
@@ -1109,15 +1104,14 @@
       "Restaurant",
       "Lounge"
     ],
-    "latitude": 4.0337,
-    "longitude": 9.7021,
+    "latitude": null,
+    "longitude": null,
     "horaires": "11:00-00:00 tous les jours",
     "tarifs": "500 XAF par jeton",
     "telephone": "+237 656 555 655",
     "site_web": "https://funcenter.cm/",
     "included": [],
-    "not_included": [],
-    "geocoded": "fallback_quartier_0"
+    "not_included": []
   },
   {
     "id": "dla-142",
@@ -1138,21 +1132,20 @@
       "Pâtisserie",
       "Restauration"
     ],
-    "latitude": 4.0243152,
-    "longitude": 9.6991361,
+    "latitude": null,
+    "longitude": null,
     "horaires": "07:00-00:00 tous les jours",
     "tarifs": null,
     "telephone": "+237 655 505 551",
     "included": [],
-    "not_included": [],
-    "geocoded": "photon_exact"
+    "not_included": []
   },
   {
     "id": "dla-143",
     "slug": "maison-h",
     "type": "sortie",
     "category": "gastronomie",
-    "quartier": "Bonapriso Rue Njo Njo",
+    "quartier": "Bonapriso",
     "name": "Maison H",
     "adresse": "Rue Njo Njo, Bonapriso, face au restaurant Le Pékin, Douala",
     "description_courte": "Pâtisserie fine française, glacier artisanal italien et restaurant/salon de thé.",
@@ -1167,14 +1160,13 @@
       "Salon de thé",
       "Café"
     ],
-    "latitude": 4.0266,
-    "longitude":  9.7001,
+    "latitude": null,
+    "longitude": null,
     "horaires": "07:00-23:00 tous les jours",
     "tarifs": null,
     "telephone": "+237 656 005 555",
     "included": [],
-    "not_included": [],
-    "geocoded": "photon_exact"
+    "not_included": []
   },
   {
     "id": "dla-144",
@@ -1196,15 +1188,14 @@
       "Brunch",
       "Dîner"
     ],
-    "latitude":  4.0849529,
-    "longitude": 9.734248,
+    "latitude": null,
+    "longitude": null,
     "horaires": "Lundi-vendredi : 08:00-00:00, Samedi-dimanche : 12:00-00:00",
     "tarifs": null,
     "telephone": null,
     "site_web": "https://vaultresto.com/",
     "included": [],
-    "not_included": [],
-    "geocoded": "photon_exact"
+    "not_included": []
   },
   {
     "id": "dla-145",
@@ -1225,14 +1216,13 @@
       "Cocktails",
       "Sortie"
     ],
-    "latitude": 4.0473669,
-    "longitude": 9.699767,
+    "latitude": null,
+    "longitude": null,
     "horaires": "11:00-23:00 tous les jours",
     "tarifs": null,
     "telephone": "+237 673 177 990",
     "included": [],
-    "not_included": [],
-    "geocoded": "photon_nom_ville"
+    "not_included": []
   },
   {
     "id": "dla-146",
@@ -1251,14 +1241,13 @@
       "Cuisine africaine",
       "Restaurant"
     ],
-    "latitude": 4.0851,
-    "longitude": 9.7312,
+    "latitude": null,
+    "longitude": null,
     "horaires": "10:00-00:00 tous les jours",
     "tarifs": "4000-6000 XAF",
     "telephone": "+237 672 687 679",
     "included": [],
-    "not_included": [],
-    "geocoded": "offset_doublon"
+    "not_included": []
   },
   {
     "id": "dla-147",
@@ -1278,13 +1267,12 @@
       "Famille",
       "Parc aquatique"
     ],
-    "latitude": 4.0129555,
-    "longitude": 9.7161489,
+    "latitude": null,
+    "longitude": null,
     "horaires": "10h-18h tous les jours",
     "tarifs": null,
     "telephone": "+237 691529353",
     "included": [],
-    "not_included": [],
-    "geocoded": "photon_exact"
+    "not_included": []
   }
 ]

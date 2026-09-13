@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect
 from functools import wraps
 import os
 import requests
@@ -16,6 +16,30 @@ USER_SERVICE = "http://localhost:5001"
 ITINERARY_SERVICE = "http://localhost:5002"
 RECOMMENDATION_SERVICE = "http://localhost:5003"
 
+# --- Chargement des destinations depuis le fichier local ---
+DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data")
+DESTINATIONS_FILE = os.path.join(DATA_DIR, "destinations.json")
+
+
+def load_destinations():
+    """Charge le catalogue de destinations depuis le fichier JSON."""
+    if not os.path.exists(DESTINATIONS_FILE):
+        return []
+    try:
+        with open(DESTINATIONS_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, IOError):
+        return []
+
+
+def find_destination(dest_id):
+    """Retourne la destination correspondant à l'ID, ou None."""
+    if not dest_id:
+        return None
+    for d in load_destinations():
+        if str(d.get("id")) == str(dest_id):
+            return d
+    return None
 
 def route_request(url, method='GET', data=None, headers=None, params=None):
     try:
@@ -128,8 +152,10 @@ def recommendations_page():
 @app.route('/destination')
 def destination_detail():
     dest_id = request.args.get('id')
-    return render_template('destination_details.html', destination={'id': dest_id})
-
+    destination = find_destination(dest_id)
+    if not destination:
+        return redirect('/destinations')
+    return render_template('destination_details.html', destination=destination)
 
 @app.route('/chat')
 def chat_page():
@@ -139,8 +165,10 @@ def chat_page():
 
 @app.route('/gallery/<dest_id>')
 def gallery_page(dest_id):
-    return render_template('gallery.html', destination={'id': dest_id})
-
+    destination = find_destination(dest_id)
+    if not destination:
+        return redirect('/destinations')
+    return render_template('gallery.html', destination=destination)
 
 @app.route('/static/<path:path>')
 def serve_static(path):
