@@ -32,5 +32,15 @@ def create_app():
     
     from app.activities import activities_bp
     app.register_blueprint(activities_bp)
+
+   # ============================================================
+    # NOUVELLE ROUTE MAP (AJOUT)
+    # ============================================================
+    try:
+        from app.routes.map_routes import map_bp
+        app.register_blueprint(map_bp)
+        print("✅ Blueprint map_v2 enregistré avec succès")
+    except Exception as e:
+        print(f"⚠️ Erreur map_v2: {e}")
     
     return app

@@ -91,30 +91,37 @@
                 </div>
             </div>
 
-            <!-- BADGES -->
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <span class="badge" style="background:#0f172a;color:white;padding:6px 14px;">Très bien noté</span>
-                    <span style="display:flex;align-items:center;gap:6px;font-weight:600;">
-                        <i class="fas fa-star" style="color:#f5a623;"></i> {{ destination.rating or 0 }}
-                        <span style="color:#94a3b8;font-weight:400;">({{ destination.reviews or 0 }} avis)</span>
-                    </span>
-                    <span style="color:#94a3b8;">•</span>
-                    <span style="color:#64748b;font-size:14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
-                </div>
-                <div class="d-flex gap-2">
-                    <button onclick="toggleFavoriteDetail('{{ destination.id }}')" 
-                            class="btn btn-outline-danger btn-sm rounded-pill" 
-                            style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
-                        <i class="fas fa-heart" id="detail-heart" style="color:#94a3b8;"></i> Favoris
-                    </button>
-                    <button onclick="openShareModal()" 
-                            class="btn btn-outline-secondary btn-sm rounded-pill" 
-                            style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
-                        <i class="fas fa-share-alt"></i> Partager
-                    </button>
-                </div>
-            </div>
+            <!-- ============================================================ -->
+            <!-- BADGE NOTE + BOUTONS -->
+            <!-- ============================================================ -->
+           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+           <div class="d-flex align-items-center gap-3 flex-wrap">
+           <span class="badge" style="background:#0f172a;color:white;padding:6px 14px;">Très bien noté</span>
+           <span style="display:flex;align-items:center;gap:6px;font-weight:600;">
+            <i class="fas fa-star" style="color:#f5a623;"></i> {{ destination.rating or 0 }}
+            <span style="color:#94a3b8;font-weight:400;">({{ destination.reviews or 0 }} avis)</span>
+        </span>
+        <span style="color:#94a3b8;">•</span>
+        <span style="color:#64748b;font-size:14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
+      </div>
+      <!-- BOUTONS -->
+    <div class="d-flex gap-2 flex-wrap">
+        <button onclick="toggleFavoriteDetail('{{ destination.id }}')" 
+                class="btn btn-outline-danger btn-sm rounded-pill" 
+                style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;border-radius:30px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-family:inherit;transition:0.2s;">
+            <i class="fas fa-heart" id="detail-heart" style="color:#94a3b8;"></i> Favoris
+        </button>
+        <button onclick="openShareModal()" 
+                class="btn btn-outline-secondary btn-sm rounded-pill" 
+                style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;border-radius:30px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-family:inherit;transition:0.2s;">
+            <i class="fas fa-share-alt"></i> Partager
+        </button>
+        <button onclick="viewItinerary()" 
+                style="padding:6px 16px;font-size:13px;border-radius:30px;border:none;background:linear-gradient(135deg,#2563EB,#7C3AED);color:white;cursor:pointer;font-family:inherit;transition:0.2s;box-shadow:0 4px 15px rgba(37,99,235,0.2);">
+            <i class="fas fa-route"></i> Itinéraire
+        </button>
+    </div>
+</div>
 
             <!-- TITRE -->
             <h1 style="font-size:28px;font-weight:700;color:#0f172a;margin-bottom:12px;">
@@ -472,6 +479,109 @@
 <!-- ============================================================ -->
 <script>
 // ============================================================
+// VOIR L'ITINÉRAIRE
+// ============================================================
+function viewItinerary() {
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const lat = {{ destination.latitude or 0 }};
+    const lng = {{ destination.longitude or 0 }};
+    
+    if (!lat || !lng || lat === 0 || lng === 0) {
+        alert('❌ Cette destination n\'a pas de coordonnées géographiques.');
+        return;
+    }
+    
+    window.location.href = `/location?lat=${lat}&lng=${lng}&label=${encodeURIComponent(destName)}`;
+}
+
+// ============================================================
+// PARTAGER UNE DESTINATION DANS LE CHAT
+// ============================================================
+function shareDestination() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour partager une destination.');
+        window.location.href = '/login';
+        return;
+    }
+    
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const destQuartier = "{{ destination.quartier or 'Douala' }}";
+    const destRating = "{{ destination.rating or 0 }}";
+    
+    // Récupérer les conversations
+    fetch('/api/chat/conversations', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(r => r.json())
+    .then(conversations => {
+        if (conversations.length === 0) {
+            alert('Vous n\'avez pas encore de conversations.\nRecherchez un utilisateur dans le chat pour commencer.');
+            window.location.href = '/chat';
+            return;
+        }
+        
+        // Créer la liste des conversations
+        let options = conversations.map((conv, i) => {
+            const name = conv.other_user ? conv.other_user.username : 'Conversation';
+            return `${i+1}. ${name}`;
+        }).join('\n');
+        
+        const choice = prompt(
+            `📍 Partager "${destName}" avec qui ?\n\n` +
+            options +
+            '\n\nEntrez le numéro :'
+        );
+        
+        if (choice === null) return;
+        
+        const idx = parseInt(choice) - 1;
+        if (idx < 0 || idx >= conversations.length) {
+            alert('Choix invalide.');
+            return;
+        }
+        
+        const conv = conversations[idx];
+        
+        // Créer le message de partage
+        const shareMessage = `📍 ${destName}\n${destQuartier}\n⭐ ${destRating}\n\n[Voir la destination]`;
+        
+        const data = {
+            conversation_id: conv.id,
+            content: shareMessage,
+            type: 'destination',
+            destination_id: destId
+        };
+        
+        // Envoyer le message
+        fetch('/api/chat/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(msg => {
+            alert('✅ Destination partagée avec succès !');
+            window.location.href = '/chat';
+        })
+        .catch(() => {
+            alert('❌ Erreur lors du partage.');
+        });
+    })
+    .catch(() => {
+        alert('❌ Erreur de chargement des conversations.');
+    });
+}
+
+
+
+
+// ============================================================
 // AJOUTER À L'ITINÉRAIRE - VERSION AMÉLIORÉE
 // ============================================================
 function addToItinerary() {
@@ -767,6 +877,25 @@ function toggleFavoriteDetail(destId) {
 </button>
 <button onclick="shareDestination()" class="btn btn-outline-success btn-sm rounded-pill" style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
     <i class="fas fa-share"></i> Partager dans le chat
+</button>
+
+<!-- BOUTON VOIR L'ITINÉRAIRE - AJOUTER APRÈS LE BOUTON PARTAGER -->
+<button onclick="viewItinerary()" style="
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    background: linear-gradient(135deg, #2563EB, #7C3AED);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: inherit;
+    box-shadow: 0 4px 15px rgba(37,99,235,0.2);
+" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 25px rgba(37,99,235,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(37,99,235,0.2)'">
+    <i class="fas fa-route"></i> 📍 Voir l'itinéraire
 </button>
 
 

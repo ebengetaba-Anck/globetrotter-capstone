@@ -146,6 +146,18 @@ def gallery_page(dest_id):
 def serve_static(path):
     return send_from_directory(app.static_folder, path)
 
+@app.route('/location')
+def location_view():
+    """Afficher une localisation sur la carte"""
+    lat = request.args.get('lat', 0, type=float)
+    lng = request.args.get('lng', 0, type=float)
+    label = request.args.get('label', 'Position partagée')
+    
+    if not lat or not lng:
+        return redirect('/destinations')
+    
+    return render_template('location_view.html', lat=lat, lng=lng, label=label)
+
 
 # ============================================================
 # ROUTES API
