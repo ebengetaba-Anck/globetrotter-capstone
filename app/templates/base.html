@@ -10,7 +10,7 @@
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter',sans-serif;background:#f8fafc;color:#0f172a}
-        .navbar-glass{background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.05);padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between}
+        .navbar-glass{position:sticky;top:0;z-index:9999;background:rgba(255,255,255,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,0,0,0.05);padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between}
         .nav-logo{display:flex;align-items:center;gap:12px;cursor:pointer;font-size:20px;font-weight:700;color:#0f172a}
         .nav-logo-icon{width:40px;height:40px;background:linear-gradient(135deg,#0056b3,#38bdf8);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-weight:800;font-size:18px}
         .nav-links{display:flex;gap:4px}
@@ -43,10 +43,23 @@
     <span id="chat-notification" class="badge bg-danger" style="display:none;position:absolute;top:-6px;right:-10px;font-size:10px;padding:2px 6px;border-radius:50%;">0</span>
 </a>
         </div>
-        <div class="nav-profile">
-            <div class="nav-avatar" id="nav-avatar">?</div>
-            <span style="font-size:14px;font-weight:500;color:#0f172a;" id="nav-username">Chargement...</span>
-            <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+                <div class="nav-profile">
+            <!-- Zone utilisateur connecté (affichée seulement si connecté) -->
+            <div id="nav-user-zone" style="display:none;align-items:center;gap:16px;">
+                <div class="nav-avatar" id="nav-avatar">?</div>
+                <span style="font-size:14px;font-weight:500;color:#0f172a;" id="nav-username">Chargement...</span>
+                <button class="btn-logout" onclick="logoutUser()"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+            </div>
+
+            <!-- Zone visiteur (affichée seulement si NON connecté) -->
+            <div id="nav-guest-zone" style="display:none;align-items:center;gap:10px;">
+                <a href="/login" style="padding:8px 22px;border-radius:30px;border:1px solid #e2e8f0;background:transparent;font-size:13px;font-weight:500;color:#475569;text-decoration:none;transition:0.2s;">
+                    Se connecter
+                </a>
+                <a href="/register" style="padding:10px 24px;border-radius:30px;background:linear-gradient(135deg,#0056b3,#2563eb);color:white;font-size:13px;font-weight:600;text-decoration:none;box-shadow:0 4px 15px rgba(37,99,235,0.25);transition:0.2s;">
+                    Créer un compte
+                </a>
+            </div>
         </div>
     </nav>
     {% block content %}{% endblock %}
@@ -65,6 +78,46 @@
                 .catch(() => {});
             }
         });
+
+        // ============================================================
+        // PROTECTION GLOBALE : rediriger vers /login si non connecté
+        // ============================================================
+        const PUBLIC_PAGES = ['/login', '/register', '/', '/index'];
+        
+        function isPublicPage() {
+            const path = window.location.pathname;
+            // Page racine, login, register, ou avec un paramètre ?guest
+            if (PUBLIC_PAGES.includes(path)) return true;
+            if (window.location.search.includes('guest=1')) return true;
+            return false;
+        }
+        
+        function requireLogin() {
+            const token = localStorage.getItem('token');
+            
+            // Gérer l'affichage des zones navbar
+            const userZone = document.getElementById('nav-user-zone');
+            const guestZone = document.getElementById('nav-guest-zone');
+            
+            if (token) {
+                // Utilisateur connecté
+                if (userZone) userZone.style.display = 'flex';
+                if (guestZone) guestZone.style.display = 'none';
+            } else {
+                // Visiteur non connecté
+                if (userZone) userZone.style.display = 'none';
+                if (guestZone) guestZone.style.display = 'flex';
+                
+                // Redirection si page protégée
+                if (!isPublicPage()) {
+                    window.location.href = '/login';
+                }
+            }
+        }
+        
+        // Exécuter dès que le DOM est prêt
+        document.addEventListener('DOMContentLoaded', requireLogin);
+
         function logoutUser() {
             if (confirm('Êtes-vous sûr de vouloir vous déconnecter ?')) {
                 localStorage.removeItem('token');

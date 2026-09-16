@@ -1,507 +1,965 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ô'MBOA - Découvrez Douala autrement</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #ffffff; color: #0f172a; }
-        a { text-decoration: none; }
-        
-        /* ============================================================ */
-        /* NAVBAR */
-        /* ============================================================ */
-        .navbar {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-            background: rgba(255,255,255,0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(0,0,0,0.04);
-            padding: 0 48px;
-            height: 72px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .navbar .logo {
-            display: flex; align-items: center; gap: 12px;
-            font-size: 22px; font-weight: 800; color: #0f172a;
-            cursor: pointer;
-        }
-        .navbar .logo-icon {
-            width: 40px; height: 40px;
-            background: linear-gradient(135deg, #0056b3, #2563eb);
-            border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 800; font-size: 18px;
-        }
-        .navbar .nav-links { display: flex; gap: 6px; align-items: center; }
-        .navbar .nav-links a {
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            color: #475569;
-            transition: all 0.2s ease;
-        }
-        .navbar .nav-links a:hover { background: #f1f5f9; color: #0f172a; }
-        .navbar .nav-links a.active { background: #f1f5f9; color: #0f172a; font-weight: 600; }
-        .navbar .btn-login {
-            padding: 10px 28px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #0056b3, #2563eb);
-            color: white !important;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(37,99,235,0.25);
-            transition: all 0.3s ease;
-        }
-        .navbar .btn-login:hover { 
-            background: #004494 !important;
-            transform: translateY(-1px);
-            box-shadow: 0 8px 25px rgba(37,99,235,0.35);
-        }
-        
-        /* ============================================================ */
-        /* HERO - IMAGE A DROITE */
-        /* ============================================================ */
-        .hero {
-            min-height: 100vh;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            padding-top: 72px;
-        }
-        .hero-left {
-            padding: 80px 48px 60px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            background: #ffffff;
-        }
-        .hero-left .badge {
-            display: inline-block;
-            background: #e8f4fd;
-            color: #0056b3;
-            padding: 6px 18px;
-            border-radius: 30px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            width: fit-content;
-        }
-        .hero-left h1 {
-            font-size: 52px;
-            font-weight: 900;
-            color: #0f172a;
-            line-height: 1.08;
-            margin: 0 0 16px 0;
-            letter-spacing: -2px;
-        }
-        .hero-left h1 span { 
-            background: linear-gradient(135deg, #0056b3, #2563eb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-        .hero-left p {
-            font-size: 18px;
-            color: #64748b;
-            line-height: 1.7;
-            margin: 0 0 32px 0;
-            max-width: 480px;
-        }
-        .hero-left .btn-group {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-            margin-bottom: 40px;
-        }
-        .hero-left .btn-primary {
-            padding: 14px 36px;
-            background: linear-gradient(135deg, #0056b3, #2563eb);
-            color: white;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
-            transition: all 0.3s ease;
-        }
-        .hero-left .btn-primary:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 12px 40px rgba(37,99,235,0.4);
-        }
-        .hero-left .btn-secondary {
-            padding: 14px 36px;
-            background: transparent;
-            color: #0f172a;
-            border: 1px solid #e2e8f0;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 16px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-        }
-        .hero-left .btn-secondary:hover { 
-            background: #f1f5f9;
-            border-color: #94a3b8;
-        }
-        .hero-left .stats {
-            display: flex;
-            gap: 48px;
-            padding-top: 32px;
-            border-top: 1px solid #f1f5f9;
-        }
-        .hero-left .stats div { 
-            text-align: left;
-        }
-        .hero-left .stats strong { 
-            display: block;
-            font-size: 24px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .hero-left .stats span { 
-            font-size: 14px;
-            color: #94a3b8;
-        }
-        
-        /* IMAGE DROITE */
-        .hero-right {
-            background: url('https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=1200&auto=format&fit=crop') center/cover;
-            min-height: 100vh;
-            position: relative;
-        }
-        .hero-right .credit {
-            position: absolute;
-            bottom: 20px;
-            right: 24px;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            color: rgba(255,255,255,0.7);
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 400;
-        }
-        
-        /* ============================================================ */
-        /* SECTION "TOUT CE DONT VOUS AVEZ BESOIN" */
-        /* ============================================================ */
-        .features {
-            padding: 80px 48px;
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-        .features-header {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-        .features-header .label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #0056b3;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-        .features-header h2 {
-            font-size: 36px;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 8px 0 12px 0;
-        }
-        .features-header p {
-            font-size: 18px;
-            color: #64748b;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-        .feature-card {
-            background: white;
-            border-radius: 20px;
-            padding: 32px 28px;
-            border: 1px solid #f1f5f9;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .feature-card:hover { 
-            transform: translateY(-6px); 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.06);
-            border-color: #0056b3;
-        }
-        .feature-card .icon {
-            font-size: 40px;
-            margin-bottom: 16px;
-        }
-        .feature-card h3 {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-            margin: 0 0 8px 0;
-        }
-        .feature-card p {
-            font-size: 14px;
-            color: #64748b;
-            line-height: 1.6;
-            margin: 0 0 16px 0;
-        }
-        .feature-card a {
-            color: #0056b3;
-            font-weight: 600;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .feature-card a:hover { gap: 10px; }
-        
-        /* ============================================================ */
-        /* CTA FINAL */
-        /* ============================================================ */
-        .cta {
-            padding: 72px 48px;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            text-align: center;
-        }
-        .cta h2 { 
-            font-size: 36px; 
-            font-weight: 700; 
-            color: white; 
-            margin: 0 0 12px 0;
-        }
-        .cta p { 
-            font-size: 18px; 
-            color: #94a3b8; 
-            margin: 0 0 32px 0; 
-            line-height: 1.6; 
-            max-width: 600px; 
-            margin-left: auto; 
-            margin-right: auto; 
-        }
-        .cta .btn-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
-        .cta .btn-primary {
-            padding: 16px 40px;
-            background: linear-gradient(135deg, #0056b3, #2563eb);
-            color: white;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 16px;
-            box-shadow: 0 8px 30px rgba(37,99,235,0.3);
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cta .btn-primary:hover { transform: translateY(-2px); }
-        .cta .btn-secondary {
-            padding: 16px 40px;
-            background: rgba(255,255,255,0.08);
-            color: white;
-            border-radius: 14px;
-            font-weight: 600;
-            font-size: 16px;
-            border: 1px solid rgba(255,255,255,0.12);
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .cta .btn-secondary:hover { background: rgba(255,255,255,0.16); }
-        
-        /* ============================================================ */
-        /* FOOTER */
-        /* ============================================================ */
-        footer {
-            background: #0f172a;
-            padding: 40px 48px;
-            text-align: center;
-            color: #94a3b8;
-            border-top: 1px solid rgba(255,255,255,0.06);
-        }
-        footer .links { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin-bottom: 20px; }
-        footer .links a { color: #94a3b8; font-size: 14px; transition: 0.2s; }
-        footer .links a:hover { color: white; }
-        footer p { font-size: 13px; margin: 0; }
-        
-        /* ============================================================ */
-        /* RESPONSIVE */
-        /* ============================================================ */
-        @media (max-width: 1024px) {
-            .hero { grid-template-columns: 1fr; }
-            .hero-right { min-height: 400px; }
-            .hero-left { padding: 100px 32px 40px; }
-            .hero-left h1 { font-size: 40px; }
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 768px) {
-            .navbar { padding: 0 16px; height: 64px; }
-            .navbar .logo { font-size: 18px; }
-            .navbar .nav-links a { font-size: 12px; padding: 6px 12px; }
-            .navbar .btn-login { padding: 6px 16px; font-size: 12px; }
-            .navbar .hide-mobile { display: none; }
-            .hero-left { padding: 80px 16px 32px; }
-            .hero-left h1 { font-size: 32px; }
-            .hero-left .stats { gap: 24px; flex-wrap: wrap; }
-            .hero-right { min-height: 280px; }
-            .features { padding: 40px 16px; }
-            .features-grid { grid-template-columns: 1fr; }
-            .features-header h2 { font-size: 28px; }
-            .cta { padding: 40px 16px; }
-            .cta h2 { font-size: 24px; }
-            footer { padding: 24px 16px; }
-            footer .links { gap: 16px; }
-        }
-        @media (max-width: 480px) {
-            .hero-left h1 { font-size: 28px; }
-            .hero-left .btn-primary, .hero-left .btn-secondary { 
-                width: 100%; 
-                justify-content: center; 
-            }
-            .features-grid { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
-    <!-- ============================================================ -->
-    <!-- NAVBAR -->
-    <!-- ============================================================ -->
-    <nav class="navbar">
-        <div class="logo" onclick="window.location.href='/'">
-            <div class="logo-icon">Ô</div>
-            <span>Ô'MBOA</span>
-        </div>
-        <div class="nav-links">
-            <a href="/" class="active">Accueil</a>
-            <a href="/destinations">Découvrir</a>
-            <a href="/transport">🚕 Transport</a>
-            <a href="#" class="hide-mobile">À propos</a>
-            <a href="/login" class="btn-login"><i class="fas fa-user"></i> Connexion</a>
-        </div>
-    </nav>
+{% block title %}Ô'MBOA - Découvrez Douala autrement{% endblock %}
 
-    <!-- ============================================================ -->
-    <!-- HERO - IMAGE A DROITE -->
-    <!-- ============================================================ -->
-    <section class="hero">
-        <div class="hero-left">
-            <span class="badge">🚀 Explorez Douala autrement</span>
-            <h1>Explorez.<br>Découvrez.<br><span>Vivez Douala.</span></h1>
-            <p>Des lieux uniques, des expériences inoubliables, une ville qui ne dort jamais.</p>
-            <div class="btn-group">
-                <a href="/destinations" class="btn-primary">
-                    Découvrir maintenant <i class="fas fa-arrow-right"></i>
-                </a>
-                <a href="#video" class="btn-secondary">
-                    <i class="fas fa-play-circle"></i> Regarder la vidéo
-                </a>
-            </div>
-            <div class="stats">
-                <div>
-                    <strong>100+</strong>
-                    <span>Lieux à découvrir</span>
-                </div>
-                <div>
-                    <strong>4.8/5</strong>
-                    <span>Appréciation globale</span>
-                </div>
-                <div>
-                    <strong>10K+</strong>
-                    <span>Explorateurs</span>
-                </div>
-            </div>
-        </div>
-        <div class="hero-right">
-            <span class="credit">📸 Balade au bord du Wouri • Douala, Cameroun</span>
-        </div>
-    </section>
+{% block content %}
 
-    <!-- ============================================================ -->
-    <!-- SECTION "TOUT CE DONT VOUS AVEZ BESOIN" -->
-    <!-- ============================================================ -->
-    <section class="features">
-        <div class="features-header">
-            <div class="label">Tout ce dont vous avez besoin</div>
-            <h2>Découvrez Ô'MBOA</h2>
-            <p>Votre compagnon idéal pour explorer Douala autrement. Tourisme, loisirs, transport... tout est réuni ici.</p>
-        </div>
-        <div class="features-grid">
-            <div class="feature-card" onclick="window.location.href='/destinations?category=culture'">
-                <div class="icon">🏛️</div>
-                <h3>Sites touristiques</h3>
-                <p>Découvrez les lieux incontournables de Douala.</p>
-                <a href="/destinations?category=culture">Explorer <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="feature-card" onclick="window.location.href='/destinations?category=gastronomie'">
-                <div class="icon">🍽️</div>
-                <h3>Restaurants</h3>
-                <p>Les meilleures tables pour tous les goûts.</p>
-                <a href="/destinations?category=gastronomie">Explorer <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="feature-card" onclick="window.location.href='/destinations?category=hotel'">
-                <div class="icon">🏨</div>
-                <h3>Hôtels</h3>
-                <p>Trouvez l'hébergement qui vous convient.</p>
-                <a href="/destinations?category=hotel">Explorer <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="feature-card" onclick="window.location.href='/destinations?category=detente'">
-                <div class="icon">🎭</div>
-                <h3>Activités</h3>
-                <p>Vivez des expériences uniques à Douala.</p>
-                <a href="/destinations?category=detente">Explorer <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="feature-card" onclick="window.location.href='/transport'">
-                <div class="icon">🚕</div>
-                <h3>Transport</h3>
-                <p>Déplacements faciles et sécurisés.</p>
-                <a href="/transport">Explorer <i class="fas fa-arrow-right"></i></a>
-            </div>
-            <div class="feature-card" onclick="window.location.href='/destinations'">
-                <div class="icon">🗺️</div>
-                <h3>Découverte</h3>
-                <p>Créez votre expérience à Douala.</p>
-                <a href="/destinations">Explorer <i class="fas fa-arrow-right"></i></a>
-            </div>
-        </div>
-    </section>
+<!-- ============================================================ -->
+<!-- STYLES DE LA HOME -->
+<!-- ============================================================ -->
+<style>
+    /* HERO */
+    .home-hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    margin-top: -72px;
+    padding-top: 72px;
+    z-index: 0;              /* ✅ AJOUT */
+}
+    .home-hero-video,
+    .home-hero-image {
+        position: absolute;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        object-fit: cover;
+        z-index: 0;
+    }
+    .home-hero-image {
+        background: url('https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=1800&auto=format&fit=crop') center/cover no-repeat;
+    }
+    .home-hero-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(180deg, rgba(15,23,42,0.55) 0%, rgba(15,23,42,0.75) 100%);
+    z-index: 1;
+    pointer-events: none;    /* ✅ AJOUT : laisse passer les clics */
+}
+    home-hero-content {
+    position: relative;
+    z-index: 2;
+    pointer-events: auto;    /* ✅ AJOUT */
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 120px 48px 80px;
+        color: white;
+        width: 100%;
+    }
+    .home-hero-content .badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+        color: white;
+        padding: 8px 20px;
+        border-radius: 30px;
+        font-size: 13px;
+        font-weight: 500;
+        margin-bottom: 24px;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .home-hero-content h1 {
+        font-size: 72px;
+        font-weight: 900;
+        line-height: 1.05;
+        letter-spacing: -2.5px;
+        margin-bottom: 20px;
+        max-width: 800px;
+    }
+    .home-hero-content h1 span {
+        background: linear-gradient(135deg, #38bdf8, #2563eb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .home-hero-content p {
+        font-size: 20px;
+        line-height: 1.6;
+        max-width: 560px;
+        margin-bottom: 40px;
+        color: rgba(255,255,255,0.85);
+    }
+    .home-hero-buttons {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .home-hero-buttons a {
+        padding: 16px 36px;
+        border-radius: 30px;
+        font-size: 16px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .home-hero-buttons .btn-main {
+        background: linear-gradient(135deg, #0056b3, #2563eb);
+        color: white;
+        box-shadow: 0 12px 40px rgba(37,99,235,0.4);
+    }
+    .home-hero-buttons .btn-main:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 50px rgba(37,99,235,0.5);
+    }
+    .home-hero-buttons .btn-ghost {
+        background: rgba(255,255,255,0.1);
+        backdrop-filter: blur(8px);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.25);
+    }
+    .home-hero-buttons .btn-ghost:hover {
+        background: rgba(255,255,255,0.2);
+    }
 
-    <!-- ============================================================ -->
-    <!-- CTA FINAL -->
-    <!-- ============================================================ -->
-    <section class="cta">
-        <h2>Prêt à explorer Douala ?</h2>
-        <p>Créez votre compte et accédez à des recommandations personnalisées, des itinéraires sur mesure et bien plus encore.</p>
-        <div class="btn-group">
-            <a href="/register" class="btn-primary">🚀 Créer un compte</a>
-            <a href="/login" class="btn-secondary"><i class="fas fa-sign-in-alt"></i> Se connecter</a>
-        </div>
-    </section>
+    /* SECTION MOTEUR */
+    .search-engine {
+        position: relative;
+        margin-top: -50px;
+        z-index: 10;
+        padding: 0 48px;
+        max-width: 1280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .search-card {
+        background: white;
+        border-radius: 24px;
+        padding: 24px;
+        box-shadow: 0 20px 60px rgba(15,23,42,0.12);
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: stretch;
+    }
+    .search-field {
+        flex: 1 1 200px;
+        min-width: 160px;
+        position: relative;
+    }
+    .search-field label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .search-field input,
+    .search-field select {
+        width: 100%;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 12px 14px;
+        font-size: 14px;
+        font-family: inherit;
+        color: #0f172a;
+        background: #f8fafc;
+        transition: 0.2s;
+        outline: none;
+    }
+    .search-field input:focus,
+    .search-field select:focus {
+        border-color: #2563eb;
+        background: white;
+    }
+    .search-btn {
+        flex: 0 0 auto;
+        align-self: flex-end;
+        padding: 12px 32px;
+        background: linear-gradient(135deg, #0056b3, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: inherit;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 30px rgba(37,99,235,0.35);
+    }
 
-    <!-- ============================================================ -->
-    <!-- FOOTER -->
-    <!-- ============================================================ -->
-    <footer>
-        <div class="links">
-            <a href="/">Accueil</a>
+    /* SECTION CATEGORIES */
+    .categories-section {
+        padding: 80px 48px 40px;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+    .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 32px;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .section-head h2 {
+        font-size: 32px;
+        font-weight: 800;
+        color: #0f172a;
+        letter-spacing: -1px;
+    }
+    .section-head a {
+        color: #2563eb;
+        font-weight: 600;
+        font-size: 14px;
+    }
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 16px;
+    }
+    .cat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 24px 12px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid #f1f5f9;
+        text-decoration: none;
+        color: inherit;
+    }
+    .cat-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(15,23,42,0.08);
+    }
+    .cat-card .cat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 12px;
+        font-size: 26px;
+    }
+    .cat-card span {
+        font-size: 13px;
+        font-weight: 600;
+        color: #0f172a;
+    }
+
+    /* SECTION DESTINATIONS */
+    .destinations-section {
+        padding: 40px 48px 80px;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+    .destinations-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+    .dest-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(15,23,42,0.06);
+        transition: all 0.3s ease;
+        border: 1px solid #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        text-decoration: none;
+        color: inherit;
+    }
+    .dest-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 50px rgba(15,23,42,0.12);
+    }
+    .dest-card-image {
+        height: 180px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+    .dest-card-fav {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 36px;
+        height: 36px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        transition: 0.2s;
+        color: #94a3b8;
+    }
+    .dest-card-fav:hover {
+        transform: scale(1.1);
+        color: #dc2626;
+    }
+    .dest-card-body {
+        padding: 16px 18px 18px;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    .dest-card-body h3 {
+        font-size: 16px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0 0 6px 0;
+        line-height: 1.3;
+    }
+    .dest-card-body .quartier {
+        font-size: 12px;
+        color: #64748b;
+        margin-bottom: 10px;
+    }
+    .dest-card-body .quartier i {
+        color: #2563eb;
+        margin-right: 4px;
+    }
+    .dest-card-body .rating {
+        font-size: 13px;
+        color: #0f172a;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+    .dest-card-body .rating i {
+        color: #f5a623;
+    }
+    .dest-card-footer {
+        margin-top: auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .dest-card-footer .price {
+        font-size: 14px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+    .dest-card-footer .price.free {
+        color: #16a34a;
+    }
+    .dest-card-footer .btn-decouvrir {
+        padding: 8px 18px;
+        background: #2563eb;
+        color: white;
+        border-radius: 30px;
+        font-size: 12px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+    .dest-card-footer .btn-decouvrir:hover {
+        background: #1e40af;
+    }
+
+    /* SECTION NUIT */
+    .night-section {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        padding: 100px 48px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    .night-section::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1800&auto=format&fit=crop') center/cover;
+        opacity: 0.15;
+        z-index: 0;
+    }
+    .night-content {
+        position: relative;
+        z-index: 1;
+        max-width: 1280px;
+        margin: 0 auto;
+    }
+    .night-content h2 {
+        font-size: 44px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        margin-bottom: 12px;
+    }
+    .night-content > p {
+        font-size: 18px;
+        color: rgba(255,255,255,0.7);
+        margin-bottom: 32px;
+    }
+    .night-tags {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+    .night-tag {
+        padding: 10px 24px;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 30px;
+        font-size: 14px;
+        font-weight: 500;
+        color: white;
+        cursor: pointer;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    .night-tag:hover {
+        background: rgba(255,255,255,0.18);
+        border-color: rgba(255,255,255,0.3);
+    }
+    .night-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 16px 36px;
+        background: linear-gradient(135deg, #0056b3, #2563eb);
+        color: white;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        box-shadow: 0 12px 40px rgba(37,99,235,0.35);
+        transition: all 0.3s ease;
+    }
+    .night-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 50px rgba(37,99,235,0.5);
+    }
+
+    /* SECTION SOCIALE */
+    .social-section {
+        padding: 80px 48px;
+        max-width: 1280px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+    }
+    .social-card {
+        padding: 48px 40px;
+        border-radius: 24px;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .social-card.map {
+        background: linear-gradient(135deg, #eff6ff, #dbeafe);
+    }
+    .social-card.community {
+        background: linear-gradient(135deg, #fef3c7, #fde68a);
+    }
+    .social-card h3 {
+        font-size: 28px;
+        font-weight: 800;
+        color: #0f172a;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
+    }
+    .social-card p {
+        font-size: 16px;
+        color: #475569;
+        margin-bottom: 24px;
+        line-height: 1.6;
+    }
+    .social-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 28px;
+        background: #2563eb;
+        color: white;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        width: fit-content;
+        transition: 0.2s;
+    }
+    .social-btn:hover {
+        background: #1e40af;
+        transform: translateY(-2px);
+    }
+
+    /* SECTION CTA FINAL */
+    .final-cta {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        padding: 100px 48px;
+        text-align: center;
+        color: white;
+    }
+    .final-cta h2 {
+        font-size: 44px;
+        font-weight: 900;
+        letter-spacing: -1.5px;
+        margin-bottom: 16px;
+    }
+    .final-cta p {
+        font-size: 18px;
+        color: rgba(255,255,255,0.7);
+        max-width: 620px;
+        margin: 0 auto 40px;
+        line-height: 1.6;
+    }
+    .final-cta .cta-btn {
+        padding: 18px 44px;
+        background: linear-gradient(135deg, #0056b3, #2563eb);
+        color: white;
+        border-radius: 30px;
+        font-weight: 700;
+        font-size: 17px;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: 0 12px 40px rgba(37,99,235,0.4);
+        transition: all 0.3s ease;
+    }
+    .final-cta .cta-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 50px rgba(37,99,235,0.6);
+    }
+
+    /* FOOTER */
+    .home-footer {
+        background: #0f172a;
+        color: #94a3b8;
+        padding: 60px 48px 32px;
+    }
+    .home-footer-content {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 40px;
+        padding-bottom: 40px;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .home-footer-brand h3 {
+        font-size: 22px;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 12px;
+    }
+    .home-footer-brand p {
+        font-size: 14px;
+        line-height: 1.6;
+        max-width: 320px;
+    }
+    .home-footer-col h4 {
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+        margin-bottom: 16px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    .home-footer-col a {
+        display: block;
+        color: #94a3b8;
+        font-size: 14px;
+        padding: 5px 0;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    .home-footer-col a:hover {
+        color: white;
+    }
+    .home-footer-bottom {
+        max-width: 1280px;
+        margin: 24px auto 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 16px;
+        font-size: 13px;
+    }
+    .home-footer-social {
+        display: flex;
+        gap: 12px;
+    }
+    .home-footer-social a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+    .home-footer-social a:hover {
+        background: #2563eb;
+        color: white;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+        .categories-grid { grid-template-columns: repeat(4, 1fr); }
+        .destinations-grid { grid-template-columns: repeat(2, 1fr); }
+        .home-footer-content { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+        .home-hero-content { padding: 80px 20px 60px; }
+        .home-hero-content h1 { font-size: 42px; letter-spacing: -1.5px; }
+        .home-hero-content p { font-size: 16px; }
+        .search-engine { padding: 0 16px; }
+        .search-card { padding: 16px; }
+        .categories-section,
+        .destinations-section,
+        .social-section { padding: 40px 16px; }
+        .section-head h2 { font-size: 24px; }
+        .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .cat-card { padding: 16px 6px; }
+        .cat-card .cat-icon { width: 44px; height: 44px; font-size: 20px; }
+        .cat-card span { font-size: 11px; }
+        .destinations-grid { grid-template-columns: 1fr; }
+        .night-section { padding: 60px 20px; }
+        .night-content h2 { font-size: 30px; }
+        .social-section { grid-template-columns: 1fr; }
+        .social-card { padding: 32px 24px; }
+        .social-card h3 { font-size: 22px; }
+        .final-cta { padding: 60px 20px; }
+        .final-cta h2 { font-size: 28px; }
+        .home-footer { padding: 40px 20px 24px; }
+        .home-footer-content { grid-template-columns: 1fr; gap: 28px; }
+    }
+</style>
+
+<!-- ============================================================ -->
+<!-- HERO -->
+<!-- ============================================================ -->
+<section class="home-hero">
+    <!-- Image de fond (à remplacer par une vidéo plus tard) -->
+    <div class="home-hero-image"></div>
+    <div class="home-hero-overlay"></div>
+
+    <div class="home-hero-content">
+        <span class="badge">🌍 Bienvenue à Douala</span>
+        <h1>Douala n'attend<br>que <span>vous.</span></h1>
+        <p>Explorez. Découvrez. Vivez. Des lieux, des activités et des expériences sélectionnées pour vous faire découvrir Douala autrement.</p>
+        <div class="home-hero-buttons">
+            <a href="/destinations" class="btn-main">
+                Explorer Douala <i class="fas fa-arrow-right"></i>
+            </a>
+            <a href="/login" class="btn-ghost">
+                <i class="fas fa-play-circle"></i> Voir la vidéo
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- MOTEUR DE RECHERCHE -->
+<!-- ============================================================ -->
+<div class="search-engine">
+    <div class="search-card">
+        <div class="search-field" style="flex: 2 1 300px;">
+            <label>Recherche</label>
+            <input type="text" id="home-search-input" placeholder="Que recherchez-vous à Douala ?">
+        </div>
+        <div class="search-field">
+            <label>Budget</label>
+            <select id="home-budget">
+                <option value="">Tous</option>
+                <option value="0-1000">Moins de 1 000 FCFA</option>
+                <option value="1000-5000">1 000 - 5 000 FCFA</option>
+                <option value="5000-20000">5 000 - 20 000 FCFA</option>
+                <option value="20000+">Plus de 20 000 FCFA</option>
+            </select>
+        </div>
+        <div class="search-field">
+            <label>Durée</label>
+            <select id="home-duration">
+                <option value="">Toutes</option>
+                <option value="2h">2h</option>
+                <option value="demi">Demi-journée</option>
+                <option value="journee">Journée</option>
+                <option value="weekend">Week-end</option>
+            </select>
+        </div>
+        <div class="search-field">
+            <label>Quartier</label>
+            <select id="home-quartier">
+                <option value="">Tous</option>
+                <option value="Akwa">Akwa</option>
+                <option value="Bonanjo">Bonanjo</option>
+                <option value="Bonapriso">Bonapriso</option>
+                <option value="Bonamoussadi">Bonamoussadi</option>
+                <option value="Deido">Deido</option>
+                <option value="Bonabéri">Bonabéri</option>
+            </select>
+        </div>
+        <button class="search-btn" onclick="homeSearch()">
+            <i class="fas fa-search"></i> Rechercher
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- CATÉGORIES -->
+<!-- ============================================================ -->
+<section class="categories-section">
+    <div class="section-head">
+        <h2>Explorez par catégorie</h2>
+        <a href="/destinations">Voir toutes les catégories →</a>
+    </div>
+    <div class="categories-grid">
+        <a href="/destinations?category=nature" class="cat-card">
+            <div class="cat-icon" style="background:#dcfce7;">🌿</div>
+            <span>Nature</span>
+        </a>
+        <a href="/destinations?category=gastronomie" class="cat-card">
+            <div class="cat-icon" style="background:#ffedd5;">🍽️</div>
+            <span>Gastronomie</span>
+        </a>
+        <a href="/destinations?category=culture" class="cat-card">
+            <div class="cat-icon" style="background:#f3e8ff;">🏛️</div>
+            <span>Culture</span>
+        </a>
+        <a href="/destinations?category=sortie" class="cat-card">
+            <div class="cat-icon" style="background:#dbeafe;">🌙</div>
+            <span>Sortie nocturne</span>
+        </a>
+        <a href="/destinations?category=sport" class="cat-card">
+            <div class="cat-icon" style="background:#cffafe;">⛰️</div>
+            <span>Sport & Aventure</span>
+        </a>
+        <a href="/destinations?category=shopping" class="cat-card">
+            <div class="cat-icon" style="background:#fce7f3;">🛍️</div>
+            <span>Shopping</span>
+        </a>
+        <a href="/destinations?category=famille" class="cat-card">
+            <div class="cat-icon" style="background:#fef3c7;">👨‍👩‍👧</div>
+            <span>Famille</span>
+        </a>
+        <a href="/destinations?category=romantique" class="cat-card">
+            <div class="cat-icon" style="background:#fee2e2;">❤️</div>
+            <span>Romantique</span>
+        </a>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- LES INCONTOURNABLES -->
+<!-- ============================================================ -->
+<section class="destinations-section">
+    <div class="section-head">
+        <h2>Les incontournables de Douala</h2>
+        <a href="/destinations">Voir toutes les destinations →</a>
+    </div>
+    <div class="destinations-grid" id="home-destinations-grid">
+        <!-- Rempli dynamiquement par JavaScript -->
+        <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #94a3b8;">
+            <i class="fas fa-spinner fa-spin"></i> Chargement des destinations...
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- DOUALA DE NUIT -->
+<!-- ============================================================ -->
+<section class="night-section">
+    <div class="night-content">
+        <h2>Quand Douala s'illumine...</h2>
+        <p>Découvrez les expériences nocturnes les plus mémorables de la ville.</p>
+        <div class="night-tags">
+            <a href="/destinations?category=gastronomie&moment=soir" class="night-tag">🍽️ Restaurants</a>
+            <a href="/destinations?category=sortie" class="night-tag">🌙 Sorties</a>
+            <a href="/destinations?category=bar" class="night-tag">🍸 Bars</a>
+            <a href="/destinations?category=balade" class="night-tag">🚶 Balades</a>
+            <a href="/destinations?category=evenement" class="night-tag">🎉 Événements</a>
+        </div>
+        <a href="/destinations?moment=soir" class="night-btn">
+            Explorer la nuit <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- EXPLOREZ AUTOUR DE VOUS + COMMUNAUTÉ -->
+<!-- ============================================================ -->
+<section class="social-section">
+    <div class="social-card map">
+        <h3>🗺️ Explorez autour de vous</h3>
+        <p>Les meilleures expériences à proximité, en temps réel, selon votre position.</p>
+        <a href="/destinations" class="social-btn">
+            Voir la carte <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <div class="social-card community">
+        <h3>👥 Découvrez Douala ensemble</h3>
+        <p>Partagez une destination avec vos amis. Organisez vos sorties. Discutez directement dans Ô'MBOA.</p>
+        <a href="/register" class="social-btn">
+            Créer mon compte <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- CTA FINAL -->
+<!-- ============================================================ -->
+<section class="final-cta">
+    <h2>Une ville. Des milliers d'expériences.</h2>
+    <p>Ô'MBOA, votre guide pour découvrir le meilleur de Douala.</p>
+    <a href="/destinations" class="cta-btn">
+        Commencer l'aventure <i class="fas fa-arrow-right"></i>
+    </a>
+</section>
+
+<!-- ============================================================ -->
+<!-- FOOTER -->
+<!-- ============================================================ -->
+<footer class="home-footer">
+    <div class="home-footer-content">
+        <div class="home-footer-brand">
+            <h3>Ô'MBOA</h3>
+            <p>Votre guide pour découvrir le meilleur de Douala. Lieux, activités, transport et expériences uniques.</p>
+        </div>
+        <div class="home-footer-col">
+            <h4>Explorer</h4>
             <a href="/destinations">Découvrir</a>
             <a href="/transport">Transport</a>
-            <a href="/login">Connexion</a>
-            <a href="/register">S'inscrire</a>
+            <a href="/recommendations">Recommandations</a>
         </div>
-        <p>© 2026 Ô'MBOA — Découvrez Douala autrement</p>
-    </footer>
+        <div class="home-footer-col">
+            <h4>Compte</h4>
+            <a href="/login">Se connecter</a>
+            <a href="/register">Créer un compte</a>
+            <a href="/my-itineraries">Mes itinéraires</a>
+        </div>
+        <div class="home-footer-col">
+            <h4>À propos</h4>
+            <a href="#">Contact</a>
+            <a href="#">Conditions d'utilisation</a>
+            <a href="#">Confidentialité</a>
+        </div>
+    </div>
+    <div class="home-footer-bottom">
+        <span>© 2026 Ô'MBOA. Tous droits réservés.</span>
+        <div class="home-footer-social">
+            <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" title="Twitter"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+    </div>
+</footer>
 
-</body>
-</html>
+<!-- ============================================================ -->
+<!-- SCRIPT : CHARGEMENT DYNAMIQUE DES DESTINATIONS -->
+<!-- ============================================================ -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Charger les 4 premières destinations
+    fetch('/api/destinations')
+        .then(r => r.json())
+        .then(destinations => {
+            const grid = document.getElementById('home-destinations-grid');
+            if (!destinations || destinations.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #94a3b8;">Aucune destination disponible.</div>';
+                return;
+            }
+            
+            // Prendre les 4 premières
+            const top4 = destinations.slice(0, 4);
+            
+            grid.innerHTML = top4.map(d => {
+                const img = `/static/images/${d.id}/01.jpg`;
+                const price = d.avg_cost > 0 ? `${d.avg_cost.toLocaleString('fr-FR')} FCFA` : 'Gratuit';
+                const priceClass = d.avg_cost > 0 ? '' : 'free';
+                const rating = d.rating || 0;
+                const reviews = d.reviews || 0;
+                const quartier = d.quartier || 'Douala';
+                
+                return `
+                    <a href="/destination?id=${d.id}" class="dest-card">
+                        <div class="dest-card-image" style="background-image: url('${img}');">
+                            <div class="dest-card-fav" onclick="event.preventDefault(); event.stopPropagation(); toggleHomeFav('${d.id}', this);">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="dest-card-body">
+                            <h3>${d.name}</h3>
+                            <div class="quartier"><i class="fas fa-map-marker-alt"></i> ${quartier}</div>
+                            <div class="rating">
+                                <i class="fas fa-star"></i> ${rating} <span style="color:#94a3b8;font-weight:400;">(${reviews} avis)</span>
+                            </div>
+                            <div class="dest-card-footer">
+                                <span class="price ${priceClass}">${price}</span>
+                                <span class="btn-decouvrir">Découvrir</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }).join('');
+        })
+        .catch(err => {
+            console.error('Erreur chargement destinations:', err);
+            document.getElementById('home-destinations-grid').innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #ef4444;">Impossible de charger les destinations.</div>';
+        });
+});
+
+// ============================================================
+// RECHERCHE
+// ============================================================
+function homeSearch() {
+    const q = document.getElementById('home-search-input').value.trim();
+    const budget = document.getElementById('home-budget').value;
+    const duration = document.getElementById('home-duration').value;
+    const quartier = document.getElementById('home-quartier').value;
+    
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (budget) params.set('budget', budget);
+    if (duration) params.set('duration', duration);
+    if (quartier) params.set('quartier', quartier);
+    
+    window.location.href = '/destinations' + (params.toString() ? '?' + params.toString() : '');
+}
+
+// ============================================================
+// FAVORIS
+// ============================================================
+function toggleHomeFav(destId, el) {
+    let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const icon = el.querySelector('i');
+    if (favorites.includes(destId)) {
+        favorites = favorites.filter(f => f !== destId);
+        icon.style.color = '#94a3b8';
+    } else {
+        favorites.push(destId);
+        icon.style.color = '#dc2626';
+    }
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+}
+
+// Restaurer l'état des favoris
+document.addEventListener('DOMContentLoaded', function() {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    setTimeout(() => {
+        document.querySelectorAll('.dest-card-fav').forEach(el => {
+            const onclick = el.getAttribute('onclick') || '';
+            const match = onclick.match(/'([^']+)'/);
+            if (match && favorites.includes(match[1])) {
+                el.querySelector('i').style.color = '#dc2626';
+            }
+        });
+    }, 500);
+});
+</script>
+
+{% endblock %}

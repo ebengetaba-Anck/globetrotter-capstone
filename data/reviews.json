@@ -222,5 +222,13 @@
     "rating": 1,
     "comment": "cool",
     "created_at": "16/09/2026"
+  },
+  {
+    "id": "29",
+    "destination_id": "dla-118",
+    "username": "mimi",
+    "rating": 3,
+    "comment": "très beau  j y suis déjà allé je recommande fortement",
+    "created_at": "16/09/2026"
   }
 ]
