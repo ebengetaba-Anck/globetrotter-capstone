@@ -93,6 +93,16 @@
                 </div>
             </div>
 
+<!-- Bandeau visiteur non connecté -->
+<div id="guest-banner" style="display:none;background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #bfdbfe;border-radius:12px;padding:14px 20px;margin-bottom:20px;display:none;align-items:center;gap:14px;">
+    <i class="fas fa-info-circle" style="color:#2563eb;font-size:20px;"></i>
+    <div style="flex:1;">
+        <strong style="color:#0f172a;font-size:14px;">Vous consultez en mode visiteur</strong>
+        <p style="color:#475569;font-size:13px;margin:2px 0 0 0;">Connectez-vous pour ajouter aux favoris, publier un avis, ou créer un itinéraire.</p>
+    </div>
+    <a href="/login" style="padding:8px 20px;background:#2563eb;color:white;border-radius:20px;font-weight:600;font-size:13px;text-decoration:none;">Se connecter</a>
+    <a href="/register" style="padding:8px 20px;background:white;color:#2563eb;border:1px solid #2563eb;border-radius:20px;font-weight:600;font-size:13px;text-decoration:none;">Créer un compte</a>
+</div>
             <!-- TITRE -->
             <h1 style="font-size:28px;font-weight:700;color:#0f172a;margin-bottom:12px;">
                 {{ destination.name }}
@@ -414,6 +424,21 @@
 // VARIABLES
 // ============================================================
 const destId = "{{ destination.id }}";
+// ============================================================
+// HELPER : Vérifier si l'utilisateur est connecté
+// ============================================================
+function isLoggedIn() {
+    return !!localStorage.getItem('token');
+}
+
+function requireLoginOrRedirect(message) {
+    if (!isLoggedIn()) {
+        alert(message || 'Connectez-vous pour effectuer cette action.');
+        window.location.href = '/login';
+        return false;
+    }
+    return true;
+}
 const basePrice = {{ destination.avg_cost or 0 }};
 let selectedRating = 0;
 let counts = { adult: 1, youth: 0, child: 0, senior: 0 };
@@ -757,6 +782,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
         // Charger les avis
+    // Afficher le bandeau si non connecté
+    if (!localStorage.getItem('token')) {
+        const banner = document.getElementById('guest-banner');
+        if (banner) banner.style.display = 'flex';
+    }
+
     loadReviews();
 
     // Navigation clavier pour la vidéo
