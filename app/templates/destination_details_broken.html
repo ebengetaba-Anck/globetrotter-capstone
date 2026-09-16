@@ -15,12 +15,16 @@
 
     <div class="row g-4">
 
+        <!-- ============================================================ -->
+        <!-- COLONNE GAUCHE -->
+        <!-- ============================================================ -->
         <div class="col-lg-8">
 
             <!-- GRILLE IMAGES + VIDEO -->
             <div class="row g-2 mb-4">
+                <!-- VIDEO -->
                 <div class="col-6">
-                    <div id="video-container" style="position:relative;height:300px;background:#0f172a;border-radius:12px;overflow:hidden;cursor:pointer;" onclick="openVideoLightbox()">
+                    <div id="video-container" style="position:relative;height:300px;background:#0f172a;border-radius:12px;overflow:hidden;">
                         <video id="destination-video" 
                                autoplay loop muted playsinline
                                style="width:100%;height:100%;object-fit:cover;"
@@ -37,6 +41,7 @@
                     </div>
                 </div>
 
+                <!-- IMAGE PRINCIPALE -->
                 <div class="col-3">
                     <img src="/static/images/{{ destination.id }}/01.jpg" 
                          onerror="this.src='https://images.unsplash.com/photo-1562677944-9c18d55125a6?w=400&auto=format&fit=crop'"
@@ -46,6 +51,7 @@
                          alt="{{ destination.name }}">
                 </div>
 
+                <!-- IMAGE SECONDAIRE HAUT -->
                 <div class="col-3">
                     <img src="/static/images/{{ destination.id }}/02.jpg" 
                          onerror="this.style.display='none'"
@@ -55,6 +61,7 @@
                          alt="{{ destination.name }}">
                 </div>
 
+                <!-- IMAGE SECONDAIRE BAS + BOUTON VOIR TOUT -->
                 <div class="col-3" style="position:relative;">
                     <img src="/static/images/{{ destination.id }}/03.jpg" 
                          onerror="this.style.display='none'"
@@ -63,35 +70,58 @@
                          onclick="openLightbox('/static/images/{{ destination.id }}/03.jpg')"
                          alt="{{ destination.name }}">
                     
-                    <a href="/gallery/{{ destination.id }}" style="position: absolute;bottom: 10px;right: 10px;background: white;padding: 6px 16px;border-radius: 20px;font-size: 12px;font-weight: 600;text-decoration: none;color: #0f172a;box-shadow: 0 2px 8px rgba(0,0,0,0.12);display: inline-flex;align-items: center;gap: 6px;">
+                    <a href="/gallery/{{ destination.id }}" style="
+                        position: absolute;
+                        bottom: 10px;
+                        right: 10px;
+                        background: white;
+                        padding: 6px 16px;
+                        border-radius: 20px;
+                        font-size: 12px;
+                        font-weight: 600;
+                        text-decoration: none;
+                        color: #0f172a;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+                        display: inline-flex;
+                        align-items: center;
+                        gap: 6px;
+                    ">
                         <i class="fas fa-images"></i> Voir tout
                     </a>
                 </div>
             </div>
 
+            <!-- ============================================================ -->
             <!-- BADGE NOTE + BOUTONS -->
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <div class="d-flex align-items-center gap-3 flex-wrap">
-                    <span class="badge" style="background:#0f172a;color:white;padding:6px 14px;">Très bien noté</span>
-                    <span style="display:flex;align-items:center;gap:6px;font-weight:600;">
-                        <i class="fas fa-star" style="color:#f5a623;"></i> {{ destination.rating or 0 }}
-                        <span style="color:#94a3b8;font-weight:400;">({{ destination.reviews or 0 }} avis)</span>
-                    </span>
-                    <span style="color:#94a3b8;">•</span>
-                    <span style="color:#64748b;font-size:14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
-                </div>
-                <div class="d-flex gap-2 flex-wrap">
-                    <button onclick="toggleFavoriteDetail('{{ destination.id }}')" class="btn btn-outline-danger btn-sm rounded-pill" style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;border-radius:30px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-family:inherit;transition:0.2s;">
-                        <i class="fas fa-heart" id="detail-heart" style="color:#94a3b8;"></i> Favoris
-                    </button>
-                    <button onclick="openShareModal()" class="btn btn-outline-secondary btn-sm rounded-pill" style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;border-radius:30px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-family:inherit;transition:0.2s;">
-                        <i class="fas fa-share-alt"></i> Partager
-                    </button>
-                    <button onclick="viewItinerary()" style="padding:6px 16px;font-size:13px;border-radius:30px;border:none;background:linear-gradient(135deg,#2563EB,#7C3AED);color:white;cursor:pointer;font-family:inherit;transition:0.2s;box-shadow:0 4px 15px rgba(37,99,235,0.2);">
-                        <i class="fas fa-route"></i> Itinéraire
-                    </button>
-                </div>
-            </div>
+            <!-- ============================================================ -->
+           <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+           <div class="d-flex align-items-center gap-3 flex-wrap">
+           <span class="badge" style="background:#0f172a;color:white;padding:6px 14px;">Très bien noté</span>
+           <span style="display:flex;align-items:center;gap:6px;font-weight:600;">
+            <i class="fas fa-star" style="color:#f5a623;"></i> {{ destination.rating or 0 }}
+            <span style="color:#94a3b8;font-weight:400;">({{ destination.reviews or 0 }} avis)</span>
+        </span>
+        <span style="color:#94a3b8;">•</span>
+        <span style="color:#64748b;font-size:14px;">Organisateur : {{ destination.organizer or "Ô'MBOA" }}</span>
+      </div>
+      <!-- BOUTONS -->
+    <div class="d-flex gap-2 flex-wrap">
+        <button onclick="toggleFavoriteDetail('{{ destination.id }}')" 
+                class="btn btn-outline-danger btn-sm rounded-pill" 
+                style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;border-radius:30px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-family:inherit;transition:0.2s;">
+            <i class="fas fa-heart" id="detail-heart" style="color:#94a3b8;"></i> Favoris
+        </button>
+        <button onclick="openShareModal()" 
+                class="btn btn-outline-secondary btn-sm rounded-pill" 
+                style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;border-radius:30px;border:1px solid #e2e8f0;background:white;cursor:pointer;font-family:inherit;transition:0.2s;">
+            <i class="fas fa-share-alt"></i> Partager
+        </button>
+        <button onclick="viewItinerary()" 
+                style="padding:6px 16px;font-size:13px;border-radius:30px;border:none;background:linear-gradient(135deg,#2563EB,#7C3AED);color:white;cursor:pointer;font-family:inherit;transition:0.2s;box-shadow:0 4px 15px rgba(37,99,235,0.2);">
+            <i class="fas fa-route"></i> Itinéraire
+        </button>
+    </div>
+</div>
 
             <!-- TITRE -->
             <h1 style="font-size:28px;font-weight:700;color:#0f172a;margin-bottom:12px;">
@@ -161,32 +191,44 @@
                 <h6 style="font-weight:600;color:#0f172a;margin-bottom:10px;">📍 À proximité</h6>
                 <div class="row g-2">
                     {% if destination.proximite.hopital %}
-                    <div class="col-md-6"><span style="font-size:13px;color:#475569;"><i class="fas fa-hospital text-danger"></i> Hôpital: {{ destination.proximite.hopital }}</span></div>
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-hospital text-danger"></i> Hôpital: {{ destination.proximite.hopital }}</span>
+                    </div>
                     {% endif %}
                     {% if destination.proximite.police %}
-                    <div class="col-md-6"><span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Police: {{ destination.proximite.police }}</span></div>
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Police: {{ destination.proximite.police }}</span>
+                    </div>
                     {% endif %}
                     {% if destination.proximite.gendarmerie %}
-                    <div class="col-md-6"><span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Gendarmerie: {{ destination.proximite.gendarmerie }}</span></div>
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-shield-alt text-primary"></i> Gendarmerie: {{ destination.proximite.gendarmerie }}</span>
+                    </div>
                     {% endif %}
                     {% if destination.proximite.hotels %}
-                    <div class="col-md-6"><span style="font-size:13px;color:#475569;"><i class="fas fa-hotel text-warning"></i> Hôtels: {{ destination.proximite.hotels|join(', ') }}</span></div>
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-hotel text-warning"></i> Hôtels: {{ destination.proximite.hotels|join(', ') }}</span>
+                    </div>
                     {% endif %}
                     {% if destination.proximite.restaurants %}
-                    <div class="col-md-6"><span style="font-size:13px;color:#475569;"><i class="fas fa-utensils text-success"></i> Restaurants: {{ destination.proximite.restaurants|join(', ') }}</span></div>
+                    <div class="col-md-6">
+                        <span style="font-size:13px;color:#475569;"><i class="fas fa-utensils text-success"></i> Restaurants: {{ destination.proximite.restaurants|join(', ') }}</span>
+                    </div>
                     {% endif %}
                 </div>
             </div>
             {% endif %}
 
-            <!-- LOCALISATION -->
+            <!-- CARTE -->
             {% if destination.latitude and destination.longitude %}
             <div style="background:#f8fafc;border-radius:12px;padding:16px;margin-bottom:20px;">
                 <h6 style="font-weight:600;color:#0f172a;margin-bottom:8px;">📍 Localisation</h6>
                 <p style="font-size:14px;color:#475569;margin-bottom:8px;">
                     {{ destination.adresse or destination.quartier or 'Douala' }}
                 </p>
-                <a href="https://www.google.com/maps?q={{ destination.latitude }},{{ destination.longitude }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                <a href="https://www.google.com/maps?q={{ destination.latitude }},{{ destination.longitude }}" 
+                   target="_blank" 
+                   class="btn btn-outline-primary btn-sm">
                     <i class="fas fa-route"></i> Ouvrir dans Google Maps
                 </a>
             </div>
@@ -231,7 +273,9 @@
 
         </div>
 
+        <!-- ============================================================ -->
         <!-- COLONNE DROITE : RÉSERVATION -->
+        <!-- ============================================================ -->
         <div class="col-lg-4">
             <div style="position:sticky;top:20px;">
 
@@ -245,14 +289,29 @@
                         <span style="font-size:32px;font-weight:700;color:#dc2626;" id="total-price-display">{{ destination.avg_cost or 0 }}</span>
                         <span style="font-size:16px;color:#94a3b8;">FCFA</span>
                         <span style="font-size:14px;color:#94a3b8;text-decoration:line-through;">
-                            {% if destination.avg_cost %}{{ (destination.avg_cost * 1.25)|int }} FCFA{% endif %}
+                            {% if destination.avg_cost %}
+                                {{ (destination.avg_cost * 1.25)|int }} FCFA
+                            {% endif %}
                         </span>
                     </div>
                     <p style="font-size:13px;color:#64748b;margin-bottom:16px;">par personne</p>
-
-                    <button onclick="addToItinerary()" style="width:100%;margin-top:10px;padding:14px;background:#22c55e;color:white;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:0.3s;font-family:inherit;">
-                        <i class="fas fa-plus-circle"></i> Ajouter à mon itinéraire
-                    </button>
+<!-- BOUTON AJOUTER À MON ITINÉRAIRE -->
+<button onclick="addToItinerary()" style="
+    width:100%;
+    margin-top:10px;
+    padding:14px;
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:inherit;
+">
+    <i class="fas fa-plus-circle"></i> Ajouter à mon itinéraire
+</button>
 
                     <!-- PASSAGERS -->
                     <div style="position:relative;margin-bottom:10px;">
@@ -316,7 +375,8 @@
                         </select>
                     </div>
 
-                    <button onclick="window.location.href='https://yango.com/cm'" style="width:100%;padding:14px;background:#2563eb;color:white;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:0.3s;font-family:inherit;">
+                    <button onclick="window.location.href='https://yango.com/cm'" 
+                            style="width:100%;padding:14px;background:#2563eb;color:white;border:none;border-radius:12px;font-size:16px;font-weight:600;cursor:pointer;transition:0.3s;font-family:inherit;">
                         Voir les disponibilités
                     </button>
 
@@ -344,23 +404,17 @@
     </div>
 </div>
 
-<!-- LIGHTBOX -->
+<!-- ============================================================ -->
+<!-- LIGHTBOX - AGRANDISSEMENT DES IMAGES -->
+<!-- ============================================================ -->
 <div id="lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:9999;align-items:center;justify-content:center;cursor:pointer;">
     <img id="lightbox-img" src="" style="max-width:90%;max-height:90%;object-fit:contain;border-radius:8px;">
     <button onclick="closeLightbox()" style="position:absolute;top:20px;right:30px;background:none;border:none;color:white;font-size:40px;cursor:pointer;z-index:10000;">✕</button>
 </div>
 
-<!-- LIGHTBOX VIDÉO -->
-<div id="video-lightbox" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.95);z-index:9999;align-items:center;justify-content:center;">
-    <video id="video-lightbox-player" 
-           autoplay loop muted playsinline controls
-           style="max-width:90%;max-height:90%;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-        <source src="/static/videos/{{ destination.id }}/{{ destination.id }}.mp4" type="video/mp4">
-    </video>
-    <button onclick="closeVideoLightbox()" style="position:absolute;top:20px;right:30px;background:none;border:none;color:white;font-size:44px;cursor:pointer;z-index:10001;line-height:1;">✕</button>
-</div>
-
+<!-- ============================================================ -->
 <!-- MODALE DE PARTAGE -->
+<!-- ============================================================ -->
 <div id="shareModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:9998;align-items:center;justify-content:center;">
     <div style="background:white;width:100%;max-width:420px;border-radius:20px;padding:28px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);margin:20px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
@@ -370,46 +424,297 @@
 
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;">
             <div onclick="copyLink()" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;border:1px solid transparent;">
-                <div style="width:48px;height:48px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#475569;"><i class="fas fa-link"></i></div>
+                <div style="width:48px;height:48px;background:#e2e8f0;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:#475569;">
+                    <i class="fas fa-link"></i>
+                </div>
                 <span style="font-size:11px;margin-top:6px;color:#475569;">Copier le lien</span>
             </div>
+
             <a href="mailto:?subject=Découvrez {{ destination.name }}&body=Je vous recommande ce lieu à Douala : {{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
-                <div style="width:48px;height:48px;background:#ea4335;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;"><i class="fas fa-envelope"></i></div>
+                <div style="width:48px;height:48px;background:#ea4335;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fas fa-envelope"></i>
+                </div>
                 <span style="font-size:11px;margin-top:6px;color:#475569;">Email</span>
             </a>
+
             <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
-                <div style="width:48px;height:48px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;"><i class="fab fa-facebook-f"></i></div>
+                <div style="width:48px;height:48px;background:#1877F2;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-facebook-f"></i>
+                </div>
                 <span style="font-size:11px;margin-top:6px;color:#475569;">Facebook</span>
             </a>
+
             <a href="https://api.whatsapp.com/send?text=Découvrez {{ destination.name }} à Douala : {{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
-                <div style="width:48px;height:48px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;"><i class="fab fa-whatsapp"></i></div>
+                <div style="width:48px;height:48px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-whatsapp"></i>
+                </div>
                 <span style="font-size:11px;margin-top:6px;color:#475569;">WhatsApp</span>
             </a>
+
             <a href="https://twitter.com/intent/tweet?text=Découvrez {{ destination.name }} à Douala !&url={{ request.url }}" target="_blank" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
-                <div style="width:48px;height:48px;background:#000000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;"><i class="fab fa-x-twitter"></i></div>
+                <div style="width:48px;height:48px;background:#000000;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-x-twitter"></i>
+                </div>
                 <span style="font-size:11px;margin-top:6px;color:#475569;">Twitter</span>
             </a>
+
             <a href="instagram://" style="display:flex;flex-direction:column;align-items:center;padding:14px 8px;background:#f8fafc;border-radius:12px;cursor:pointer;transition:0.2s;text-decoration:none;color:inherit;border:1px solid transparent;">
-                <div style="width:48px;height:48px;background:radial-gradient(circle at 30% 30%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;"><i class="fab fa-instagram"></i></div>
+                <div style="width:48px;height:48px;background:radial-gradient(circle at 30% 30%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;">
+                    <i class="fab fa-instagram"></i>
+                </div>
                 <span style="font-size:11px;margin-top:6px;color:#475569;">Instagram</span>
             </a>
         </div>
 
         <div style="padding-top:12px;border-top:1px solid #f1f5f9;text-align:center;">
-            <p style="font-size:12px;color:#94a3b8;margin:0;">{{ destination.name }} • {{ destination.quartier or 'Douala' }}</p>
+            <p style="font-size:12px;color:#94a3b8;margin:0;">
+                {{ destination.name }} • {{ destination.quartier or 'Douala' }}
+            </p>
         </div>
     </div>
 </div>
 
-<!-- BOUTONS DE PARTAGE ET ITINÉRAIRE (bien placés HORS du script) -->
-<div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
-    <button onclick="shareDestination()" style="width:100%;padding:12px;background:transparent;border:1px solid #2563eb;border-radius:12px;color:#2563eb;font-weight:600;cursor:pointer;transition:0.3s;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;">
-        <i class="fas fa-share-alt"></i> Partager cette destination
-    </button>
-</div>
-
+<!-- ============================================================ -->
 <!-- SCRIPTS -->
+<!-- ============================================================ -->
 <script>
+// ============================================================
+// VOIR L'ITINÉRAIRE
+// ============================================================
+function viewItinerary() {
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const lat = {{ destination.latitude or 0 }};
+    const lng = {{ destination.longitude or 0 }};
+    
+    if (!lat || !lng || lat === 0 || lng === 0) {
+        alert('❌ Cette destination n\'a pas de coordonnées géographiques.');
+        return;
+    }
+    
+    window.location.href = `/location?lat=${lat}&lng=${lng}&label=${encodeURIComponent(destName)}`;
+}
+
+// ============================================================
+// PARTAGER UNE DESTINATION DANS LE CHAT
+// ============================================================
+function shareDestination() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour partager une destination.');
+        window.location.href = '/login';
+        return;
+    }
+    
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const destQuartier = "{{ destination.quartier or 'Douala' }}";
+    const destRating = "{{ destination.rating or 0 }}";
+    
+    // Récupérer les conversations
+    fetch('/api/chat/conversations', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(r => r.json())
+    .then(conversations => {
+        if (conversations.length === 0) {
+            alert('Vous n\'avez pas encore de conversations.\nRecherchez un utilisateur dans le chat pour commencer.');
+            window.location.href = '/chat';
+            return;
+        }
+        
+        // Créer la liste des conversations
+        let options = conversations.map((conv, i) => {
+            const name = conv.other_user ? conv.other_user.username : 'Conversation';
+            return `${i+1}. ${name}`;
+        }).join('\n');
+        
+        const choice = prompt(
+            `📍 Partager "${destName}" avec qui ?\n\n` +
+            options +
+            '\n\nEntrez le numéro :'
+        );
+        
+        if (choice === null) return;
+        
+        const idx = parseInt(choice) - 1;
+        if (idx < 0 || idx >= conversations.length) {
+            alert('Choix invalide.');
+            return;
+        }
+        
+        const conv = conversations[idx];
+        
+        // Créer le message de partage
+        const shareMessage = `📍 ${destName}\n${destQuartier}\n⭐ ${destRating}\n\n[Voir la destination]`;
+        
+        const data = {
+            conversation_id: conv.id,
+            content: shareMessage,
+            type: 'destination',
+            destination_id: destId
+        };
+        
+        // Envoyer le message
+        fetch('/api/chat/messages', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(msg => {
+            alert('✅ Destination partagée avec succès !');
+            window.location.href = '/chat';
+        })
+        .catch(() => {
+            alert('❌ Erreur lors du partage.');
+        });
+    })
+    .catch(() => {
+        alert('❌ Erreur de chargement des conversations.');
+    });
+}
+
+
+
+
+// ============================================================
+// AJOUTER À L'ITINÉRAIRE - VERSION AMÉLIORÉE
+// ============================================================
+function addToItinerary() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('Connectez-vous pour ajouter à vos itinéraires.');
+        window.location.href = '/login';
+        return;
+    }
+
+    const destId = "{{ destination.id }}";
+    const destName = "{{ destination.name }}";
+    const destCost = {{ destination.avg_cost or 0 }};
+    
+    // Charger les itinéraires existants
+    fetch('/api/itineraries', {
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(r => r.json())
+    .then(itineraries => {
+        let choix = 'nouveau';
+        
+        if (itineraries.length > 0) {
+            // Proposer d'ajouter à un itinéraire existant ou d'en créer un nouveau
+            const options = itineraries.map((it, i) => `${i+1}. ${it.title} (${it.destinations.length} lieux, ${it.total_cost || 0} FCFA)`).join('\n');
+            choix = prompt(
+                `📍 Ajouter "${destName}" à :\n\n` +
+                `0. Créer un nouvel itinéraire\n` +
+                options + '\n\n' +
+                `Entrez le numéro de votre choix :`
+            );
+            if (choix === null) return;
+        }
+        
+        if (choix === '0' || itineraries.length === 0) {
+            // Créer un nouvel itinéraire
+            const title = prompt('📝 Titre du nouvel itinéraire :', 'Découverte de ' + destName);
+            if (title === null) return;
+            
+            const budget = prompt('💰 Budget total (FCFA) :', '10000');
+            if (budget === null) return;
+            
+            const time = prompt('⏱️ Temps disponible (heures) :', '4');
+            if (time === null) return;
+            
+            createItinerary(token, title, [destId], parseInt(budget) || 0, parseInt(time) || 0, 'Ajouté depuis ' + destName);
+        } else {
+            // Ajouter à un itinéraire existant
+            const idx = parseInt(choix) - 1;
+            if (idx < 0 || idx >= itineraries.length) {
+                alert('❌ Choix invalide.');
+                return;
+            }
+            
+            const itinerary = itineraries[idx];
+            const destinations = [...itinerary.destinations, destId];
+            const newTotal = (itinerary.total_cost || 0) + destCost;
+            const budget = itinerary.budget || 0;
+            
+            if (budget > 0 && newTotal > budget) {
+                if (!confirm(`⚠️ Le coût total (${newTotal} FCFA) dépassera votre budget (${budget} FCFA).\nContinuer quand même ?`)) {
+                    return;
+                }
+            }
+            
+            // Mettre à jour l'itinéraire (on supprime et recrée)
+            updateItinerary(token, itinerary.id, {
+                title: itinerary.title,
+                destinations: destinations,
+                budget: itinerary.budget || 0,
+                time_available: itinerary.time_available || 0,
+                notes: itinerary.notes ? itinerary.notes + ', ' + destName : destName
+            });
+        }
+    })
+    .catch(error => {
+        alert('❌ Erreur : ' + error.message);
+    });
+}
+
+function createItinerary(token, title, destinations, budget, time, notes) {
+    fetch('/api/itineraries', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            title: title,
+            destinations: destinations,
+            budget: budget,
+            time_available: time,
+            notes: notes
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (r.ok) {
+            alert('✅ Itinéraire créé avec succès !');
+        } else {
+            alert('❌ ' + (data.error || 'Erreur'));
+        }
+    })
+    .catch(() => alert('❌ Erreur réseau'));
+}
+
+function updateItinerary(token, itineraryId, data) {
+    // Note: Cette fonction nécessite une route PUT que nous allons ajouter
+    // Pour l'instant, on supprime et on recrée
+    fetch('/api/itineraries/' + itineraryId, {
+        method: 'DELETE',
+        headers: { 'Authorization': 'Bearer ' + token }
+    })
+    .then(() => {
+        fetch('/api/itineraries', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify(data)
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (r.ok) {
+                alert('✅ Destinations ajoutées à l\'itinéraire !');
+            } else {
+                alert('❌ ' + (data.error || 'Erreur'));
+            }
+        });
+    })
+    .catch(() => alert('❌ Erreur'));
+}
 // ============================================================
 // VARIABLES
 // ============================================================
@@ -419,7 +724,7 @@ let selectedRating = 0;
 let counts = { adult: 1, youth: 0, child: 0, senior: 0 };
 
 // ============================================================
-// LIGHTBOX
+// LIGHTBOX - AGRANDISSEMENT DES IMAGES
 // ============================================================
 function openLightbox(imageUrl) {
     document.getElementById('lightbox-img').src = imageUrl;
@@ -432,29 +737,9 @@ function closeLightbox() {
     document.body.style.overflow = 'auto';
 }
 
-// ============================================================
-// LIGHTBOX VIDÉO
-// ============================================================
-function openVideoLightbox() {
-    const lb = document.getElementById('video-lightbox');
-    const player = document.getElementById('video-lightbox-player');
-    lb.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-    if (player) {
-        player.currentTime = 0;
-        player.play().catch(() => {});
-    }
-}
-
-function closeVideoLightbox() {
-    const lb = document.getElementById('video-lightbox');
-    const player = document.getElementById('video-lightbox-player');
-    lb.style.display = 'none';
-    document.body.style.overflow = 'auto';
-    if (player) {
-        player.pause();
-    }
-}
+document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+});
 
 // ============================================================
 // MODALE DE PARTAGE
@@ -486,9 +771,31 @@ function copyLink() {
     });
 }
 
+document.getElementById('shareModal').addEventListener('click', function(e) {
+    if (e.target === this) closeShareModal();
+});
+
 // ============================================================
 // PASSAGERS
 // ============================================================
+document.getElementById('passenger-toggle').addEventListener('click', function() {
+    const menu = document.getElementById('passenger-menu');
+    const chevron = document.getElementById('passenger-chevron');
+    if (menu.style.display === 'none') {
+        menu.style.display = 'block';
+        chevron.className = 'fas fa-chevron-up';
+        this.style.borderColor = '#2563eb';
+    } else {
+        closePassengerMenu();
+    }
+});
+
+function closePassengerMenu() {
+    document.getElementById('passenger-menu').style.display = 'none';
+    document.getElementById('passenger-chevron').className = 'fas fa-chevron-down';
+    document.getElementById('passenger-toggle').style.borderColor = '#e2e8f0';
+}
+
 function updatePassenger(type, delta) {
     const newVal = counts[type] + delta;
     if (newVal < 0) return;
@@ -513,15 +820,16 @@ function updateTotalPrice() {
     document.getElementById('total-price-display').innerText = total * basePrice;
 }
 
-function closePassengerMenu() {
-    document.getElementById('passenger-menu').style.display = 'none';
-    document.getElementById('passenger-chevron').className = 'fas fa-chevron-down';
-    document.getElementById('passenger-toggle').style.borderColor = '#e2e8f0';
-}
-
 // ============================================================
 // FAVORIS
 // ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    if (favorites.includes(destId)) {
+        document.getElementById('detail-heart').style.color = '#dc3545';
+    }
+});
+
 function toggleFavoriteDetail(destId) {
     const token = localStorage.getItem('token');
     if (!token) {
@@ -529,9 +837,11 @@ function toggleFavoriteDetail(destId) {
         window.location.href = '/login';
         return;
     }
+
     let favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     const index = favorites.indexOf(destId);
     const heart = document.getElementById('detail-heart');
+    
     if (index > -1) {
         favorites.splice(index, 1);
         heart.style.color = '#94a3b8';
@@ -541,80 +851,72 @@ function toggleFavoriteDetail(destId) {
         heart.style.color = '#dc3545';
         alert('❤️ Ajouté aux favoris !');
     }
+    
     localStorage.setItem('favorites', JSON.stringify(favorites));
 }
 
-// ============================================================
-// ITINÉRAIRE / SHARE
-// ============================================================
-function viewItinerary() {
-    const destName = "{{ destination.name }}";
-    const lat = {{ destination.latitude or 0 }};
-    const lng = {{ destination.longitude or 0 }};
-    if (!lat || !lng || lat === 0 || lng === 0) {
-        alert('❌ Cette destination n\'a pas de coordonnées géographiques.');
-        return;
-    }
-    window.location.href = `/location?lat=${lat}&lng=${lng}&label=${encodeURIComponent(destName)}`;
-}
+<!-- Bouton Partager la destination -->
+<button onclick="shareDestination()" style="
+    width:100%;
+    margin-top:10px;
+    padding:12px;
+    background:transparent;
+    border:1px solid #2563eb;
+    border-radius:12px;
+    color:#2563eb;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+    font-family:inherit;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+">
+    <i class="fas fa-share-alt"></i> Partager cette destination
+</button>
+<button onclick="shareDestination()" class="btn btn-outline-success btn-sm rounded-pill" style="padding:6px 16px;font-size:13px;border-color:#e2e8f0;color:#475569;">
+    <i class="fas fa-share"></i> Partager dans le chat
+</button>
 
-function shareDestination() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('Connectez-vous pour partager une destination.');
-        window.location.href = '/login';
-        return;
-    }
-    alert('Fonction de partage dans le chat (déjà disponible via la modale de partage)');
-}
+<!-- BOUTON VOIR L'ITINÉRAIRE - AJOUTER APRÈS LE BOUTON PARTAGER -->
+<button onclick="viewItinerary()" style="
+    width: 100%;
+    margin-top: 10px;
+    padding: 14px;
+    background: linear-gradient(135deg, #2563EB, #7C3AED);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-family: inherit;
+    box-shadow: 0 4px 15px rgba(37,99,235,0.2);
+" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 25px rgba(37,99,235,0.3)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(37,99,235,0.2)'">
+    <i class="fas fa-route"></i> 📍 Voir l'itinéraire
+</button>
 
-function addToItinerary() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        alert('Connectez-vous pour ajouter à vos itinéraires.');
-        window.location.href = '/login';
-        return;
-    }
-    const destIdLocal = "{{ destination.id }}";
-    const destName = "{{ destination.name }}";
-    const destCost = {{ destination.avg_cost or 0 }};
-    
-    fetch('/api/itineraries', {
-        headers: { 'Authorization': 'Bearer ' + token }
-    })
-    .then(r => r.json())
-    .then(itineraries => {
-        let choix = 'nouveau';
-        if (itineraries.length > 0) {
-            const options = itineraries.map((it, i) => `${i+1}. ${it.title} (${it.destinations.length} lieux, ${it.total_cost || 0} FCFA)`).join('\n');
-            choix = prompt(`📍 Ajouter "${destName}" à :\n\n0. Créer un nouvel itinéraire\n` + options + '\n\nEntrez le numéro de votre choix :');
-            if (choix === null) return;
-        }
-        if (choix === '0' || itineraries.length === 0) {
-            const title = prompt('📝 Titre du nouvel itinéraire :', 'Découverte de ' + destName);
-            if (title === null) return;
-            const budget = prompt('💰 Budget total (FCFA) :', '10000');
-            if (budget === null) return;
-            const time = prompt('⏱️ Temps disponible (heures) :', '4');
-            if (time === null) return;
-            fetch('/api/itineraries', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-                body: JSON.stringify({ title: title, destinations: [destIdLocal], budget: parseInt(budget) || 0, time_available: parseInt(time) || 0, notes: 'Ajouté depuis ' + destName })
-            })
-            .then(r => r.json())
-            .then(data => alert('✅ Itinéraire créé !'))
-            .catch(() => alert('❌ Erreur réseau'));
-        } else {
-            alert('Ajout à un itinéraire existant : fonctionnalité à finaliser');
-        }
-    })
-    .catch(() => alert('❌ Erreur de chargement des itinéraires.'));
-}
 
 // ============================================================
-// AVIS
+// SYSTÈME D'AVIS
 // ============================================================
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', function() {
+        selectedRating = parseInt(this.dataset.value);
+        updateStars(selectedRating);
+        document.getElementById('selected-rating-text').textContent = selectedRating + ' étoile' + (selectedRating > 1 ? 's' : '');
+    });
+    star.addEventListener('mouseover', function() {
+        updateStars(parseInt(this.dataset.value));
+    });
+    star.addEventListener('mouseout', function() {
+        if (selectedRating > 0) updateStars(selectedRating);
+        else updateStars(0);
+    });
+});
+
 function updateStars(count) {
     document.querySelectorAll('.star').forEach(s => {
         if (parseInt(s.dataset.value) <= count) {
@@ -628,6 +930,7 @@ function updateStars(count) {
 function loadReviews() {
     const container = document.getElementById('reviews-container');
     const countSpan = document.getElementById('review-count');
+    
     fetch('/api/reviews?destination_id=' + destId)
         .then(r => r.json())
         .then(reviews => {
@@ -673,6 +976,7 @@ function submitReview() {
         alert('Veuillez écrire un commentaire.');
         return;
     }
+
     const status = document.getElementById('review-status');
     status.style.display = 'inline';
     status.textContent = '⏳ Publication...';
@@ -680,8 +984,15 @@ function submitReview() {
 
     fetch('/api/reviews', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-        body: JSON.stringify({ destination_id: destId, rating: selectedRating, comment: comment })
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        },
+        body: JSON.stringify({
+            destination_id: destId,
+            rating: selectedRating,
+            comment: comment
+        })
     })
     .then(r => {
         if (!r.ok) throw new Error('Erreur serveur');
@@ -700,6 +1011,7 @@ function submitReview() {
     .catch((error) => {
         status.textContent = '❌ ' + error.message;
         status.style.color = '#ef4444';
+        console.error('Erreur:', error);
     });
 }
 
@@ -707,65 +1019,7 @@ function submitReview() {
 // INIT
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Lightbox clic extérieur
-    const lb = document.getElementById('lightbox');
-    if (lb) lb.addEventListener('click', function(e) { if (e.target === this) closeLightbox(); });
-    // Vidéo lightbox clic extérieur
-    const vlb = document.getElementById('video-lightbox');
-    if (vlb) vlb.addEventListener('click', function(e) { if (e.target === this) closeVideoLightbox(); });
-
-    // Share modal clic extérieur
-    const sm = document.getElementById('shareModal');
-    if (sm) sm.addEventListener('click', function(e) { if (e.target === this) closeShareModal(); });
-
-    // Passenger toggle
-    const pt = document.getElementById('passenger-toggle');
-    if (pt) {
-        pt.addEventListener('click', function() {
-            const menu = document.getElementById('passenger-menu');
-            const chevron = document.getElementById('passenger-chevron');
-            if (menu.style.display === 'none') {
-                menu.style.display = 'block';
-                chevron.className = 'fas fa-chevron-up';
-                this.style.borderColor = '#2563eb';
-            } else {
-                closePassengerMenu();
-            }
-        });
-    }
-
-    // Étoiles
-    document.querySelectorAll('.star').forEach(star => {
-        star.addEventListener('click', function() {
-            selectedRating = parseInt(this.dataset.value);
-            updateStars(selectedRating);
-            document.getElementById('selected-rating-text').textContent = selectedRating + ' étoile' + (selectedRating > 1 ? 's' : '');
-        });
-        star.addEventListener('mouseover', function() {
-            updateStars(parseInt(this.dataset.value));
-        });
-        star.addEventListener('mouseout', function() {
-            if (selectedRating > 0) updateStars(selectedRating);
-            else updateStars(0);
-        });
-    });
-
-    // Favoris
-    const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    if (favorites.includes(destId)) {
-        document.getElementById('detail-heart').style.color = '#dc3545';
-    }
-
-        // Charger les avis
     loadReviews();
-
-    // Navigation clavier pour la vidéo
-    document.addEventListener('keydown', function(e) {
-        const vlb = document.getElementById('video-lightbox');
-        if (vlb && vlb.style.display === 'flex' && e.key === 'Escape') {
-            closeVideoLightbox();
-        }
-    });
 });
 </script>
     {% include '_map_destination.html' %}

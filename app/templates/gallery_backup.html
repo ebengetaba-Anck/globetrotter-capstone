@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Galerie - {{ destination.name }}{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+    <a href="/destination?id={{ destination.id }}" class="btn btn-outline-secondary btn-sm mb-3">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+    
+    <h1 class="mb-2">📸 Galerie - {{ destination.name }}</h1>
+    <p class="text-muted mb-4">Toutes les photos et vidéos de ce lieu</p>
+
+    <div class="row g-3" id="gallery-grid">
+        <div class="col-12 text-center py-5 text-muted">
+            <i class="fas fa-spinner fa-spin"></i> Chargement des images...
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const destId = '{{ destination.id }}';
+    const grid = document.getElementById('gallery-grid');
+    
+    // Simuler le chargement des images (à remplacer par votre API)
+    const images = [
+        '/static/images/' + destId + '/01.jpg',
+        '/static/images/' + destId + '/02.jpg',
+        '/static/images/' + destId + '/03.jpg'
+    ];
+    
+    if (images.length === 0 || !images[0] || images[0].includes('undefined')) {
+        grid.innerHTML = `
+            <div class="col-12 text-center py-5 text-muted">
+                <p>Aucune image disponible pour ce lieu.</p>
+                <a href="/destination?id=${destId}" class="btn btn-primary btn-sm">Retour</a>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = images.map((img, index) => `
+        <div class="col-md-4 col-sm-6">
+            <div style="
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+                height: 250px;
+            ">
+                <img src="${img}" 
+                     onerror="this.style.display='none'"
+                     style="width:100%;height:100%;object-fit:cover;"
+                     alt="Photo ${index + 1}">
+            </div>
+        </div>
+    `).join('');
+});
+</script>
+
+{% endblock %}
